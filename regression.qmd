@@ -350,24 +350,24 @@ There is an analytical expression for the $\theta, \theta_0$ values that minimiz
 
 <!-- TODO: This part is hairy needs rework -->
 $$
-\theta_{\text{ridge}} = \left({X}^T{X}+ n\lambda I\right)^{-1}{X}^T\tilde{Y}
+\theta_{\text{ridge}} = \left({X}^T{X}+ n\lambda I\right)^{-1}{X}^T{Y}
 $${#eq-ridge_regression_solution}
 
 :::{.callout-note collapse="true"}
 ## Derivation of the ridge regression solution
 If we decide not to treat $\theta_0$ specially (so we add a 1 feature to our input vectors as discussed above), then we get: 
-$$\nabla_{\theta}J_\text{ridge} = \frac{2}{n}\tilde{X}^T(\tilde{X}\theta - \tilde{Y}) + 2
+$$\nabla_{\theta}J_\text{ridge} = \frac{2}{n}{X}^T({X}\theta - {Y}) + 2
   \lambda \theta\;\;.$${#eq-regularized-solution}
 
 
 Setting to 0 and solving, we get: 
 $$\begin{aligned}
-  \frac{2}{n}\tilde{X}^T(\tilde{X}\theta - \tilde{Y}) + 2 \lambda \theta             & = 0                                      \\
-  \frac{1}{n}\tilde{X}^T\tilde{X}\theta - \frac{1}{n}\tilde{X}^T\tilde{Y}+ \lambda \theta & = 0                                      \\
-  \frac{1}{n}\tilde{X}^T\tilde{X}\theta  + \lambda \theta                      & = \frac{1}{n}\tilde{X}^T\tilde{Y}\\
-  \tilde{X}^T\tilde{X}\theta  + n \lambda \theta                               & = \tilde{X}^T\tilde{Y}\\
-  (\tilde{X}^T\tilde{X}+ n \lambda I)\theta                                  & = \tilde{X}^T\tilde{Y}\\
-  \theta                                                           & = (\tilde{X}^T\tilde{X}+ n \lambda I)^{-1}\tilde{X}^T\tilde{Y}
+  \frac{2}{n}{X}^T({X}\theta - {Y}) + 2 \lambda \theta             & = 0                                      \\
+  \frac{1}{n}{X}^T{X}\theta - \frac{1}{n}{X}^T{Y}+ \lambda \theta & = 0                                      \\
+  \frac{1}{n}{X}^T{X}\theta  + \lambda \theta                      & = \frac{1}{n}{X}^T{Y}\\
+  {X}^T{X}\theta  + n \lambda \theta                               & = {X}^T{Y}\\
+  ({X}^T{X}+ n \lambda I)\theta                                  & = {X}^T{Y}\\
+  \theta                                                           & = ({X}^T{X}+ n \lambda I)^{-1}{X}^T{Y}
 \end{aligned}$$
 :::
 
