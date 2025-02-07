@@ -1,7 +1,7 @@
 :::{.callout-warning}
 This chapter's HTML notes are in active development. For a more stable version, you can access the PDF notes [here](https://introml.mit.edu/_static/spring25/notes.pdf).
 
-Note that despite stable content, this chapter's PDF notes has two simultaneous conventions for a data matrix -- both the "each row as data" and "each column as data" convention. We are working to unifying these to just "each row as data point"; in other words, $X$ below corresponds to the $\tilde{X}$ in the PDF notes.
+Note that despite stable content, this chapter's PDF notes has two simultaneous conventions for a data matrix -- both the "each row as data" and "each column as data" convention. We are working to unifying these to just "each row as data point"; in other words, $X$ below and in assignments corresponds to the $\tilde{X}$ in the PDF notes.
 
 If there is an inconsistency or confusion, please raise an issue so we can address and correct. Thanks! 
 :::
