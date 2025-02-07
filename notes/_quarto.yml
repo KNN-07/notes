@@ -1,0 +1,122 @@
+project:
+  type: book
+
+book:
+  title: Intro to Machine Learning Notes
+  repo-url: https://github.com/390introml/notes
+  repo-branch: html
+  repo-actions: [edit, issue]
+  repo-subdir: /
+  site-url: https://introml.mit.edu/notes
+  twitter-card: true
+  favicon: Figures/favicon.ico
+  cover-image: 390.png
+
+  chapters:
+    - index.qmd
+    - regression.qmd
+    - gradient_descent.qmd
+    - classification.qmd
+    - feature_representation.qmd
+    - neural_networks.qmd
+    - convolutional_neural_networks.qmd
+    - transformers.qmd
+    - autoencoders.qmd
+    - clustering.qmd
+    - mdp.qmd
+    - reinforcement_learning.qmd
+    - non_parametric.qmd
+  appendices:
+    - matrix_derivative.qmd
+
+  reader-mode: true
+  sharing: [twitter, linkedin]
+  sidebar:
+    style: "floating"
+    collapse-level: 2
+    border: true
+    search: true
+  # page-footer:
+  page-navigation: true
+
+# bibliography:
+# - all.bib
+# - visionbib.bib
+
+format:
+  html:
+    # citation-style: elsevier-with-titles.csl
+    css: style.css
+    anchor-sections: true
+    fontsize: "16px"
+    linestretch: 1.6
+    mainfont: "Palatino"
+    monofont: "Fira Mono"
+    smooth-scroll: true
+    toc-depth: 4
+    # code stuff
+    code-link: true
+    code-fold: false
+    code-tools: false
+    highlight-style: printing
+    code-block-bg: true
+    code-overflow: wrap
+    # css: ./scripts/custom-style.css
+    theme:
+      light: cosmo
+      dark: darkly
+    fig-align: "center"
+    reference-location: margin
+    cap-location: margin
+    mathjax: true
+    lightbox: true
+    crossref:
+      custom:
+        - key: alg
+          kind: float
+          reference-prefix: Algorithm
+        - key: app
+          kind: float
+          reference-prefix: Appendix
+    # include-in-header: title-block.html
+
+  # pdf:
+  # see https://pandoc.org/MANUAL.html for all options
+  # documentclass: src/DL_class
+  # classoption: src/DL_class
+  #         lof: false
+  #         lot: false
+  # toc: true
+  #         toc-depth: 2
+  #         fig-cap-location: bottom
+  #         tbl-cap-location: top
+  #         urlcolor: "blue"
+  #         linkcolor: "black"
+  #         biblio-style: apalike
+  #         keep-tex: true
+  #         code-block-bg: "#f2f2f2"
+  #         code-block-border-left: "#f2f2f2"
+  #         code-overflow: wrap
+  #         mermaid:
+  #             theme: neutral
+  # include-in-header: |
+  #   \usepackage{xcolor}
+  #   - src/setup.tex
+  #   - src/color.tex
+  # - text: |
+  #       \usepackage{makeidx}
+  #       \makeindex
+  # include-after-body:
+  #   text: |
+  #     \printindex
+# # https://christophertkenny.com/posts/2023-07-01-creating-quarto-journal-articles/
+# latex-auto-install: true
+comments:
+  hypothesis: true
+resources:
+  - demos/
+filters:
+  - pseudocode
+# tikz:
+# cache: true
+
