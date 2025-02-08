@@ -333,12 +333,11 @@ Let's see how this works out mathematically. First, for a *centered* dataset, tw
 
 2. Similarly, the mean of the labels is 0, so $Y^T\mathbb{1} = \mathbb{1} ^T Y = 0$.
 
-Our ultimate goal is to find an optimal fitting hyperplane, parameterized by $\theta$ and $\theta_0$. In other words, we aim to find $\theta_{\text{aug}},$ which at this point, involves simply plugging $\theta_{\text{aug}}$ into @eq-ols_solution. 
-
-With centererd dataset, we claim that the optimal $\theta_0$ natrually will fall out to be 0.
+Our ultimate goal is to find an optimal fitting hyperplane, parameterized by $\theta$ and $\theta_0$. In other words, we aim to find $\theta_{\text{aug}},$ which at this point, involves simply plugging $X_{\text{aug}}=\left[\begin{array}{c}X \quad  \mathbb{1} \end{array}\right]$ into @eq-ols_solution. 
 
 ![](figures/centering_proof.png){width="100%"}
 
+Indeed, the optimal $\theta_0$ natrually falls out to be 0.
 
 
 
