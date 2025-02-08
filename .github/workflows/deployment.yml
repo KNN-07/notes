@@ -3,7 +3,8 @@ name: Quarto Deploy
 on:
   push:
     branches:
-      - html
+      - main
+      - dev
 
 jobs:
   build:
@@ -26,7 +27,11 @@ jobs:
       - name: Pull and Render
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.ID }}@${{ secrets.HOST }} << 'EOF'
+          if [ "${{ github.ref }}" == "refs/heads/main" ]; then
           cd ${{ secrets.DIR }}
+          elif [ "${{ github.ref }}" == "refs/heads/dev" ]; then
+          cd ${{ secrets.DEV_DIR }}
+          fi
           git pull
           quarto render --no-clean
           EOF
