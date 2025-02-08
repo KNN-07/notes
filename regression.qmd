@@ -308,11 +308,46 @@ $${#eq-linear_reg_hypothesis_augmented}
 But of course, the constant offset is not really gone, it's just *hidden* in the augmentation.
 :::
 
-and the same formula we derived at @eq-ols_solution will still work -- we will just need to plug in the augmented vectors.
+We can do this "appending a fake feature of 1" to all data points to form the augmented data matrix $X_{\text{aug}}$ 
+
+$$
+X_{\text{aug}}=\left[\begin{array}{cccc}x_1^{(1)} & \ldots & x_d^{(1)} &1 \\ \vdots & \ddots & \vdots & \vdots \\ x_1^{(n)} & \ldots & x_d^{(n)} &1\end{array}\right] = \left[\begin{array}{c}X \quad  \mathbb{1} \end{array}\right] 
+$$
+where $\mathbb{1}$ as an $n$-by$1$ vector of all one. Then use the formula in @eq-ols_solution to find the $\theta_{\text{aug}}$ that minimizes the mean squared error.
 
 :::{.study-question-callout}
 Stop and prove to yourself that adding that extra feature with value 1 to every input vector and getting rid of the $\theta_0$ parameter, as done in @eq-linear_reg_hypothesis_augmented is equivalent to our original model @eq-linear_reg_hypothesis.
 :::
+
+## Centering
+
+In fact, this augementation "fake 1" trick described above is also handy for motivating another way of avoid dealing with $\theta_0$, directly via *centering*. By centering, we mean subtracting the mean of each feature from all the data points; and we do the same for the labels. For example, below is an example of a data set before and after centering:
+
+https://slides.com/shensquared/introml-sp25-lec2#/4/5
+
+<!-- TODO: add data table from lecture here. Perferably into markdown syntax. -->
+
+Recall, ultimately we are interested in finding an optimal fitting hyperplane, parameterized by $\theta$ and $\theta_0$. In other words, we'd like to find $\theta_{\text{aug}$
+
+
+We claim that, with centererd data, the optimal $\theta_0$ natrually will just be 0, and then find the $\theta$ values that minimize the mean squared error. To see this, a few primers:
+
+1. If the data is centered, meaning that each column of $X$ sums up to one, we must have $X^T\mathbb{1} = 0$.
+2. Similarly, for centered data set, mean of the $y$ values is 0, so $Y^T\mathbb{1} = \mathbb{1} ^T Y = 0$. 
+
+Now, plugging in the OLS solution formula, we get:
+
+$$
+\begin{aligned} \theta^*=\left[\begin{array}{l}\theta^* \\ \theta_0^*\end{array}\right] & =\left(\left[\begin{array}{l}X^{\top} \\ \mathbb{1}^{\top}\end{array}\right]\left[\begin{array}{ll}X & \mathbb{1}\end{array}\right)^{-\mathbb{1}}\left[\begin{array}{l}X^{\top} \\ \mathbb{1}^{\top}\end{array}\right] Y\right. \\ & =\left(\left[\begin{array}{cc}X^{\top} X & X^{\top} \mathbb{1} \\ \mathbb{1}^{\top} X & \mathbb{1}^{\top} \mathbb{1}\end{array}\right]^{-\mathbb{1}}\left[\begin{array}{l}X^{\top} \\ \mathbb{1}^{\top}\end{array}\right] Y\right)\end{aligned}\
+$$
+
+where the last equality follows from the fact that $X^T\mathbb{1} = 0$.
+
+
+
+
+
+This has the effect of setting $\theta_0$ to 0, and we can then use the same formula as in @eq-ols_solution to find the $\theta$ values that minimize the mean squared error.
 
 
 
