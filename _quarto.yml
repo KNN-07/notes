@@ -6,7 +6,7 @@ book:
   repo-url: https://github.com/390introml/notes
   repo-branch: main
   repo-actions: [edit, issue]
-  repo-subdir: /
+  repo-subdir: ""
   site-url: https://introml.mit.edu/notes
   twitter-card: true
   favicon: Figures/favicon.ico
