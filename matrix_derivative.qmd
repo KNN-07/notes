@@ -201,17 +201,19 @@ $${#eq-uT}
 
 ## Derivation of gradient for linear regression {#app:matrix-gradient}
 
+Recall here that $\bf X$ is a matrix of of size $n \times d$ and $\bf Y$ is an $n \times 1$ vector. 
+
 Applying identities @eq-xTA, @eq-uTv,@eq-uplusv, @eq-Ax, @eq-const 
 
 $$\begin{aligned}
-  \frac{\partial (\tilde{\bf X}\theta - \tilde{\bf Y})^T(\tilde{\bf X}\theta - \tilde{\bf Y})/n}{\partial
-  \theta} & = \frac{2}{n} \frac{\partial(\tilde{\bf X}\theta - \tilde{\bf Y})}{\partial
-  \theta}(\tilde{\bf X}\theta - \tilde{\bf Y})                                           \\
-          & = \frac{2}{n} \big(\frac{\partial\tilde{\bf X}\theta}{\partial
-    \theta}-\frac{\partial \tilde{\bf Y}}{\partial
-  \theta}\big)(\tilde{\bf X}\theta - \tilde{\bf Y})                                      \\
-          & = \frac{2}{n} \big(\tilde{\bf X}^T -{\bf 0}\big)(\tilde{\bf X}\theta - \tilde{\bf Y}) \\
-          & = \frac{2}{n} \tilde{\bf X}^T (\tilde{\bf X}\theta - \tilde{\bf Y})                   \\
+  \frac{\partial ({\bf X}\theta - {\bf Y})^T({\bf X}\theta - {\bf Y})/n}{\partial
+  \theta} & = \frac{2}{n} \frac{\partial({\bf X}\theta - {\bf Y})}{\partial
+  \theta}({\bf X}\theta - {\bf Y})                                           \\
+          & = \frac{2}{n} \big(\frac{\partial{\bf X}\theta}{\partial
+    \theta}-\frac{\partial {\bf Y}}{\partial
+  \theta}\big)({\bf X}\theta - {\bf Y})                                      \\
+          & = \frac{2}{n} \big({\bf X}^T -{\bf 0}\big)({\bf X}\theta - {\bf Y}) \\
+          & = \frac{2}{n} {\bf X}^T ({\bf X}\theta - {\bf Y})                   \\
 \end{aligned}$$
 
 ## Matrix derivatives using Einstein summation {#app:einstein}
@@ -221,24 +223,24 @@ $$\begin{aligned}
 Consider the objective function for linear regression, written out as products of matrices: 
 
 $$\begin{aligned}
-J(\theta) = \frac{1}{n} (\tilde{X}\theta - \tilde{Y})^T (\tilde{X}\theta-\tilde{Y})
+J(\theta) = \frac{1}{n} (X\theta - Y)^T (X\theta-Y)
 \,,
 \end{aligned}
 $$
 
-where $\tilde{X}= X^T$ is $n\times d$, $\tilde{Y}=Y^T$ is $n\times 1$, and $\theta$ is $d\times 1$. How does one show, with no shortcuts, that 
+where $X$ is $n\times d$, $Y$ is $n\times 1$, and $\theta$ is $d\times 1$. How does one show, with no shortcuts, that 
 
 $$\begin{aligned}
-\nabla_{\theta}J = \frac{2}{n} {\tilde{X}^T} {(\tilde{X}\theta - \tilde{Y})} \;\;?
+\nabla_{\theta}J = \frac{2}{n} {X^T} {(X\theta - Y)} \;\;?
 \end{aligned}
 $$ 
 
-One neat way, which is very explicit, is to simply write all the matrices as variables with row and column indices, e.g., $\tilde{X}_{ab}$ is the row $a$, column $b$ entry of the matrix $\tilde{X}$. Furthermore, let us use the convention that in any product, all indices which appear more than once get summed over; this is a popular convention in theoretical physics, and lets us suppress all the summation symbols which would otherwise clutter the following expresssions. For example, $\tilde{X}_{ab} \theta_b$ would be the implicit summation notation giving the element at the $a^{\rm th}$ row of the matrix-vector product $\tilde{X}\theta$.
+One neat way, which is very explicit, is to simply write all the matrices as variables with row and column indices, e.g., $X_{ab}$ is the row $a$, column $b$ entry of the matrix $X$. Furthermore, let us use the convention that in any product, all indices which appear more than once get summed over; this is a popular convention in theoretical physics, and lets us suppress all the summation symbols which would otherwise clutter the following expresssions. For example, $X_{ab} \theta_b$ would be the implicit summation notation giving the element at the $a^{\rm th}$ row of the matrix-vector product $X\theta$.
 
 Using implicit summation notation with explicit indices, we can rewrite $J(\theta)$ as 
 
 $$\begin{aligned}
-J(\theta) = \frac{1}{n} \left( \tilde{X}_{ab} \theta_b - \tilde{Y}_a \right)  \left( \tilde{X}_{ac}\theta_c - \tilde{Y}_a \right) \,.
+J(\theta) = \frac{1}{n} \left( X_{ab} \theta_b - Y_a \right)  \left( X_{ac}\theta_c - Y_a \right) \,.
 \end{aligned}$$
 
 Note that we no longer need the transpose on the first term, because all that transpose accomplished was to take a dot product between the vector given by the left term, and the vector given by the right term. With implicit summation, this is accomplished by the two terms sharing the repeated index $a$.
@@ -247,24 +249,24 @@ Taking the derivative of $J$ with respect to the $d^{\rm th}$ element of $\theta
 
 $$\begin{aligned}
 \frac{dJ}{d\theta_d} &=& \frac{1}{n} \left[
-  \tilde{X}_{ab} \delta_{bd} \left( \tilde{X}_{ac}\theta_c-\tilde{Y}_a \right)
-  + \left(\tilde{X}_{ab}\theta_b - \tilde{Y}_a \right) \tilde{X}_{ac} \delta_{cd}
+  X_{ab} \delta_{bd} \left( X_{ac}\theta_c-Y_a \right)
+  + \left(X_{ab}\theta_b - Y_a \right) X_{ac} \delta_{cd}
   \right]
 \\
 &=& \frac{1}{n} \left[
-  \tilde{X}_{ad} \left( \tilde{X}_{ac}\theta_c-\tilde{Y}_a \right)
-  + \left(\tilde{X}_{ab}\theta_b - \tilde{Y}_a \right) \tilde{X}_{ad}
+  X_{ad} \left( X_{ac}\theta_c-Y_a \right)
+  + \left(X_{ab}\theta_b - Y_a \right) X_{ad}
   \right]
 \\
-&=& \frac{2}{n} \tilde{X}_{ad} \left( \tilde{X}_{ab}\theta_b-\tilde{Y}_a \right)
+&=& \frac{2}{n} X_{ad} \left( X_{ab}\theta_b-Y_a \right)
 \,,
 \end{aligned}$$ 
-where the second line follows from the first, with the definition that $\delta_{bd} = 1$ only when $b=d$ (and similarly for $\delta_{cd}$). And the third line follows from the second by recognizing that the two terms in the second line are identical. Now note that in this implicit summation notation, the $a, b$ element of the matrix product of $A$ and $B$ is $(AB)_{ac} = A_{ab}B_{bc}$. That is, ordinary matrix multiplication sums over indices which are adjacent to each other, because a row of $A$ times a column of $B$ becomes a scalar number. So the term in the above equation with $\tilde{X}_{ad} \tilde{X}_{ab}$ is not a matrix product of $\tilde{X}$ with $\tilde{X}$. However, taking the transpose $\tilde{X}^T$ switches row and column indices, so $\tilde{X}_{ad} = \tilde{X}^T_{da}$. And $\tilde{X}^T_{da} \tilde{X}_{ab}$ *is* a matrix product of $\tilde{X}^T$ with $\tilde{X}$! Thus, we have that 
+where the second line follows from the first, with the definition that $\delta_{bd} = 1$ only when $b=d$ (and similarly for $\delta_{cd}$). And the third line follows from the second by recognizing that the two terms in the second line are identical. Now note that in this implicit summation notation, the $a, b$ element of the matrix product of $A$ and $B$ is $(AB)_{ac} = A_{ab}B_{bc}$. That is, ordinary matrix multiplication sums over indices which are adjacent to each other, because a row of $A$ times a column of $B$ becomes a scalar number. So the term in the above equation with $X_{ad} X_{ab}$ is not a matrix product of $X$ with $X$. However, taking the transpose $X^T$ switches row and column indices, so $X_{ad} = X^T_{da}$. And $X^T_{da} X_{ab}$ *is* a matrix product of $X^T$ with $X$! Thus, we have that 
 
 $$\begin{aligned}
-\frac{dJ}{d\theta_d} =& \frac{2}{n} \tilde{X}^T_{da} \left( \tilde{X}_{ab}\theta_b-\tilde{Y}_a \right)
+\frac{dJ}{d\theta_d} =& \frac{2}{n} X^T_{da} \left( X_{ab}\theta_b-Y_a \right)
 \\
-=& \frac{2}{n} \left[ \tilde{X}^T \left( \tilde{X}\theta-\tilde{Y}\right) \right]_{d}
+=& \frac{2}{n} \left[ X^T \left( X\theta-Y\right) \right]_{d}
 \,,
 \end{aligned}
 $$ which is the desired result.
