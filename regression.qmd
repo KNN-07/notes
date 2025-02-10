@@ -319,26 +319,23 @@ Stop and prove to yourself that adding that extra feature with value 1 to every 
 
 ## Centering
 
-In fact, augmenting a “fake” feature of 1, as described above, is also useful for demonstrating the idea of centering, which provides an alternative way to avoid dealing with $\theta_0$ directly.
+In fact, augmenting a “fake” feature of 1, as described above, is also useful for an important idea: namely, why utilizing the so-called **centering** eliminates the need for fitting an intercept, and thereby offers an alternative way to avoid dealing with $\theta_0$ directly.
 
-By centering, we mean subtracting the mean of each feature from all data points, and we apply the same operation to the labels. For an example of a dataset before and after centering, see [here](https://slides.com/shensquared/introml-sp25-lec2#/4/5)
+By **centering**, we mean subtracting the average (mean) of each feature from all data points, and we apply the same operation to the labels. For an example of a dataset before and after centering, see [here](https://slides.com/shensquared/introml-sp25-lec2#/4/5)
 
-The idea is that, with centered dataset, even if we were to search for an offset term $\theta_0$ to minimize the mean-square-error, it would always fall out to be 0. Intuitively, this makes sense -- if a dataset is centered around the origin, it seems natural that the best fitting hyperplane would go through the origin.
+The idea is that, with centered dataset, even if we were to search for an offset term $\theta_0$, it would naturally fall out to be 0. Intuitively, this makes sense -- if a dataset is centered around the origin, it seems natural that the best fitting plane would go through the origin.
 
 Let's see how this works out mathematically. First, for a *centered* dataset, two claims immediately follow  (recall that $\mathbb{1}$ is an $n$-by-1 vector of all ones):
 
-1. Each column of $X$ sums up to one, that is, $X^T\mathbb{1} = 0$.
+1. Each column of $X$ sums up to zero, that is, $X^T\mathbb{1} = 0$.
 
 2. Similarly, the mean of the labels is 0, so $Y^T\mathbb{1} = \mathbb{1} ^T Y = 0$.
 
-Our ultimate goal is to find an optimal fitting hyperplane, parameterized by $\theta$ and $\theta_0$. In other words, we aim to find $\theta_{\text{aug}},$ which, at this point, involves simply plugging $X_{\text{aug}}=\left[\begin{array}{c}X \quad  \mathbb{1} \end{array}\right]$ into @eq-ols_solution. 
+Recall that our ultimate goal is to find an optimal fitting hyperplane, parameterized by $\theta$ and $\theta_0$. In other words, we aim to find $\theta_{\text{aug}},$ which at this point, involves simply plugging $X_{\text{aug}}=\left[\begin{array}{c}X \quad  \mathbb{1} \end{array}\right]$ into @eq-ols_solution. 
 
 ![](figures/centering_proof.png){width="100%"}
 
 Indeed, the optimal $\theta_0$ naturally falls out to be 0.
-
-
-
 
 
 ## Regularization {#sec-regularization}
