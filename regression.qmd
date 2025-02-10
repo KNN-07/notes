@@ -366,22 +366,37 @@ There are some kinds of trouble we can get into in regression problems. What if 
 
 Another kind of problem is *overfitting*: we have formulated an objective that is just about fitting the data as well as possible, but we might also want to *regularize* to keep the hypothesis from getting *too* attached to the data.
 
-We address both the problem of not being able to invert $({X}^T{X})^{-1}$ and the problem of overfitting using a mechanism called *ridge regression*. We add a regularization term $\|\theta\|^2$ to the ols objective, with a non-negative scalar value $\lambda$ to control the tradeoff between the training error and the regularization term. Here is the ridge regression objective function: 
-$$J_{\text{ridge}}(\theta, \theta_0) = \frac{1}{n}\sum_{i = 1}^n\left(\theta^Tx^{(i)} + \theta_0 - y^{(i)}\right)^2 + \lambda\|\theta\|^2$$
-Larger $\lambda$ values pressure $\theta$ values to be near zero. 
+We address both the problem of not being able to invert $({X}^T{X})^{-1}$ and the problem of overfitting using a mechanism called *ridge regression*. We add a regularization term $\|\theta\|^2$ to the OLS objective, with a non-negative scalar value $\lambda$ to control the tradeoff between the training error and the regularization term. Here is the ridge regression objective function: 
+
+$$
+J_{\text{ridge}}(\theta, \theta_0) = \frac{1}{n}\sum_{i = 1}^n\left(\theta^Tx^{(i)} + \theta_0 - y^{(i)}\right)^2 + \lambda\|\theta\|^2
+$${#eq-uncentered_ridge_objective}
+
+Larger $\lambda$ values (in magnitude) pressure $\theta$ values to be near zero. 
  
-Note that we don't penalize $\theta_0$; intuitively, $\theta_0$ is what "floats" the regression surface to the right level for the data you have, and so you shouldn't make it harder to fit a data set where the $y$ values tend to be around one million than one where they tend to be around one. The other parameters control the orientation of the regression surface, and we prefer it to have a not-too-crazy orientation.
+Note that, when data isn't centered, we don't penalize $\theta_0$; intuitively, $\theta_0$ is what "floats" the regression surface to the right level for the data you have, and so we shouldn't make it harder to fit a data set where the $y$ values tend to be around one million than one where they tend to be around one. The other parameters control the orientation of the regression surface, and we prefer it to have a not-too-crazy orientation.
 
-There is an analytical expression for the $\theta, \theta_0$ values that minimize $J_\text{ridge}$, but it's a little bit more complicated to derive than the solution for ols. See the collaposed box for derivation. But alas, via similar calculus, the solution is: 
+There is an analytical expression for the $\theta, \theta_0$ values that minimize $J_\text{ridge}$, even when the data isn't centered, but it's a more complicated to derive than the solution for OLS, even though the process is conceptually similar: taking the gradient, setting it to zero, and solving for the parameters.
 
-<!-- TODO: This part is hairy needs rework -->
+The good news is, when the dataset is *centered*, we again have very clean set up and derivation. In particular, the objective can be written as:
+
+$$
+J_{\text{ridge}}(\theta) = \frac{1}{n}\sum_{i = 1}^n\left(\theta^Tx^{(i)}  - y^{(i)}\right)^2 + \lambda\|\theta\|^2
+$${#eq-centered_ridge_objective}
+
+:::{.column-margin}
+Compare @eq-uncentered_ridge_objective and @eq-centered_ridge_objective. What is the difference between the two? How is it possible to drop the offset here?
+:::
+
+and the solution is: 
 $$
 \theta_{\text{ridge}} = \left({X}^T{X}+ n\lambda I\right)^{-1}{X}^T{Y}
 $${#eq-ridge_regression_solution}
 
+
+
 :::{.callout-note collapse="true"}
-## Derivation of the ridge regression solution
-If we decide not to treat $\theta_0$ specially (so we add a 1 feature to our input vectors as discussed above), then we get: 
+## Derivation of the Ridge Regression Solution for Centered Data Set
 $$\nabla_{\theta}J_\text{ridge} = \frac{2}{n}{X}^T({X}\theta - {Y}) + 2
   \lambda \theta\;\;.$${#eq-regularized-solution}
 
@@ -398,7 +413,7 @@ $$\begin{aligned}
 :::
 
 
-One great news is that in @eq-regularized-solution, the matrix we are trying to invert can always be inverted! Why is the term $\left({X}^T{X}+ n\lambda I\right)$ invertible? Explaining this requires some linear algebra. The matrix ${X}^T{X}$ is positive semidefinite, which implies that its eigenvalues $\{\gamma_i\}_i$ are greater than or equal to 0. The matrix ${X}^T{X}+n\lambda I$ has eigenvalues $\{\gamma_i+n\lambda\}_i$ which are guaranteed to be strictly positive since $\lambda>0$. Recalling that the determinant of a matrix is simply the product of its eigenvalues, we get that $\det({X}^T{X}+ n\lambda I)>0$ and conclude that ${X}^T{X}+ n\lambda I$ is invertible.
+One other great news is that in @eq-regularized-solution, the matrix we are trying to invert can always be inverted! Why is the term $\left({X}^T{X}+ n\lambda I\right)$ invertible? Explaining this requires some linear algebra. The matrix ${X}^T{X}$ is positive semidefinite, which implies that its eigenvalues $\{\gamma_i\}_i$ are greater than or equal to 0. The matrix ${X}^T{X}+n\lambda I$ has eigenvalues $\{\gamma_i+n\lambda\}_i$ which are guaranteed to be strictly positive since $\lambda>0$. Recalling that the determinant of a matrix is simply the product of its eigenvalues, we get that $\det({X}^T{X}+ n\lambda I)>0$ and conclude that ${X}^T{X}+ n\lambda I$ is invertible.
 
 ## Evaluating learning algorithms {#sec-reg_learn_alg}
 
