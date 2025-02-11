@@ -50,12 +50,11 @@ Note that this algorithm terminates when the derivative of the function $f$ is s
 
 -   Stop after a fixed number of iterations $T$, i.e., when $t = T$. Practically, this is the most common choice.
 
--   Stop when the change in the value of the parameter $\Theta$ is sufficiently small, i.e., when $\left| \Theta^{(t)} - \Theta^{(t-1)} \right|
-              <\epsilon$.
+-   Stop when the change in the value of the parameter $\Theta$ is sufficiently small, i.e., when $\left| \Theta^{(t)} - \Theta^{(t-1)} \right| <\epsilon$.
 
 
 :::{.study-question-callout}
-Consider all of the potential stopping criteria for $\proc{1D-Gradient-Descent}$, both in the algorithm as it appears and listed separately later. Can you think of ways that any two of the criteria relate to each other?
+Consider all of the potential stopping criteria for `1D-Gradient-Descent`, both in the algorithm as it appears and listed separately later. Can you think of ways that any two of the criteria relate to each other?
 :::
 
 :::{#thm-gd}
