@@ -6,7 +6,7 @@ There are at least two consistent but different systems for describing shapes an
 
 We will use what is often called the 'Hessian' or denominator layout, in which we say that for
 
-${\bf x}$ of size $n\times 1$ and ${\bf y}$ of size $m\times 1$, $\partial {\bf y}/\partial {\bf x}$ is a matrix of size $n\times m$ with the $(i, j)$ entry $\partial y_j/\partial x_i$. This denominator layout convention has been adopted by the field of machine learning to ensure that the shape of the gradient is the same as the shape of the shape of the respective derivative. This is somewhat controversial at large, but alas, we shall continue with denominator layout.
+${\bf x}$ of size $n\times 1$ and ${\bf y}$ of size $m\times 1$, $\partial {\bf y}/\partial {\bf x}$ is a matrix of size $n\times m$ with the $(i, j)$ entry $\partial y_j/\partial x_i$. This denominator layout convention has been adopted by the field of machine learning to ensure that the shape of the gradient is the same as the shape of the respective derivative. This is somewhat controversial at large, but alas, we shall continue with denominator layout.
 
 The discussion below closely follows the Wikipedia on matrix derivatives.
 
