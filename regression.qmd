@@ -511,7 +511,5 @@ You can think about each different setting of a hyper-parameter as specifying a 
 In order to pick a good value of the hyper-parameter, we often end up just trying a lot of values and seeing which one works best via validation or cross-validation.
 
 :::{.study-question-callout}
-How could you use cross-validation to decide whether to use
-  analytic ridge regression or our random-regression algorithm and to pick
-  $K$ for random regression or $\lambda$ for ridge regression?
+How could you use cross-validation to decide whether to use analytic ridge regression or our random-regression algorithm and to pick $k$ for random regression or $\lambda$ for ridge regression?
 :::
