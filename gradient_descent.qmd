@@ -9,7 +9,7 @@ In the previous chapter, we showed how to describe an interesting objective func
 There is an enormous and fascinating literature on the mathematical and algorithmic foundations of optimization, but for this class, we will consider one of the simplest methods, called *gradient descent.*
 
 :::{.column-margin}
-you should consider studying optimization some day!
+You might want to consider studying optimization some day! It's one of the fundamental tools enabling machine learning, and it's a beautiful and deep field.
 :::
 
 Intuitively, in one or two dimensions, we can easily think of $J(\Theta)$ as defining a surface over $\Theta$; that same idea extends to higher dimensions. Now, our objective is to find the $\Theta$ value at the lowest point on that surface. One way to think about gradient descent is that you start at some arbitrary point on the surface, look to see in which direction the "hill" goes down most steeply, take a small step in that direction, determine the direction of steepest descent from where you are, take another small step, etc.
