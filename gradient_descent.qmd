@@ -101,11 +101,10 @@ The extension to the case of multi-dimensional $\Theta$ is straightforward. Let'
   \end{bmatrix}
   $$
    
-The algorithm remains the same, except that the update step in line 5 becomes $$\Theta^{(t)} = \Theta^{(t-1)} - \eta\nabla_\Theta f(\Theta^{(t-1)})$$ and any termination criteria that depended on the dimensionality of $\Theta$ would have to change. The easiest thing is to keep the test in line 6 as 
-
-$\left|f(\Theta^{(t)}) -
-  f(\Theta^{(t-1)}) \right| < \epsilon
-$, which is sensible no matter the dimensionality of $\Theta$.
+The algorithm remains the same, except that the update step in line 5 becomes 
+$$
+\Theta^{(t)} = \Theta^{(t-1)} - \eta\nabla_\Theta f(\Theta^{(t-1)})
+$$ and any termination criteria that depended on the dimensionality of $\Theta$ would have to change. The easiest thing is to keep the test in line 6 as $\left|f(\Theta^{(t)}) - f(\Theta^{(t-1)}) \right| < \epsilon$, which is sensible no matter the dimensionality of $\Theta$.
 
 ::: {.study-question-callout}
 Which termination criteria from the 1D case were defined in a way that assumes $\Theta$ is one dimensional?
@@ -121,8 +120,8 @@ $$
 
 We use the gradient of the objective with respect to the parameters, 
 
-$$\nabla_{\theta}J = \frac{2}{n}\underbrace{\tilde{X}^T}_{d \times
-    n}\underbrace{(\tilde{X}\theta - \tilde{Y})}_{n \times 1}\;\;,
+$$\nabla_{\theta}J = \frac{2}{n}\underbrace{{X}^T}_{d \times
+    n}\underbrace{({X}\theta - {Y})}_{n \times 1}\;\;,
 $${#eq-reg_gd_deriv} to obtain an analytical solution to the linear regression problem. Gradient descent could also be applied to numerically compute a solution, using the update rule 
 $$
 \theta^{(t)} = \theta^{(t-1)} - \eta \frac{2}{n} \sum_{i=1}^{n} \left( \left[ \theta^{(t-1)}\right]^T x^{(i)} - y^{(i)} \right) x^{(i)}
