@@ -117,6 +117,7 @@ resources:
   - demos/
 filters:
   - pseudocode
+  - imagify
 # tikz:
 # cache: true
 
