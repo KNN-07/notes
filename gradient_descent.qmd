@@ -173,7 +173,19 @@ $${#eq-reg_gd_deriv} to obtain an analytical solution to the linear regression p
 $$
 \theta^{(t)} = \theta^{(t-1)} - \eta \frac{2}{n} \sum_{i=1}^{n} \left( \left[ \theta^{(t-1)}\right]^T x^{(i)} - y^{(i)} \right) x^{(i)}
   \,.
-$$   
+$$
+
+:::{.column-margin}
+Beware double superscripts!  $\left[ \theta \right]^T$ is the transpose of the vector $\theta$.
+:::
+
+### Ridge regression
+Now, let's add in the regularization term, to get the ridge-regression
+objective:
+$$ 
+J_{\text{ridge}}(\theta, \theta_0) = \frac{1}{n}\sum_{i = 1}^n\left(\theta^Tx^{(i)} + \theta_0 - y^{(i)}\right)^2 + \lambda\|\theta\|^2 \;\;.
+$$
+ 
 
 
 Recall that in ordinary least squares, we finessed handling $\theta_0$ by adding an extra dimension of all 1's. In ridge regression, we really do need to separate the parameter vector $\theta$ from the offset $\theta_0$, and so, from the perspective of our general-purpose gradient descent method, our whole parameter set $\Theta$ is defined to be $\Theta = (\theta, \theta_0)$. We will go ahead and find the gradients separately for each one: 
