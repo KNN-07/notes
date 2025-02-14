@@ -175,9 +175,6 @@ $$
   \,.
 $$
 
-:::{.column-margin}
-Beware double superscripts!  $\left[ \theta \right]^T$ is the transpose of the vector $\theta$.
-:::
 
 ### Ridge regression
 Now, let's add in the regularization term, to get the ridge-regression
@@ -266,6 +263,10 @@ Putting everything together, our gradient descent algorithm for ridge regression
 \end{algorithmic}
 \end{algorithm}
 ```
+:::{.column-margin}
+Beware double superscripts!  $\left[ \theta \right]^T$ is the transpose of the vector $\theta$.
+:::
+
 :::{.study-question-callout}
 Is it okay that $\lambda$ doesn't appear in line 7?
 :::
