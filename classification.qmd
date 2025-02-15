@@ -338,17 +338,16 @@ $${#eq-lr_with_reg}
 
 Suppose we wish to obtain a linear logistic classifier for this one-dimensional dataset:
 
-% TODO: better as png
 
-![](figures/linear_logistic_classifier_and_regularization_data.pdf){width="45%"}
+![](figures/linear_logistic_classifier_and_regularization_data.png){width="45%" fig-align="center"}
 
 Clearly, this can be fit very nicely by a hypothesis $h(x)=\sigma(\theta x)$, but what is the best value for $\theta$? Evidently, when there is no regularization ($\lambda=0$), the objective function $J_{lr}(\theta)$ will approach zero for large values of $\theta$, as shown in the plot on the left, below. However, would the best hypothesis really have an infinite (or very large) value for $\theta$? Such a hypothesis would suggest that the data indicate strong certainty that a sharp transition between $y=0$ and $y=1$ occurs exactly at $x=0$, despite the actual data having a wide gap around $x=0$.
 
 :::{layout-ncol="2"}
 
-![](figures/linear_logistic_classifier_and_regularization_objective_noreg.pdf){width="45%"} 
+![](figures/linear_logistic_classifier_and_regularization_objective_noreg.png){width="45%"} 
 
-![](figures/linear_logistic_classifier_and_regularization_objective_withreg.pdf){width="45%"}
+![](figures/linear_logistic_classifier_and_regularization_objective_withreg.png){width="45%"}
 :::
 
 In absence of other beliefs about the solution, we might prefer that our linear logistic classifier not be overly certain about its predictions, and so we might prefer a smaller $\theta$ over a large $\theta.$ By not being overconfident, we might expect a somewhat smaller $\theta$ to perform better on future examples drawn from this same distribution. This preference can be realized using a nonzero value of the regularization trade-off parameter, as illustrated in the plot on the right, above, with $\lambda=0.2$.
