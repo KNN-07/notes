@@ -268,7 +268,7 @@ Beware double superscripts!  $\left[ \theta \right]^T$ is the transpose of the v
 :::
 
 :::{.study-question-callout}
-Is it okay that $\lambda$ doesn't appear in line 7?
+Is it okay that $\lambda$ doesn't appear in line 8?
 :::
 
 :::{.study-question-callout}
