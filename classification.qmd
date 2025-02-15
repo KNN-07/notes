@@ -378,17 +378,52 @@ Note that $\nabla_\theta J_\text{lr}$ will be of shape $d \times 1$ and $\frac{\
 
 Putting everything together, our gradient descent algorithm for logistic regression becomes:
 
-::: codebox
-$\theta^{(0)} \gets \theta_{\it init}$ $\theta_0^{(0)} \gets \theta_{0 {\it init}}$ $t \gets 0$ $t \gets t+1$ $\theta^{(t)} = \theta^{(t-1)} - \eta\left(\frac{1}{n}\sum_{i=1}^n
-      \left(\sigma\left({\theta^{(t-1)}}^T x^{(i)} + \theta_0^{(t-1)}\right) -
-        y^{(i)}\right) x^{(i)}
-      + 2\lambda\theta^{(t-1)}
-      \right)$ $\theta_0^{(t)} = \theta_0^{(t-1)} - \eta\left(\frac{1}{n}\sum_{i=1}^n
-      \left(\sigma\left({\theta^{(t-1)}}^T x^{(i)} + \theta_0^{(t-1)}\right) -
-        y^{(i)} \right)
-      \right)$ $\left| J_{\text{lr}}(\theta^{(t)},\theta_0^{(t)}) - J_{\text{lr}}(\theta^{(t-1)},
-      \theta_0^{(t-1)}) \right| <\epsilon$ $\theta^{(t)},\theta_0^{(t)}$
+
+::: {.study-question-callout}
+Convince yourself that the dimensions of all these quantities are correct, under the assumption that $\theta$ is $d \times 1$.
 :::
+
+::: {.study-question-callout}
+Compute $\nabla_\theta \|\theta\|^2$ by finding the vector of partial derivatives 
+$\left(\frac{\partial \|\theta\|^2}{\partial \theta_1}, \ldots, \frac{\partial \|\theta\|^2}{\partial \theta_d}\right)$.
+What is the shape of $\nabla_\theta \|\theta\|^2$?
+:::
+
+::: {.study-question-callout}
+Compute $\nabla_\theta \mathcal{L}_\text{nll}\bigl(\sigma(\theta^T x + \theta_0), y\bigr)$ by finding the vector of partial derivatives 
+$\left(\frac{\partial \mathcal{L}_\text{nll}\bigl(\sigma(\theta^T x + \theta_0), y\bigr)}{\partial \theta_1}, \ldots, \frac{\partial \mathcal{L}_\text{nll}\bigl(\sigma(\theta^T x + \theta_0), y\bigr)}{\partial \theta_d}\right)$.
+:::
+
+::: {.study-question-callout}
+Use these last two results to verify our derivation above.
+:::
+
+
+```pseudocode
+#| html-indent-size: "1.2em"
+#| html-comment-delimiter: "//"
+#| html-line-number: true
+#| html-line-number-punc: ":"
+#| html-no-end: false
+#| pdf-placement: "htb!"
+#| pdf-line-number: true
+
+\begin{algorithm}[H]
+\caption{LR-Gradient-Descent($\theta_{\text{init}}, \theta_{0\,\text{init}}, \eta, \epsilon$)}
+\begin{algorithmic}[1]
+\State $\theta^{(0)} \gets \theta_{\text{init}}$
+\State $\theta_0^{(0)} \gets \theta_{0\,\text{init}}$
+\State $t \gets 0$
+\Repeat
+    \State $t \gets t + 1$
+    \State $\theta^{(t)} \gets \theta^{(t-1)} - \eta \Biggl( \frac{1}{n}\sum_{i=1}^n \Bigl( \sigma\Bigl({\theta}^{(t-1)T} x^{(i)} + \theta_0^{(t-1)}\Bigr) - y^{(i)} \Bigr) x^{(i)} + 2\lambda\,\theta^{(t-1)} \Biggr)$
+    \State $\theta_0^{(t)} \gets \theta_0^{(t-1)} - \eta \Biggl( \frac{1}{n}\sum_{i=1}^n \Bigl( \sigma\Bigl({\theta}^{(t-1)T} x^{(i)} + \theta_0^{(t-1)}\Bigr) - y^{(i)} \Bigr) \Biggr)$
+\Until{$\Bigl| J_{\text{lr}}(\theta^{(t)},\theta_0^{(t)}) - J_{\text{lr}}(\theta^{(t-1)},\theta_0^{(t-1)}) \Bigr| < \epsilon$}
+\State \Return $\theta^{(t)}, \theta_0^{(t)}$
+\end{algorithmic}
+\end{algorithm}
+```
+
 
 Logistic regression, implemented using batch or stochastic gradient descent, is a useful and fundamental machine learning technique. We will also see later that it corresponds to a one-layer neural network with a sigmoidal activation function, and so is an important step toward understanding neural networks.
 
@@ -454,6 +489,10 @@ g = \textit{softmax}(z) =
 $$ 
 which can be interpreted as a probability distribution over $K$ items. To make the final prediction of the class label, we can then look at $g,$ find the most likely probability over these $K$ entries in $g,$ (i.e. find the largest entry in $g,$) and return the corresponding index as the "one-hot" element of $1$ in our prediction.
 
+:::{.study-question-callout}
+Convince yourself that the vector of $g$ values will be non-negative and sum to 1.
+:::
+
 Putting these steps together, our hypotheses will be $$h(x; \theta, \theta_0) = \textit{softmax}(\theta^T x + \theta_0)\;\;.$$
 
 Now, we retain the goal of maximizing the probability that our hypothesis assigns to the correct output $y_k$ for each input $x$. We can write this probability, letting $g$ stand for our "guess", $h(x)$, for a single example $(x, y)$ as $\prod_{k = 1}^K g_k^{y_k}$.
@@ -464,6 +503,14 @@ $$
   - \sum_{k=1}^K \text{y}_k \cdot \log(\text{g}_k) \;\;.
 $$ 
 We'll call this nllm for *negative log likelihood multiclass.* It is also worth noting that the NLLM loss function is also convex; however, we will omit the proof.
+
+:::{.study-question-callout}
+Be sure you see that is $\mathcal{L}_\text{nllm}$ is minimized when the guess assigns high probability to the true class.
+:::
+
+:::{.study-question-callout}
+Show that $\mathcal{L}_\text{nllm}$ for $K = 2$ is the same as $\mathcal{L}_\text{nll}$.
+:::
 
 ## Prediction accuracy and validation
 
