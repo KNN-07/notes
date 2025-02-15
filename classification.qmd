@@ -7,9 +7,17 @@ This chapter's HTML notes are in active development. For a more stable version, 
 
 ## Classification {#classification}
 
-Classification is a machine learning problem seeking to map from inputs $\mathbb{R}^d$ to outputs in an unordered set. Examples of classification output sets could be $\{{\text apples}, {\text oranges}, {\text pears}\}$ if we're trying to figure out what type of fruit we have, or $\{{\text heart attack}, {\text no heart attack}\}$ if we're working in an emergency room and trying to give the best medical care to a new patient. We focus on an essential simple case, *binary classification*, where we aim to find a mapping from $\mathbb{R}^d$ to two outputs. While we should think of the outputs as not having an order, it's often convenient to encode them as $\{-1, +1\}$. As before, let the letter $h$ (for hypothesis) represent a classifier, so the classification process looks like: $$x \rightarrow \boxed{h} \rightarrow y \;\;.$$ Like regression, classification is a *supervised learning* problem, in which we are given a training data set of the form 
+Classification is a machine learning problem seeking to map from inputs $\mathbb{R}^d$ to outputs in an unordered set. 
 
-$${\cal D}_n = \left\{\left(x^{(1)}, y^{(1)}\right), \dots, \left(x^{(n)},
+:::{.column-margin}
+This is in contrast to a continuous real-valued output, as we saw for linear regression.
+:::
+
+Examples of classification output sets could be $\{{\text apples}, {\text oranges}, {\text pears}\}$ if we're trying to figure out what type of fruit we have, or $\{{\text heart attack}, {\text no heart attack}\}$ if we're working in an emergency room and trying to give the best medical care to a new patient. We focus on an essential simple case, *binary classification*, where we aim to find a mapping from $\mathbb{R}^d$ to two outputs. While we should think of the outputs as not having an order, it's often convenient to encode them as $\{-1, +1\}$. As before, let the letter $h$ (for hypothesis) represent a classifier, so the classification process looks like: $$x \rightarrow \boxed{h} \rightarrow y \;\;.$$ 
+
+Like regression, classification is a *supervised learning* problem, in which we are given a training data set of the form 
+
+$${\cal D}_{\text{train}} = \left\{\left(x^{(1)}, y^{(1)}\right), \dots, \left(x^{(n)},
   y^{(n)}\right)\right\} \;\;.
 $$ 
 
@@ -21,18 +29,21 @@ In classification, we will often use 0-1 loss for evaluation (as discussed in @s
 
 $$
 \begin{aligned}
-  \mathcal{E}_n(h) = \frac{1}{n}\sum_{i = 1}^{n}\begin{cases} 1 &
+  \mathcal{E}_{\text{train}}(h) = \frac{1}{n}\sum_{i = 1}^{n}\begin{cases} 1 &
               h(x^{(i)}) \ne y^{(i)} \\ 0 & \text{otherwise}\end{cases}
   \;\;.
 \end{aligned}
-$$
+$${#eq-train_error}
 
 For now, we will try to find a classifier with small training error (later, with some added criteria) and hope it *generalizes well* to new data, and has a small *test error* 
 
-$$\begin{aligned}
-  \mathcal{E}(h) = \frac{1}{n'}\sum_{i = n + 1}^{n + n'}\begin{cases}
+$$
+\begin{aligned}
+  \mathcal{E}_{\text{test}}(h) = \frac{1}{n'}\sum_{i = n + 1}^{n + n'}\begin{cases}
     1 & h(x^{(i)}) \ne y^{(i)} \\ 0 & \text{otherwise}\end{cases}
-\end{aligned}$$ on $n'$ new examples that were not used in the process of finding the classifier.
+\end{aligned}
+$$ 
+on $n'$ new examples that were not used in the process of finding the classifier.
 
 We begin by introducing the hypothesis class of *linear classifiers* (@sec-linear_classifiers) and then define an optimization framework to learn *linear logistic classifiers* (@sec-lin_log_classifiers).
 
@@ -64,8 +75,35 @@ For example, in two dimensions ($d=2$) the separator has dimension 1, which mean
 Let $h$ be the linear classifier defined by $\theta = \begin{bmatrix} 1 \\ -1 \end{bmatrix}, \theta_0 = 1$.
 The diagram below shows the $\theta$ vector (in green) and the separator it defines:
 
+::: {.imagify}
+\begin{tikzpicture}
+      \draw [thin, gray!40] (-3,-3) grid (4,4);
+      \draw [<->] (-3,0) -- (4,0);
+      \draw [<->] (0,-3) -- (0,4);
+
+      \draw [ultra thick] (-3, -2) -- (3, 4)
+      node [above] {\large$\theta^Tx + \theta_0 = 0$};
+
+      \node [xshift=0em] at (4.3,0) {\large$x_1$};
+      \node [xshift=0em] at (0,4.2) {\large$x_2$};
+
+      % \draw [thick,teal,-latex] (0, 1) -- (0.9, 0.1)
+      \draw [thick,teal,-latex] (0, 1) -- (1.0, 0.0)
+      % node [black,below right] {$\theta$};
+      node [black,midway, xshift=0.2cm,yshift=0.1cm] {$\theta$};
+
+      \draw [decorate,decoration={brace,amplitude=3pt, mirror},xshift=2pt,yshift=0pt]
+      (1,0) -- (1.0,1.0) node [black,midway,xshift=0.3cm]
+      {\footnotesize $\theta_2$};
+
+      \draw [decorate,decoration={brace,amplitude=3pt, mirror},xshift=0pt,yshift=-2pt]
+      (0,0) -- (1.0,0.0) node [black,midway,yshift=-0.3cm]
+      {\footnotesize $\theta_1$};
+\end{tikzpicture}
+:::
+
 What is $\theta_0$? We can solve for it by plugging a point on the line into the equation for the line. It is often convenient to choose a point on one of the axes, e.g., in this case, $x=[0, 1]^T$, for which $\theta^T \left[ \begin{array}{c} 0 \\ 1 \end{array} \right] + \theta_0 = 0$, giving $\theta_0 = 1$.
-::::
+:::
 
 In this example, the separator divides $\mathbb{R}^d$, the space our $x^{(i)}$ points live in, into two half-spaces. The one that is on the same side as the normal vector is the *positive* half-space, and we classify all points in that space as positive. The half-space on the other side is *negative* and all points in it are classified as negative.
 
@@ -84,6 +122,50 @@ $$\begin{aligned}
 \end{aligned}$$ 
 
 Thus, $x^{(1)}$ and $x^{(2)}$ are given positive and negative classifications, respectively.
+
+<!-- TODO: THIS PLOT HAS BUG -->
+<!-- ::: {.imagify}
+\begin{tikzpicture}
+  % Draw grid and axes
+  \draw [thin, gray!40] (-2,-3) grid (5,4);
+  \draw [<->] (-2,0) -- (5,0);
+  \draw [<->] (0,-3) -- (0,4);
+
+  % Decision boundary line with annotation
+  \draw [ultra thick] (-1.5,-3) -- (5,1.3333)
+    node [above right] {\large$\theta^T x + \theta_0 = 0$};
+
+  % Arrow representing the parameter vector
+  \draw [thick, teal, -latex] (2,-0.6667) -- (1,0.8883)
+    node [black, below left] {$\theta$};
+
+  % Labeled points (using standard math mode syntax)
+  \node [above right, xshift=.3em] at (3,2) {\large$\{x\}^{(1)}$};
+  \node [above right, xshift=.3em] at (4,-1) {\large$\{x\}^{(2)}$};
+
+  % Draw plus markers
+  \foreach \Point in {(3,2), (1.8,3.5), (-1,3), (.8,-.6), (-1.4,-.9), (1.5, 1.5)}{
+    \pic at \Point {plus};
+  }
+
+  % Draw minus markers
+  \foreach \Point in {(4,-1), (2,-2.7), (4.4,-2.1)}{
+    \pic at \Point {minus};
+  }
+\end{tikzpicture}
+::: -->
+:::
+
+
+:::{.study-question-callout}
+What is the green vector normal to the separator?  Specify it as a column vector.
+:::
+
+
+:::{.study-question-callout}
+What change would you have to make to $\theta, \theta_0$ if you wanted to have the separating hyperplane in the same place, but to classify
+  all the points labeled '+' in the diagram as negative and all the
+  points labeled '-' in the diagram as positive?
 :::
 
 ## Linear logistic classifiers {#sec-lin_log_classifiers}
@@ -95,11 +177,20 @@ For classification, it is natural to make predictions in $\{+1, -1\}$ and use th
 $$\mathcal{L}_{01}(g, a) = \begin{cases}
     0 & \text{if $g = a$} \\
     1 & \text{otherwise}
-  \end{cases} \; .$$ However, even for simple linear classifiers, it is very difficult to find values for $\theta, \theta_0$ that minimize simple 0-1 training error $$J(\theta, \theta_0) = \frac{1}{n} \sum_{i=1}^n \mathcal{L}_{01}(\text{sign}(\theta^Tx^{(i)} + \theta_0),
+  \end{cases} \; .
+$$ 
+
+However, even for simple linear classifiers, it is very difficult to find values for $\theta, \theta_0$ that minimize simple 0-1 training error 
+$$
+J(\theta, \theta_0) = \frac{1}{n} \sum_{i=1}^n \mathcal{L}_{01}(\text{sign}(\theta^Tx^{(i)} + \theta_0),
   y^{(i)})\;\;.
 $$ 
 
 This problem is NP-hard, which probably implies that solving the most difficult instances of this problem would require computation time *exponential* in the number of training examples, $n$.
+
+:::{.column-margin}
+The "probably" here is not because we're too lazy to look it up, but actually because of a fundamental unsolved problem in computer-science theory, known as "P vs. NP."
+:::
 
 What makes this a difficult optimization problem is its lack of "smoothness":
 
@@ -122,11 +213,64 @@ $$
 \sigma(z) = \frac{1}{1+e^{-z}}\;\;,
 $$ and is plotted below, as a function of its input $z$. Its output can be interpreted as a probability, because for any value of $z$ the output is in $(0, 1)$.
 
+:::{.imagify}
+\begin{center}
+\begin{tikzpicture}
+    \begin{axis}[
+        axis lines=middle,
+        % axis equal image,
+        scale only axis,
+        width=0.6\textwidth,
+        height=0.3\textwidth,
+        xmin=-4, xmax=4,
+        ymin=-0.25, ymax=1.25,
+        xlabel={$z$}, ylabel={$\sigma(z)$},
+      ]
+      \addplot [domain=-4:4, samples=100, ultra thick] {1/(1+exp(-x))};
+      \addplot [domain=-4:4, samples=2, dashed] {1};
+      \addplot [domain=-4:4, samples=2, dashed] {0};
+    \end{axis}
+  \end{tikzpicture}
+\end{center}
+:::
+
+:::{.study-question-callout}
+Convince yourself the output of $\sigma$ is always in the interval $(0, 1)$.  Why can't it equal 0 or equal 1?  For what value of $z$ does $\sigma(z) = 0.5$?
+:::
+
 
 ### Linear logistic classifier: examples
 
 What does an LLC look like? Let's consider the simple case where $d = 1$, so our input points simply lie along the $x$ axis. Classifiers in this case have dimension $0$, meaning that they are points. The plot below shows LLCs for three different parameter settings: $\sigma(10x + 1)$, $\sigma(-2x + 1)$, and $\sigma(2x - 3).$
 
+:::{.imagify}
+\begin{center}
+  \begin{tikzpicture}
+    \begin{axis}[
+        axis lines=middle,
+        % axis equal image,
+        scale only axis,
+        width=0.6\textwidth,
+        height=0.3\textwidth,
+        xmin=-4, xmax=4,
+        ymin=-0.25, ymax=1.25,
+        xlabel={$x$}, ylabel={$\sigma(\theta^T x + \theta_0)$},
+      ]
+      \addplot [domain=-4:4, samples=100, ultra thick, red] {1/(1+exp(-(10*x + 1)))};
+      \addplot [domain=-4:4, samples=100, ultra thick, blue] {1/(1+exp(-(-2*x
+        + 1)))};
+      \addplot [domain=-4:4, samples=100, ultra thick, green] {1/(1+exp(-(2*x
+        - 3)))};
+      \addplot [domain=-4:4, samples=2, dashed] {1};
+      \addplot [domain=-4:4, samples=2, dashed] {0};
+    \end{axis}
+  \end{tikzpicture}
+\end{center}
+:::
+
+:::{.study-question-callout}
+Which plot is which?  What governs the steepness of the curve?  What governs the $x$ value where the output is equal to 0.5?
+:::
 
 But wait! Remember that the definition of a classifier is that it's a mapping from 
 $\mathbb{R}^d  \rightarrow \{-1, +1\}$ or to some other discrete set. So, then, it seems like an LLC is actually not a classifier!
@@ -135,9 +279,24 @@ Given an LLC, with an output value in $(0, 1)$, what should we do if we are forc
 
 In fact, for different problem settings, we might prefer to pick a different prediction threshold. The field of *decision theory* considers how to make this choice. For example, if the consequences of predicting $+1$ when the answer should be $-1$ are much worse than the consequences of predicting $-1$ when the answer should be $+1$, then we might set the prediction threshold to be greater than $0.5$.
 
+:::{.study-question-callout}
+Using a prediction threshold of 0.5, for what values of $x$ do each of the LLCs shown in the figure above predict $+1$?
+:::
+
 When $d = 2$, then our inputs $x$ lie in a two-dimensional space with axes $x_1$ and $x_2$, and the output of the LLC is a surface, as shown below, for $\theta = (1, 1), \theta_0 = 2$.
 
-![](figures/logreg3d.png){width="70%"}
+![](figures/logreg3d.png){width="70%" fig-align="center"}
+
+
+:::{.study-question-callout}
+{Convince yourself that the set of points for which
+  $\sigma(\theta^T x + \theta_0) = 0.5$, that is, the ``boundary''
+  between positive and negative predictions with prediction threshold
+  $0.5$, is a line in $(x_1, x_2)$ space. What particular line is it
+  for the case in the figure above?
+  How would the plot change for $\theta = (1, 1)$, but now
+  with $\theta_0 = -2$? For $\theta = (-1, -1), \theta_0 = 2$?}
+:::
 
 ### Learning linear logistic classifiers {#sec-classification-logistic}
 
