@@ -2,16 +2,16 @@ project:
   type: book
 
 book:
-  title: Intro to Machine Learning Notes
+  title: 6.390 - Intro to Machine Learning
+  subtitle: Course Notes
   repo-url: https://github.com/390introml/notes
   repo-branch: main
   repo-actions: [edit, issue]
   repo-subdir: ""
   site-url: https://introml.mit.edu/notes
   twitter-card: true
-  favicon: Figures/favicon.ico
-  cover-image: 390.png
-
+  favicon: logo/favicon.svg
+  # cover-image: logo/390.png
   chapters:
     - index.qmd
     - regression.qmd
