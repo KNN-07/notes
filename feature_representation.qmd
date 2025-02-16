@@ -24,18 +24,24 @@ Let's look at an example data set that starts in 1-D:
 :::{.callout-note}
 ## Example
 :::{.imagify}
-  <!-- \begin{tikzpicture}
-      \draw [<->, gray] (-3,0) -- (3,0)
-      node [black, right] {$x$};
-      \draw [gray] (0,.6) -- (0,-.6)
-      node [black, below] {0};
+\begin{tikzpicture}
+    % Draw the x-axis
+    \draw [<->, gray] (-3,0) -- (3,0) node [black, right] {$x$};
+    
+    % Draw the vertical marker at x = 0
+    \draw [gray] (0,.6) -- (0,-.6) node [black, below] {0};
 
-      \pic at (-1.5, 0) {plusblk};
-      \pic at (-.5, 0) {minusblk};
-      \pic at (.5, 0) {minusblk};
-      \pic at (1.5, 0) {plusblk};
+    % Add plus and minus signs at specified positions
+    \draw[ultra thick] (-1.7,0) -- (-1.3,0); % Plus horizontal
+    \draw[ultra thick] (-1.5,-.2) -- (-1.5,.2); % Plus vertical
 
-    \end{tikzpicture} -->
+    \draw[ultra thick] (-.7,0) -- (-.3,0); % Minus horizontal
+
+    \draw[ultra thick] (.3,0) -- (.7,0); % Minus horizontal
+
+    \draw[ultra thick] (1.3,0) -- (1.7,0); % Plus horizontal
+    \draw[ultra thick] (1.5,-.2) -- (1.5,.2); % Plus vertical
+\end{tikzpicture}
 :::
 :::
 
@@ -43,57 +49,72 @@ These points are not linearly separable, but consider the transformation $\phi(x
 
 :::{.callout-note}
 ## Example
-<!-- :::{.imagify}
-    \begin{tikzpicture}
-      \draw [<->, gray] (-3,0) -- (3,0)
-      node [black, right] {$x$};
-      \draw [<->, gray] (0,-.6) -- (0,4)
-      node [black, above] {$x^2$};
+:::{.imagify}
+\begin{tikzpicture}
+  % Draw x-axis
+  \draw [<->, gray] (-3,0) -- (3,0) node [black, right] {$x$};
+  % Draw y-axis (labeled as x²)
+  \draw [<->, gray] (0,-0.6) -- (0,4) node [black, above] {$x^2$};
 
-      \draw [dashed] (-3, 1.25) -- (3, 1.25)
-      node [below, xshift=-1cm] {separator};
+  % Draw dashed separator line
+  \draw [dashed] (-3,1.25) -- (3,1.25) node [below, xshift=-1cm] {separator};
 
-      \pic at (-1.5, 2.25) {plusblk};
-      \pic at (-.5, .25) {minusblk};
-      \pic at (.5, .25) {minusblk};
-      \pic at (1.5, 2.25) {plusblk};
+  % Plus sign at (-1.5, 2.25)
+  \draw[ultra thick] (-1.7,2.25) -- (-1.3,2.25); % horizontal line
+  \draw[ultra thick] (-1.5,2.05) -- (-1.5,2.45); % vertical line
 
-    \end{tikzpicture}
-::: -->
+  % Minus sign at (-0.5, 0.25)
+  \draw[ultra thick] (-0.7,0.25) -- (-0.3,0.25);
+
+  % Minus sign at (0.5, 0.25)
+  \draw[ultra thick] (0.3,0.25) -- (0.7,0.25);
+
+  % Plus sign at (1.5, 2.25)
+  \draw[ultra thick] (1.3,2.25) -- (1.7,2.25); % horizontal line
+  \draw[ultra thick] (1.5,2.05) -- (1.5,2.45); % vertical line
+\end{tikzpicture}
+:::
 :::
 
 A linear separator in $\phi$ space is a nonlinear separator in the original space! Let's see how this plays out in our simple example. Consider the separator $x^2  - 1 = 0$, which labels the half-plane $x^2 -1 > 0$ as positive. What separator does it correspond to in the original 1-D space? We have to ask the question: which $x$ values have the property that $x^2 - 1 = 0$. The answer is $+1$ and $-1$, so those two points constitute our separator, back in the original space. And we can use the same reasoning to find the region of 1D space that is labeled positive by this separator.
 
 :::{.callout-note}
 ## Example
-<!-- :::{.imagify}
+:::{.imagify}
 \begin{tikzpicture}
-      \draw [<->, gray] (-3,0) -- (3,0)
-      node [black, right] {$x$};
-      \draw [gray] (0,.6) -- (0,-.6)
-      node [black, below] {0};
-      \draw [gray] (1,.2) -- (1,-.2)
-      node [black, below] {1};
-      \draw [gray] (-1,.2) -- (-1,-.2)
-      node [black, below] {-1};
-
-      \fill (1,0) circle (2.5pt);
-      \fill (-1,0) circle (2.5pt);
-
-      \draw[decoration={calligraphic brace,amplitude=5pt}, decorate, line width=1.25pt]
-      (-2.95,0.2) node {} -- (-1.05,0.2);
-      \draw[decoration={calligraphic brace,amplitude=5pt}, decorate, line width=1.25pt]
-      (-.95,0.2) node {} -- (.95,0.2);
-      \draw[decoration={calligraphic brace,amplitude=5pt}, decorate, line width=1.25pt]
-      (1.05,0.2) node {} -- (2.95,0.2);
-
-      \pic at (-2, 0.7) {plus};
-      \pic at (0, 0.7) {minus};
-      \pic at (2, 0.7) {plus};
-
-    \end{tikzpicture}
-::: -->
-
+  % Draw x-axis
+  \draw [<->, gray] (-3,0) -- (3,0)
+    node [black, right] {$x$};
+  
+  % Draw tick marks on the x-axis with labels
+  \draw [gray] (0,0.6) -- (0,-0.6) node [black, below] {0};
+  \draw [gray] (1,0.2) -- (1,-0.2) node [black, below] {1};
+  \draw [gray] (-1,0.2) -- (-1,-0.2) node [black, below] {-1};
+  
+  % Fill points at x = 1 and x = -1
+  \fill (1,0) circle (2.5pt);
+  \fill (-1,0) circle (2.5pt);
+  
+  % Draw braces using the standard 'brace' decoration
+  \draw[decoration={brace, amplitude=5pt}, decorate, line width=1.25pt]
+    (-2.95,0.2) -- (-1.05,0.2);
+  \draw[decoration={brace, amplitude=5pt}, decorate, line width=1.25pt]
+    (-0.95,0.2) -- (0.95,0.2);
+  \draw[decoration={brace, amplitude=5pt}, decorate, line width=1.25pt]
+    (1.05,0.2) -- (2.95,0.2);
+  
+  % Draw plus sign at (-2, 0.7)
+  \draw[ultra thick] (-2.2,0.7) -- (-1.8,0.7);  % horizontal line
+  \draw[ultra thick] (-2,0.5) -- (-2,0.9);        % vertical line
+  
+  % Draw minus sign at (0, 0.7)
+  \draw[ultra thick] (-0.2,0.7) -- (0.2,0.7);       % horizontal line
+  
+  % Draw plus sign at (2, 0.7)
+  \draw[ultra thick] (1.8,0.7) -- (2.2,0.7);        % horizontal line
+  \draw[ultra thick] (2,0.5) -- (2,0.9);            % vertical line
+\end{tikzpicture}
+:::
 :::
 
 ## Systematic feature construction
@@ -137,14 +158,23 @@ D. Melanogaster is a species of fruit fly, used as a simple system in which to s
 
 :::{.callout-note}
 ## Example
-<!-- :::{.imagify}
-   \begin{tikzpicture}
-      \pic at (-1, -1) {plusblk};
-      \pic at (-1, +1) {minusblk};
-      \pic at (+1, -1) {minusblk};
-      \pic at (+1, +1) {plusblk};
-    \end{tikzpicture}
-::: -->
+:::{.imagify}
+\begin{tikzpicture}
+  % Plus sign at (-1,-1)
+  \draw[ultra thick] (-1.2,-1) -- (-0.8,-1);  % horizontal stroke
+  \draw[ultra thick] (-1,-1.2) -- (-1,-0.8);    % vertical stroke
+
+  % Minus sign at (-1,+1)
+  \draw[ultra thick] (-1.2,1) -- (-0.8,1);      % horizontal stroke
+
+  % Minus sign at (+1,-1)
+  \draw[ultra thick] (0.8,-1) -- (1.2,-1);      % horizontal stroke
+
+  % Plus sign at (+1,+1)
+  \draw[ultra thick] (0.8,1) -- (1.2,1);        % horizontal stroke
+  \draw[ultra thick] (1,0.8) -- (1,1.2);        % vertical stroke
+\end{tikzpicture}
+:::
 :::
 
 Clearly, this data set is not linearly separable. So, what if we try to solve the xor classification problem using a polynomial basis as the feature transformation? We can just take our two-dimensional data and transform it into a higher-dimensional data set, by applying $\phi$. Now, we have a classification problem as usual.
