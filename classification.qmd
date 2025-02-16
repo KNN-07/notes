@@ -420,7 +420,7 @@ Use these last two results to verify our derivation above.
     \State $\theta^{(t)} \gets \theta^{(t-1)} - \eta \Biggl( \frac{1}{n}\sum_{i=1}^n \Bigl( \sigma\Bigl({\theta}^{(t-1)T} x^{(i)} + \theta_0^{(t-1)}\Bigr) - y^{(i)} \Bigr) x^{(i)} + 2\lambda\,\theta^{(t-1)} \Biggr)$
     \State $\theta_0^{(t)} \gets \theta_0^{(t-1)} - \eta \Biggl( \frac{1}{n}\sum_{i=1}^n \Bigl( \sigma\Bigl({\theta}^{(t-1)T} x^{(i)} + \theta_0^{(t-1)}\Bigr) - y^{(i)} \Bigr) \Biggr)$
 \Until{$\Bigl| J_{\text{lr}}(\theta^{(t)},\theta_0^{(t)}) - J_{\text{lr}}(\theta^{(t-1)},\theta_0^{(t-1)}) \Bigr| < \epsilon$}
-\State \Return $\theta^{(t)}, \theta_0^{(t)}$
+\Return $\theta^{(t)}, \theta_0^{(t)}$
 \end{algorithmic}
 \end{algorithm}
 ```
