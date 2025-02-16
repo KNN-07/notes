@@ -344,16 +344,16 @@ Let's see how this works out mathematically. First, for a *centered* dataset, tw
 Recall that our ultimate goal is to find an optimal fitting hyperplane, parameterized by $\theta$ and $\theta_0$. In other words, we aim to find $\theta_{\text{aug}},$ which at this point, involves simply plugging $X_{\text{aug}}=\left[\begin{array}{c}X \quad  \mathbb{1} \end{array}\right]$ into @eq-ols_solution. 
 
 $$\begin{aligned}
-\theta_{aug}^*&=\left ( \begin{bmatrix} X^T\\\mathbb{1}^T\end{bmatrix}\begin{bmatrix}X&\mathbb{1}\end{bmatrix}\right)^{-1}\begin{bmatrix}X^T\mathbb{1}^T\end{bmatrix}Y\\
-&=\begin{bmatrix}X^TX&X^T\mathbb{1}\\\mathbb{1}^TX&\mathbb{1}^T\mathbb{1}\end{bmatrix}\begin{bmatrix}X^T\\\mathbb{1}^T\end{bmatrix}Y\\
-&=\begin{bmatrix}X^TX&X^T\mathbb{1}\\\mathbb{1}^TX&\mathbb{1}^T\mathbb{1}\end{bmatrix}\begin{bmatrix}X^T\\\mathbb{1}^T\end{bmatrix}Y\\
-&=\begin{bmatrix}X^TX&0\\0&n\end{bmatrix}\begin{bmatrix}X^T\\\mathbb{1}^T\end{bmatrix}Y\\
-&=\begin{bmatrix}(X^TX)^{-1}X^TY\\n\mathbb{1}^TY\end{bmatrix}=\begin{bmatrix}(X^TX)^{-1}X^TY\\0\end{bmatrix}\\
-&=\begin{bmatrix}\theta^*\\\theta_0^*\end{bmatrix}
+\theta_{\text{aug}}^*&=\left ( \begin{bmatrix} X^T\\\mathbb{1}^T\end{bmatrix}\begin{bmatrix}X&\mathbb{1}\end{bmatrix}\right)^{-1}\begin{bmatrix}X^T\\ \mathbb{1}^T\end{bmatrix}Y\\
+&=\begin{bmatrix}X^TX&X^T\mathbb{1}\\\mathbb{1}^TX&\mathbb{1}^T\mathbb{1}\end{bmatrix}^{-1}\begin{bmatrix}X^T\\ \mathbb{1}^T\end{bmatrix}Y\\
+&=\begin{bmatrix}X^TX&X^T\mathbb{1}\\\mathbb{1}^TX&\mathbb{1}^T\mathbb{1}\end{bmatrix}^{-1}\begin{bmatrix}X^T\\ \mathbb{1}^T\end{bmatrix}Y\\
+&=\begin{bmatrix}X^TX&0\\0&n\end{bmatrix}^{-1}\begin{bmatrix}X^T\\\mathbb{1}^T\end{bmatrix}Y\\
+&=\begin{bmatrix}(X^TX)^{-1}X^TY\\n\mathbb{1}^TY\end{bmatrix}\\
+&=\begin{bmatrix}(X^TX)^{-1}X^TY\\0\end{bmatrix}\\
+&=\begin{bmatrix}\theta^*\\\theta_0^*\end{bmatrix}\\
 \end{aligned}
-$$ 
+$$
 
-![](figures/centering_proof.png){width="100%"}
 
 Indeed, the optimal $\theta_0$ naturally falls out to be 0.
 
