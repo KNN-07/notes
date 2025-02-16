@@ -76,7 +76,7 @@ For example, in two dimensions ($d=2$) the separator has dimension 1, which mean
 Let $h$ be the linear classifier defined by $\theta = \begin{bmatrix} 1 \\ -1 \end{bmatrix}, \theta_0 = 1$.
 The diagram below shows the $\theta$ vector (in green) and the separator it defines:
 
-::: {.imagify}
+::: {.imagify width="70%" fig-align="center"}
 \begin{tikzpicture}
       \draw [thin, gray!40] (-3,-3) grid (4,4);
       \draw [<->] (-3,0) -- (4,0);
@@ -284,7 +284,18 @@ Intuitively, we would like to have *low loss if we assign a high probability to 
 
 In order to simplify the description, we assume that (or transform our data so that) the labels in the training data are $y \in \{0, 1\}$.
 
+:::{.column-margin}
+Remember to be sure your $y$
+  values have this form if you try to learn an LLC using NLL!
+:::
+
+
 We would like to pick the parameters of our classifier to maximize the probability assigned by the LLC to the correct $y$ values, as specified in the training set. Letting guess $g^{(i)} = \sigma(\theta^Tx^{(i)} + \theta_0)$, that probability is
+
+:::{.column-margin}
+That crazy huge $\Pi$ represents taking the product over a bunch of factors just as huge $\Sigma$ represents taking the sum over a bunch of terms.
+:::
+
 $$
 \prod_{i = 1}^n \begin{cases} g^{(i)} & \text{if $y^{(i)} =
               1$}                               \\ 1 - g^{(i)} & \text{otherwise}
@@ -296,8 +307,7 @@ $$
 $$
 
 :::{.study-question-callout}
-{Be sure you can see why these two expressions are  the
-  same.}
+Be sure you can see why these two expressions are the same.
 :::
 
 
@@ -479,6 +489,12 @@ $$
 z = \theta^T x + \theta_0\;\;.
 $$ 
 
+:::{.column-margin}
+Let's check dimensions!  $\theta^T$ is $K \times d$ and $x$ is
+    $d \times 1$, and $\theta_0$ is $K \times 1$, so $z$ is $K \times
+      1$ and we're good!
+:::
+
 Next, we have to extend our use of the sigmoid function to the multi-dimensional *softmax* function, that takes a whole vector $z \in \mathbb{R}^K$ and generates 
 $$
 g = \textit{softmax}(z) =
@@ -497,6 +513,10 @@ Convince yourself that the vector of $g$ values will be non-negative and sum to 
 Putting these steps together, our hypotheses will be $$h(x; \theta, \theta_0) = \textit{softmax}(\theta^T x + \theta_0)\;\;.$$
 
 Now, we retain the goal of maximizing the probability that our hypothesis assigns to the correct output $y_k$ for each input $x$. We can write this probability, letting $g$ stand for our "guess", $h(x)$, for a single example $(x, y)$ as $\prod_{k = 1}^K g_k^{y_k}$.
+
+:::{.study-question-callout}
+How many elements that are not equal to 1 will there be in this product?
+:::
 
 The negative log of the probability that we are making a correct guess is, then, for *one-hot* vector $y$ and *probability distribution* vector $g$, 
 $$
