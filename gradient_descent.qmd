@@ -279,13 +279,23 @@ Is it okay that the 2's from the gradient definitions don't appear in the algori
 
 When the form of the gradient is a sum, rather than take one big(ish) step in the direction of the gradient, we can, instead, randomly select one term of the sum, and take a very small step in that direction. This seems sort of crazy, but remember that all the little steps would average out to the same direction as the big step if you were to stay in one place. Of course, you're not staying in that place, so you move, in expectation, in the direction of the gradient.
 
-Most objective functions in machine learning can end up being written as a sum over data points, in which case, stochastic gradient descent (sgd) is implemented by picking a data point randomly out of the data set, computing the gradient as if there were only that one point in the data set, and taking a small step in the negative direction.
+Most objective functions in machine learning can end up being written as an average over data points, in which case, stochastic gradient descent (sgd) is implemented by picking a data point randomly out of the data set, computing the gradient as if there were only that one point in the data set, and taking a small step in the negative direction.
 
 Let's assume our objective has the form 
 
-$$f(\Theta) = \sum_{i = 1}^n f_i(\Theta)
+$$f(\Theta) = \frac{1}{n}\sum_{i = 1}^n f_i(\Theta)
   \;\;,
-$$ where $n$ is the number of data points used in the objective (and this may be different from the number of points available in the whole data set). Here is pseudocode for applying sgd to such an objective $f$; it assumes we know the form of 
+$$ 
+where $n$ is the number of data points used in the objective (and this may be different from the number of points available in the whole data set). 
+
+:::{.column-margin}
+Sometimes you will see that the objective being written as a sum, instead of an average. The $ \frac{1}{n}$ normalizing constant in this "sum" convetion is getting "absorbed" into individual $f_i$.
+$$
+f(\Theta) = \sum_{i = 1}^n f_i(\Theta)\;\;.
+$$ 
+:::
+
+Here is pseudocode for applying sgd to such an objective $f$; it assumes we know the form of 
 $\nabla_\Theta f_i$ for all $i$ in $1\ldots n$:
 
 ```pseudocode
