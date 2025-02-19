@@ -289,7 +289,7 @@ $$
 where $n$ is the number of data points used in the objective (and this may be different from the number of points available in the whole data set). 
 
 :::{.column-margin}
-Sometimes you will see that the objective being written as a sum, instead of an average. The $ \frac{1}{n}$ normalizing constant in this "sum" convetion is getting "absorbed" into individual $f_i$.
+Sometimes you will see that the objective being written as a sum, instead of an average. In the "sum" convention, the $\frac{1}{n}$ normalizing constant is getting "absorbed" into individual $f_i$.
 $$
 f(\Theta) = \sum_{i = 1}^n f_i(\Theta)\;\;.
 $$ 
