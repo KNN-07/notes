@@ -14,7 +14,7 @@ Classification is a machine learning problem seeking to map from inputs $\mathbb
 This is in contrast to a continuous real-valued output, as we saw for linear regression.
 :::
 
-Examples of classification output sets could be $\{{\text apples}, {\text oranges}, {\text pears}\}$ if we're trying to figure out what type of fruit we have, or $\{{\text heart attack}, {\text no heart attack}\}$ if we're working in an emergency room and trying to give the best medical care to a new patient. We focus on an essential simple case, *binary classification*, where we aim to find a mapping from $\mathbb{R}^d$ to two outputs. While we should think of the outputs as not having an order, it's often convenient to encode them as $\{-1, +1\}$. As before, let the letter $h$ (for hypothesis) represent a classifier, so the classification process looks like: $$x \rightarrow \boxed{h} \rightarrow y \;\;.$$ 
+Examples of classification output sets could be $\{\text{apples}, \text{oranges}, \text{pears}\}$ if we're trying to figure out what type of fruit we have, or $\{\text{heart attack}, \text{no heart attack}\}$ if we're working in an emergency room and trying to give the best medical care to a new patient. We focus on an essential simple case, *binary classification*, where we aim to find a mapping from $\mathbb{R}^d$ to two outputs. While we should think of the outputs as not having an order, it's often convenient to encode them as $\{+1, 0\}$. As before, let the letter $h$ (for hypothesis) represent a classifier, so the classification process looks like: $$x \rightarrow \boxed{h} \rightarrow y \;\;.$$ 
 
 Like regression, classification is a *supervised learning* problem, in which we are given a training data set of the form 
 
@@ -58,8 +58,8 @@ A linear classifier in $d$ dimensions is defined by a vector of parameters $\the
 
 Given particular values for $\theta$ and $\theta_0$, the classifier is defined by 
 $$\begin{aligned}
-  h(x; \theta, \theta_0) = \text{sign}(\theta^T x + \theta_0)
-  = \begin{cases} +1 & \text{if $\theta^Tx + \theta_0 > 0$} \\ -1 &
+  h(x; \theta, \theta_0) = \text{step}(\theta^T x + \theta_0)
+  = \begin{cases} +1 & \text{if $\theta^Tx + \theta_0 > 0$} \\ 0 &
               \text{otherwise}\end{cases} \;\;.
 \end{aligned}
 $$ 
@@ -118,11 +118,11 @@ Let $h$ be the linear classifier defined by $\theta = \begin{bmatrix} -1 \\ 1.5 
 
 The diagram below shows several points classified by $h$. In particular, let $x^{(1)} = \begin{bmatrix} 3 \\ 2 \end{bmatrix}$ and $x^{(2)} = \begin{bmatrix} 4 \\ -1 \end{bmatrix}$. 
 $$\begin{aligned}
-    h(x^{(1)}; \theta, \theta_0) & = \text{sign}\left(\begin{bmatrix} -1 & 1.5 \end{bmatrix}\begin{bmatrix} 3 \\ 2 \end{bmatrix} + 3\right) = \text{sign}(3) = +1     \\
-    h(x^{(2)}; \theta, \theta_0) & = \text{sign}\left(\begin{bmatrix} -1 & 1.5 \end{bmatrix}\begin{bmatrix} 4 \\ -1 \end{bmatrix} + 3\right) = \text{sign}(-2.5) = -1
+    h(x^{(1)}; \theta, \theta_0) & = \text{step}\left(\begin{bmatrix} -1 & 1.5 \end{bmatrix}\begin{bmatrix} 3 \\ 2 \end{bmatrix} + 3\right) = \text{step}(3) = +1     \\
+    h(x^{(2)}; \theta, \theta_0) & = \text{step}\left(\begin{bmatrix} -1 & 1.5 \end{bmatrix}\begin{bmatrix} 4 \\ -1 \end{bmatrix} + 3\right) = \text{step}(-2.5) = 0
 \end{aligned}$$ 
 
-Thus, $x^{(1)}$ and $x^{(2)}$ are given positive and negative classifications, respectively.
+Thus, $x^{(1)}$ and $x^{(2)}$ are given positive (label +1) and negative (label 0) classifications, respectively.
 
 ![](figures/classification_ex2.png){width="70%" fig-align="center"}
 :::
@@ -143,7 +143,7 @@ What change would you have to make to $\theta, \theta_0$ if you wanted to have t
 
 Given a data set and the hypothesis class of linear classifiers, our goal will be to find the linear classifier that optimizes an objective function relating its predictions to the training data. To make this problem computationally reasonable, we will need to take care in how we formulate the optimization problem to achieve this goal.
 
-For classification, it is natural to make predictions in $\{+1, -1\}$ and use the 0-1 loss function, $\mathcal{L}_{01}$, as introduced in @sec-intro: 
+For classification, it is natural to make predictions in $\{+1, 0\}$ and use the 0-1 loss function, $\mathcal{L}_{01}$, as introduced in @sec-intro: 
 
 $$\mathcal{L}_{01}(g, a) = \begin{cases}
     0 & \text{if $g = a$} \\
@@ -153,7 +153,7 @@ $$
 
 However, even for simple linear classifiers, it is very difficult to find values for $\theta, \theta_0$ that minimize simple 0-1 training error 
 $$
-J(\theta, \theta_0) = \frac{1}{n} \sum_{i=1}^n \mathcal{L}_{01}(\text{sign}(\theta^Tx^{(i)} + \theta_0),
+J(\theta, \theta_0) = \frac{1}{n} \sum_{i=1}^n \mathcal{L}_{01}(\text{step}(\theta^Tx^{(i)} + \theta_0),
   y^{(i)})\;\;.
 $$ 
 
@@ -173,7 +173,7 @@ For these reasons, if we are considering a hypothesis $\theta,\theta_0$ that mak
 
 ### Linear logistic classifiers: definition
 
-The hypotheses in a linear logistic classifier (LLC) are parameterized by a $d$-dimensional vector $\theta$ and a scalar $\theta_0$, just as is the case for linear classifiers. However, instead of making predictions in $\{+1, -1\}$, LLC hypotheses generate real-valued outputs in the interval $(0, 1)$. An LLC has the form 
+The hypotheses in a linear logistic classifier (LLC) are parameterized by a $d$-dimensional vector $\theta$ and a scalar $\theta_0$, just as is the case for linear classifiers. However, instead of making predictions in $\{+1, 0\}$, LLC hypotheses generate real-valued outputs in the interval $(0, 1)$. An LLC has the form 
 $$
 h(x; \theta, \theta_0) = \sigma(\theta^T x + \theta_0)\;\;.
 $$ 
@@ -244,9 +244,9 @@ Which plot is which?  What governs the steepness of the curve?  What governs the
 :::
 
 But wait! Remember that the definition of a classifier is that it's a mapping from 
-$\mathbb{R}^d  \rightarrow \{-1, +1\}$ or to some other discrete set. So, then, it seems like an LLC is actually not a classifier!
+$\mathbb{R}^d  \rightarrow \{+1, 0\}$ or to some other discrete set. So, then, it seems like an LLC is actually not a classifier!
 
-Given an LLC, with an output value in $(0, 1)$, what should we do if we are forced to make a prediction in $\{+1, -1\}$? A default answer is to predict $+1$ if $\sigma(\theta^T x + \theta_0) > 0.5$ and $-1$ otherwise. The value $0.5$ is sometimes called a *prediction threshold*.
+Given an LLC, with an output value in $(0, 1)$, what should we do if we are forced to make a prediction in $\{+1, 0\}$? A default answer is to predict $+1$ if $\sigma(\theta^T x + \theta_0) > 0.5$ and $0$ otherwise. The value $0.5$ is sometimes called a *prediction threshold*.
 
 In fact, for different problem settings, we might prefer to pick a different prediction threshold. The field of *decision theory* considers how to make this choice. For example, if the consequences of predicting $+1$ when the answer should be $-1$ are much worse than the consequences of predicting $-1$ when the answer should be $+1$, then we might set the prediction threshold to be greater than $0.5$.
 
@@ -273,7 +273,7 @@ When $d = 2$, then our inputs $x$ lie in a two-dimensional space with axes $x_1$
 
 Optimization is a key approach to solving machine learning problems; this also applies to learning linear logistic classifiers (LLCs) by defining an appropriate loss function for optimization. A first attempt might be to use the simple 0-1 loss function $\mathcal{L}_{01}$ that gives a value of 0 for a correct prediction, and a 1 for an incorrect prediction. As noted earlier, however, this gives rise to an objective function that is very difficult to optimize, and so we pursue another strategy for defining our objective.
 
-For learning LLCs, we'd have a class of hypotheses whose outputs are in $(0, 1)$, but for which we have training data with $y$ values in $\{+1, -1\}$. How can we define an appropriate loss function? We start by changing our interpretation of the output to be *the probability that the input should map to output value 1* (we might also say that this is the probability that the input is in class 1 or that the input is 'positive.')
+For learning LLCs, we'd have a class of hypotheses whose outputs are in $(0, 1)$, but for which we have training data with $y$ values in $\{+1, 0\}$. How can we define an appropriate loss function? We start by changing our interpretation of the output to be *the probability that the input should map to output value 1* (we might also say that this is the probability that the input is in class 1 or that the input is 'positive.')
 
 :::{.study-question-callout}
 If $h(x)$ is the probability that $x$ belongs to class $+1$,
