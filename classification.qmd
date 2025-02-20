@@ -260,13 +260,13 @@ When $d = 2$, then our inputs $x$ lie in a two-dimensional space with axes $x_1$
 
 
 :::{.study-question-callout}
-{Convince yourself that the set of points for which
+Convince yourself that the set of points for which
   $\sigma(\theta^T x + \theta_0) = 0.5$, that is, the ``boundary''
   between positive and negative predictions with prediction threshold
   $0.5$, is a line in $(x_1, x_2)$ space. What particular line is it
   for the case in the figure above?
   How would the plot change for $\theta = (1, 1)$, but now
-  with $\theta_0 = -2$? For $\theta = (-1, -1), \theta_0 = 2$?}
+  with $\theta_0 = -2$? For $\theta = (-1, -1), \theta_0 = 2$?
 :::
 
 ### Learning linear logistic classifiers {#sec-classification-logistic}
