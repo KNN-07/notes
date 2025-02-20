@@ -501,7 +501,7 @@ Let's check dimensions!  $\theta^T$ is $K \times d$ and $x$ is
 
 Next, we have to extend our use of the sigmoid function to the multi-dimensional *softmax* function, that takes a whole vector $z \in \mathbb{R}^K$ and generates 
 $$
-g = \textit{softmax}(z) =
+g = \operatorname{softmax}(z) =
     \begin{bmatrix}
       \exp(z_1) / \sum_{i} \exp(z_i) \\
       \vdots                         \\
@@ -514,7 +514,7 @@ which can be interpreted as a probability distribution over $K$ items. To make t
 Convince yourself that the vector of $g$ values will be non-negative and sum to 1.
 :::
 
-Putting these steps together, our hypotheses will be $$h(x; \theta, \theta_0) = \textit{softmax}(\theta^T x + \theta_0)\;\;.$$
+Putting these steps together, our hypotheses will be $$h(x; \theta, \theta_0) = \operatorname{softmax}(\theta^T x + \theta_0)\;\;.$$
 
 Now, we retain the goal of maximizing the probability that our hypothesis assigns to the correct output $y_k$ for each input $x$. We can write this probability, letting $g$ stand for our "guess", $h(x)$, for a single example $(x, y)$ as $\prod_{k = 1}^K g_k^{y_k}$.
 
