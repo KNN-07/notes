@@ -440,7 +440,10 @@ Logistic regression, implemented using batch or stochastic gradient descent, is 
 
 ### Convexity of the NLL Loss Function
 
-Much like the squared-error loss function that we saw for linear regression, the NLL loss function for linear logistic regression is a convex function. This means that running gradient descent with a reasonable set of hyperparameters will behave nicely.
+Much like the squared-error loss function that we saw for linear regression, the NLL loss function for linear logistic regression is a convex function (below is a proof if you're interested). This means that running gradient descent with a reasonable set of hyperparameters will behave nicely.
+
+:::{.callout-note collapse="true"}
+## Proof of convexity of the NLL loss function
 
 We will use the following facts to demonstrate that the NLL loss function is a convex function:
 
@@ -472,6 +475,7 @@ $$
                         & = \sigma(z),
 \end{aligned}
 $$ the derivative of the function $f_2(z)$ is also monotonically increasing and therefore $f_2$ is a convex function.
+:::
 
 ## Handling multiple classes
 
