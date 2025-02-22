@@ -120,7 +120,7 @@ Now that we are convinced we need a non-linear activation, let's examine a few c
 
 The original idea for neural networks involved using the **step** function as an activation, but because the derivative of the step function is zero everywhere except at the discontinuity (and there it is undefined), gradient-descent methods won't be useful in finding a good setting of the weights, and so we won't consider them further. They have been replaced, in a sense, by the sigmoid, ReLU, and tanh activation functions.
 
-ReLUs are especially common in internal ("hidden") layers, sigmoid activations are common for the output for binary classification, and softmax activations are common for the output for multi-class classification (see Section [\[logistic\]](#logistic){reference-type="ref" reference="logistic"} for an explanation).
+ReLUs are especially common in internal ("hidden") layers, sigmoid activations are common for the output for binary classification, and softmax activations are common for the output for multi-class classification (see @sec-classification-logistic for an explanation).
 
 ## Loss functions and activation functions
 
@@ -134,11 +134,11 @@ Different loss functions make different assumptions about the range of values th
 |  nllm   | softmax | multi-class classification |
 :::
 
-We explored squared loss in Chapter [\[chap-regression\]](#sec-regression){reference-type="ref" reference="chap-regression"} and (nll and nllm) in Chapter [\[chap-classification\]](#sec-classification){reference-type="ref" reference="chap-classification"}.
+We explored squared loss in @sec-regression and (nll and nllm) in @sec-classification.
 
 ## Error back-propagation
 
-We will train neural networks using gradient descent methods. It's possible to use *batch* gradient descent, in which we sum up the gradient over all the points (as in Section [\[sec-gd\]](#sec-gd){reference-type="ref" reference="sec-gd"} of chapter [\[chap-gradient\]](#sec-gradient){reference-type="ref" reference="chap-gradient"}) or stochastic gradient descent (sgd), in which we take a small step with respect to the gradient considering a single point at a time (as in Section [\[sec-sgd\]](#sec-sgd){reference-type="ref" reference="sec-sgd"} of Chapter [\[chap-gradient\]](#sec-gradient){reference-type="ref" reference="chap-gradient"}).
+We will train neural networks using gradient descent methods. It's possible to use *batch* gradient descent, in which we sum up the gradient over all the points (as in @sec-gd of @sec-gradient or stochastic gradient descent (sgd), in which we take a small step with respect to the gradient considering a single point at a time (as in @sec-sgd of @sec-gradient.
 
 Our notation is going to get pretty hairy pretty quickly. To keep it as simple as we can, we'll focus on computing the contribution of one data point $x^{(i)}$ to the gradient of the loss with respect to the weights, for sgd; you can simply sum up these gradients over all the data points if you wish to do batch descent.
 
@@ -151,15 +151,17 @@ Remember that we are always computing the gradient of the loss function *with re
 
 To get some intuition for how these derivations work, we'll first suppose everything in our neural network is one-dimensional. In particular, we'll assume there are $m^l = 1$ inputs and $n^l = 1$ outputs at every layer. So layer $l$ looks like: $$a^l = f^l(z^l), \quad z^l = w^l a^{l-1} + w^l_0.$$ In the equation above, we're using the lowercase letters $a^l, z^l, w^l, a^{l-1}, w^l_0$ to emphasize that all of these quantities are scalars just for the moment. We'll look at the more general matrix case below.
 
-To use sgd, then, we want to compute $\partial \mathcal{L}(\text{NN}(x;W),y) / \partial w^l$ and $\partial \mathcal{L}(\text{NN}(x;W),y) / \partial w_0^l$ for each layer $l$ and each data point $(x,y)$. Below we'll write "loss" as an abbreviation for $\mathcal{L}(\text{NN}(x;W),y)$. Then our first quantity of interest is $\partial \text{loss} / \partial w^l$. The chain rule gives us the following. First, let's look at the case $l=L$: $$\begin{aligned}
+To use sgd, then, we want to compute $\partial \mathcal{L}(\text{NN}(x;W),y) / \partial w^l$ and $\partial \mathcal{L}(\text{NN}(x;W),y) / \partial w_0^l$ for each layer $l$ and each data point $(x,y)$. Below we'll write "loss" as an abbreviation for $\mathcal{L}(\text{NN}(x;W),y)$. Then our first quantity of interest is $\partial \text{loss} / \partial w^l$. The chain rule gives us the following. First, let's look at the case $l=L$: 
+
+$$\begin{aligned}
   \frac{ \partial \text{loss} }{ \partial w^L }
-  &=& \frac{ \partial \text{loss} }{ \partial a^L }
+  &= \frac{ \partial \text{loss} }{ \partial a^L }
   \cdot \frac{ \partial a^L }{ \partial z^L }
   \cdot \frac{ \partial z^L }{ \partial w^L } \\
-  &=& \frac{ \partial \text{loss} }{ \partial a^L } \cdot (f^L)'(z^L) \cdot a^{L-1}.
+  &= \frac{ \partial \text{loss} }{ \partial a^L } \cdot (f^L)'(z^L) \cdot a^{L-1}.
 \end{aligned}$$ Now we can look at the case of general $l$: $$\begin{aligned}
   \frac{ \partial \text{loss} }{ \partial w^l }
-  &=& \frac{ \partial \text{loss} }{ \partial a^L }
+  &= \frac{ \partial \text{loss} }{ \partial a^L }
   \cdot \frac{ \partial a^L }{ \partial z^L }
   \cdot \frac{ \partial z^L }{ \partial a^{L-1} }
   \cdot \frac{ \partial a^{L-1} }{ \partial z^{L-1} }
@@ -167,13 +169,13 @@ To use sgd, then, we want to compute $\partial \mathcal{L}(\text{NN}(x;W),y) / \
   \frac{ \partial z^{l+1} }{ \partial a^{l} }
   \cdot \frac{ \partial a^{l} }{ \partial z^l }
   \cdot \frac{ \partial z^l }{ \partial w^l } \\
-  &=& \frac{ \partial \text{loss} }{ \partial a^L } \cdot (f^L)'(z^L) \cdot w^L
+  &= \frac{ \partial \text{loss} }{ \partial a^L } \cdot (f^L)'(z^L) \cdot w^L
   \cdot (f^{L-1})'(z^{L-1})
   \cdots
   \cdot w^{l+1}
   \cdot (f^{l})'(z^{l})
   \cdot a^{l-1} \\
-  &=& \frac{ \partial \text{loss} }{ \partial z^l } \cdot a^{l-1}.
+  &= \frac{ \partial \text{loss} }{ \partial z^l } \cdot a^{l-1}.
 \end{aligned}$$
 
 Note that every multiplication above is scalar multiplication because every term in every product above is a scalar. And though we solved for all the other terms in the product, we haven't solved for $\partial \text{loss} / \partial a^L$ because the derivative will depend on which loss function you choose. Once you choose a loss function though, you should be able to compute this derivative.
@@ -182,16 +184,16 @@ It's pretty typical to run the chain rule from left to right like we did above. 
 
 $$\begin{aligned}
   \frac{ \partial \text{loss} }{ \partial w^l }
-  &=& a^{l-1} \cdot \frac{ \partial \text{loss} }{ \partial z^l } \\
+  &= a^{l-1} \cdot \frac{ \partial \text{loss} }{ \partial z^l } \\
   \frac{ \partial \text{loss} }{ \partial z^l }
-  &=& \frac{ \partial a^{l} }{ \partial z^l }
+  &= \frac{ \partial a^{l} }{ \partial z^l }
   \cdot \frac{ \partial z^{l+1} }{ \partial a^{l} }
   \cdots
   \frac{ \partial a^{L-1} }{ \partial z^{L-1} }
   \cdot \frac{ \partial z^L }{ \partial a^{L-1} }
   \cdot \frac{ \partial a^L }{ \partial z^L }
   \cdot \frac{ \partial \text{loss} }{ \partial a^L } \\
-  &=& \frac{ \partial a^{l} }{ \partial z^l } \cdot w^{l+1}
+  &= \frac{ \partial a^{l} }{ \partial z^l } \cdot w^{l+1}
   \cdots
   \frac{ \partial a^{L-1} }{ \partial z^{L-1} } \cdot w^L \cdot \frac{ \partial a^L }{ \partial z^L }
   \cdot \frac{ \partial \text{loss} }{ \partial a^L }.
@@ -205,12 +207,12 @@ OK, let's start with the results! Again, below we'll be using "loss" as an abbre
 
 $$\begin{aligned}
   \underbrace{\frac{\partial \text{loss}}{\partial W^l}}_{m^l \times n^l}
-  &=&
+  &=
   \underbrace{A^{l-1}}_{m^l \times 1} \;
   \underbrace{\left(\frac{\partial \text{loss}}{\partial
       Z^l}\right)^T}_{1 \times n^l} \\
   \frac{\partial \text{loss}}{\partial Z^l}
-  &=& \frac{\partial A^l}{\partial Z^l}
+  &= \frac{\partial A^l}{\partial Z^l}
   \cdot \frac{\partial Z^{l+1}}{ \partial A^l}
   \cdots
   \cdot \frac{\partial A^{L-1}}{\partial Z^{L-1}}
@@ -218,7 +220,7 @@ $$\begin{aligned}
   \cdot \frac{\partial A^{L}}{\partial Z^{L}}
   \cdot \frac{\partial \text{loss}}{\partial A^L}
   \\
-  &=& \frac{\partial A^l}{\partial Z^l}
+  &= \frac{\partial A^l}{\partial Z^l}
   \cdot W^{l+1}
   \cdots
   \cdot \frac{\partial A^{L-1}}{\partial Z^{L-1}}
