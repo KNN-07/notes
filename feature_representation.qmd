@@ -184,6 +184,7 @@ Let's try it for $k = 2$ on our xor problem. The feature transformation is
 $$
 \phi([x_1, x_2]^T) = [1, x_1, x_2, x_1^2, x_1 x_2, x_2^2]^T\;\;.
 $$ 
+
 :::{.study-question-callout}
 If we train a classifier after performing this feature
   transformation, would we lose any expressive
