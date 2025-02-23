@@ -64,7 +64,12 @@ $$\begin{aligned}
 \end{aligned}
 $$ 
 
-Remember that we can think of $\theta, \theta_0$ as specifying a $d$-dimensional hyperplane (compare the above with @eq-linear_reg_hypothesis). But this time, rather than being interested in that hyperplane's values at particular points $x$, we will focus on the *separator* that it induces. The separator is the set of $x$ values such that $\theta^T x + \theta_0 = 0$. This is also a hyperplane, but in $d-1$ dimensions! We can interpret $\theta$ as a vector that is perpendicular to the separator. (We will also say that $\theta$ is *normal to* the separator.)
+Remember that we can think of $\theta, \theta_0$ as specifying a $d$-dimensional hyperplane (compare the above with @eq-linear_reg_hypothesis). But this time, rather than being interested in that hyperplane's values at particular points $x$, we will focus on the *separator* that it induces. The separator is the set of $x$ values such that $\theta^T x + \theta_0 = 0$. This is also a hyperplane, but in $d-1$ dimensions! We can interpret $\theta$ as a vector that is perpendicular to the separator. (We will also say that $\theta$ is *normal to* the separator.) 
+
+::: {.callout-tip title="Demo: Linear classifier separator"}
+<p><a href="https://shenshen.mit.edu/demos/separator.html" target="_blank">Open demo in full screen</a></p>
+<iframe src="https://shenshen.mit.edu/demos/separator.html" width="100%" height="600px" frameborder="2"></iframe>
+:::
 
 For example, in two dimensions ($d=2$) the separator has dimension 1, which means it is a line, and the two components of $\theta = [\theta_1, \theta_2]^T$ give the orientation of the separator, as illustrated in the following example.
 
@@ -339,10 +344,10 @@ J_\text{lr}(\theta, \theta_0; {\cal D}) =
 $${#eq-lr_with_reg}
 
 :::{.study-question-callout}
-{Consider the case of linearly separable data.   What will
+Consider the case of linearly separable data.   What will
   the $\theta$ values that optimize this objective be like if
   $\lambda = 0$?   What will they be like if $\lambda$ is very big?
-  Try to work out an example in one dimension with two data points.}
+  Try to work out an example in one dimension with two data points.
 :::
 
 **What role does regularization play for classifiers?** This objective function has the same structure as the one we used for regression, @eq-ml_objective_loss, where the first term (in parentheses) is the average loss, and the second term is for regularization. Regularization is needed for building classifiers that can generalize well (just as was the case for regression). The parameter $\lambda$ governs the trade-off between the two terms as illustrated in the following example.
