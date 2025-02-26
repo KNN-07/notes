@@ -66,8 +66,9 @@ $$
 
 Remember that we can think of $\theta, \theta_0$ as specifying a $d$-dimensional hyperplane (compare the above with @eq-linear_reg_hypothesis). But this time, rather than being interested in that hyperplane's values at particular points $x$, we will focus on the *separator* that it induces. The separator is the set of $x$ values such that $\theta^T x + \theta_0 = 0$. This is also a hyperplane, but in $d-1$ dimensions! We can interpret $\theta$ as a vector that is perpendicular to the separator. (We will also say that $\theta$ is *normal to* the separator.) 
 
+Below is an embedded demo illustrating the separator and normal vector. Open demo in [full screen](https://shenshen.mit.edu/demos/separator.html).
+
 ::: {.callout-tip title="Demo: Linear classifier separator"}
-<p><a href="https://shenshen.mit.edu/demos/separator.html" target="_blank">Open demo in full screen</a></p>
 <iframe src="https://shenshen.mit.edu/demos/separator.html" width="100%" height="600px" frameborder="2"></iframe>
 :::
 
