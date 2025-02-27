@@ -8,9 +8,23 @@ As we phase out the PDF, this page may receive updates not reflected in the stat
 
 You've probably been hearing a lot about "neural networks." Now that we have several useful machine-learning concepts (hypothesis classes, classification, regression, gradient descent, regularization, etc.) we are well equipped to understand neural networks in detail.
 
-This is, in some sense, the "third wave" of neural nets. The basic idea is founded on the 1943 model of neurons of McCulloch and Pitts and the learning ideas of Hebb. There was a great deal of excitement, but not a lot of practical success: there were good training methods (e.g., perceptron) for linear functions, and interesting examples of non-linear functions, but no good way to train non-linear functions from data. Interest died out for a while, but was re-kindled in the 1980s when several people came up with a way to train neural networks with "back-propagation," which is a particular style of implementing gradient descent, that we will study here. By the mid-90s, the enthusiasm waned again, because although we could train non-linear networks, the training tended to be slow and was plagued by a problem of getting stuck in local optima. Support vector machines (svms) that use regularization of high-dimensional hypotheses by seeking to maximize the margin, and kernel methods that are an efficient and beautiful way of using feature transformations to non-linearly transform data into a higher-dimensional space, provided reliable learning methods with guaranteed convergence and no local optima.
+This is, in some sense, the "third wave" of neural nets. The basic idea is founded on the 1943 model of neurons of McCulloch and Pitts and the learning ideas of Hebb. There was a great deal of excitement, but not a lot of practical success: there were good training methods (e.g., perceptron) for linear functions, and interesting examples of non-linear functions, but no good way to train non-linear functions from data. Interest died out for a while, but was re-kindled in the 1980s when several people came up with a way to train neural networks with "back-propagation," which is a particular style of implementing gradient descent, that we will study here. 
+
+:::{.column-margins}
+As with many good ideas in science,
+  the basic idea for how to train non-linear neural networks with
+  gradient descent was independently developed by more than one
+  researcher.
+:::
+
+
+By the mid-90s, the enthusiasm waned again, because although we could train non-linear networks, the training tended to be slow and was plagued by a problem of getting stuck in local optima. Support vector machines (svms) that use regularization of high-dimensional hypotheses by seeking to maximize the margin, and kernel methods that are an efficient and beautiful way of using feature transformations to non-linearly transform data into a higher-dimensional space, provided reliable learning methods with guaranteed convergence and no local optima.
 
 However, during the svm enthusiasm, several groups kept working on neural networks, and their work, in combination with an increase in available data and computation, has made them rise again. They have become much more reliable and capable, and are now the method of choice in many applications. There are many, many variations of neural networks, which we can't even begin to survey. We will study the core "feed-forward" networks with "back-propagation" training, and then, in later chapters, address some of the major advances beyond this core.
+
+:::{.column-margin}
+The number increases daily, as may be seen on `arxiv.org`.
+:::
 
 We can view neural networks from several different perspectives:
 
@@ -22,6 +36,10 @@ We can view neural networks from several different perspectives:
 
 
 We will mostly take view 1, with the understanding that the techniques we develop will enable the applications in view 3. View 2 was a major motivation for the early development of neural networks, but the techniques we will study do not seem to actually account for the biological learning processes in brains.
+
+:::{.column-margin}
+Some prominent researchers are, in fact, working hard to find analogues of these methods in the brain.
+:::
 
 ## Basic element
 
@@ -57,8 +75,21 @@ The basic element of a neural network is a "neuron," pictured schematically belo
   \end{tikzpicture}
 :::
 
-It is a non-linear function of an input vector $x \in \mathbb{R}^m$ to a single output value $a \in \mathbb{R}$. It is parameterized by a vector of *weights* $(w_1, \ldots, w_m) \in
-  \mathbb{R}^m$ and an *offset* or *threshold* $w_0 \in \mathbb{R}$. In order for the neuron to be non-linear, we also specify an *activation function* $f : \mathbb{R}\rightarrow \mathbb{R}$, which can be the identity ($f(x) = x$, in that case the neuron is a linear function of $x$), but can also be any other function, though we will only be able to work with it if it is differentiable.
+It is a non-linear function of an input vector $x \in \mathbb{R}^m$ to a single output value $a \in \mathbb{R}$. 
+
+:::{.column-margin}
+Sorry for changing our notation here.  We were using $d$ as the dimension of the input, but we are trying to be consistent here with many other accounts of neural  networks.  It is impossible to be consistent with all of them though---there are many different ways of telling this story.
+:::
+
+
+It is parameterized by a vector of *weights* 
+$(w_1, \ldots, w_m) \in \mathbb{R}^m$ and an *offset* or *threshold* $w_0 \in \mathbb{R}$. 
+
+:::{.column-margin}
+This should remind you of our $\theta$ and $\theta_0$ for linear models.
+:::
+
+In order for the neuron to be non-linear, we also specify an *activation function* $f : \mathbb{R}\rightarrow \mathbb{R}$, which can be the identity ($f(x) = x$, in that case the neuron is a linear function of $x$), but can also be any other function, though we will only be able to work with it if it is differentiable.
 
 The function represented by the neuron is expressed as: $$a = f(z) = f\left(\left(\sum_{j=1}^m x_jw_j\right) + w_0\right) = f(w^Tx + w_0)\;\;.$$
 
@@ -153,7 +184,14 @@ and the output vector is $$A = f(Z) = f(W^TX + W_0)\;\;.$$ The activation functi
 
 A single neural network generally combines multiple layers, most typically by feeding the outputs of one layer into the inputs of another layer.
 
-We have to start by establishing some nomenclature. We will use $l$ to name a layer, and let $m^l$ be the number of inputs to the layer and $n^l$ be the number of outputs from the layer. Then, $W^l$ and $W^l_0$ are of shape $m^l \times n^l$ and $n^l \times 1$, respectively. Note that the input to layer $l$ is the output from layer $l-1$, so we have $m^l= n^{l-1}$, and as a result $A^{l-1}$ is of shape $m^l \times 1$, or equivalently $n^{l-1} \times 1$. Let $f^l$ be the activation function of layer $l$. Then, the pre-activation outputs are the $n^l \times 1$ vector $$Z^l = {W^l}^TA^{l-1} + W^l_0$$ and the activation outputs are simply the $n^l \times 1$ vector $$A^l = f^l(Z^l)\;\;.$$
+We have to start by establishing some nomenclature. We will use $l$ to name a layer, and let $m^l$ be the number of inputs to the layer and $n^l$ be the number of outputs from the layer. Then, $W^l$ and $W^l_0$ are of shape $m^l \times n^l$ and $n^l \times 1$, respectively. Note that the input to layer $l$ is the output from layer $l-1$, so we have $m^l= n^{l-1}$, and as a result $A^{l-1}$ is of shape $m^l \times 1$, or equivalently $n^{l-1} \times 1$. Let $f^l$ be the activation function of layer $l$. Then, the pre-activation outputs are the $n^l \times 1$ vector $$Z^l = {W^l}^TA^{l-1} + W^l_0$$ and the activation outputs are simply the $n^l \times 1$ vector 
+$$
+A^l = f^l(Z^l)\;\;.
+$$
+
+:::{.column-margin}
+It is technically possible to have different activation functions within the same layer, but, again, for convenience in specification and implementation, we generally have the same activation function within a layer.
+:::
 
 Here's a diagram of a many-layered network, with two blocks for each layer, one representing the linear part of the operation and one representing the non-linear activation function. We will use this structural decomposition to organize our algorithmic thinking and implementation.
 
@@ -202,8 +240,16 @@ Here's a diagram of a many-layered network, with two blocks for each layer, one 
 
 There are many possible choices for the activation function. We will start by thinking about whether it's really necessary to have an $f$ at all.
 
-What happens if we let $f$ be the identity? Then, in a network with $L$ layers (we'll leave out $W_0$ for simplicity, but keeping it wouldn't change the form of this argument), $$A^L = {W^L}^T A^{L-1} =
-    {W^L}^T {W^{L-1}}^T \cdots {W^1}^T X\;\;.$$ So, multiplying out the weight matrices, we find that $$A^L = W^\text{total}X\;\;,$$ which is a *linear* function of $X$! Having all those layers did not change the representational capacity of the network: the non-linearity of the activation function is crucial.
+What happens if we let $f$ be the identity? Then, in a network with $L$ layers (we'll leave out $W_0$ for simplicity, but keeping it wouldn't change the form of this argument), 
+$$
+A^L = {W^L}^T A^{L-1} = {W^L}^T {W^{L-1}}^T \cdots {W^1}^T X\;\;.
+$$ 
+
+So, multiplying out the weight matrices, we find that $$A^L = W^\text{total}X\;\;,$$ which is a *linear* function of $X$! Having all those layers did not change the representational capacity of the network: the non-linearity of the activation function is crucial.
+
+:::{.study-question-callout}
+Convince yourself that any function representable by any number of linear layers (where $f$ is the identity function) can be represented by a single layer.
+:::
 
 Now that we are convinced we need a non-linear activation, let's examine a few common choices. These are shown mathematically below, followed by plots of these functions.
 
