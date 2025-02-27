@@ -270,12 +270,70 @@ Now that we are convinced we need a non-linear activation, let's examine a few c
 
 **Hyperbolic tangent:** Always in the range $(-1, 1)$: $$\tanh(z) = \frac{e^z - e^{-z}}{e^z + e^{-z}}$$
 
-**Softmax function:** Takes a whole vector $Z \in \mathbb{R}^n$ and generates as output a vector $A \in (0, 1)^n$ with the property that $\sum_{i = 1}^n A_i = 1$, which means we can interpret it as a probability distribution over $n$ items: $$\text{softmax}(z) =
+**Softmax function:** Takes a whole vector $Z \in \mathbb{R}^n$ and generates as output a vector $A \in (0, 1)^n$ with the property that $\sum_{i = 1}^n A_i = 1$, which means we can interpret it as a probability distribution over $n$ items: 
+
+$$
+\text{softmax}(z) =
           \begin{bmatrix}
             \exp(z_1) / \sum_{i} \exp(z_i) \\
             \vdots                         \\
             \exp(z_n) / \sum_{i} \exp(z_i)
-          \end{bmatrix}$$
+\end{bmatrix}
+$$
+
+:::{.imagify}
+\begin{tikzpicture}%[scale=.9]
+      \begin{axis}[
+          name=topleft,
+          axis lines=middle, axis equal image,
+          xmin=-2, xmax=2,
+          ymin=-.5, ymax=1.5,
+          xlabel={$z$}, ylabel={$\text{step}(z)$},
+        ]
+        \addplot [domain=-2:0, samples=2, ultra thick] {0};
+        \addplot [domain=0:2, samples=2, ultra thick] {1};
+      \end{axis}
+
+      \begin{axis}[
+          name=topright,
+          axis lines=middle, axis equal image,
+          xmin=-2, xmax=2,
+          ymin=-.5, ymax=1.5,
+          xlabel={$z$}, ylabel={$\text{ReLU}(z)$},
+          at = (topleft.east), anchor=west, xshift=.7cm
+        ]
+        \addplot [domain=-2:0, samples=2, ultra thick] {0};
+        \addplot [domain=0:2, samples=2, ultra thick] {x};
+      \end{axis}
+
+      \begin{axis}[
+          name=bottomleft,
+          axis lines=middle, %axis equal image,
+          xmin=-4, xmax=4,
+          ymin=-1.25, ymax=1.25,
+          xlabel={$z$}, ylabel={$\sigma(z)$},
+          at = (topleft.south), anchor=north, yshift=-.7cm
+        ]
+        \addplot [domain=-4:4, samples=100, ultra thick] {1/(1+exp(-x))};
+        \addplot [domain=-4:4, samples=2, dashed] {1};
+        \addplot [domain=-4:4, samples=2, dashed] {0};
+      \end{axis}
+
+      \begin{axis}[
+          name=bottomright,
+          axis lines=middle, %axis equal image,
+          xmin=-4, xmax=4,
+          ymin=-1.25, ymax=1.25,
+          xlabel={$z$}, ylabel={$\tanh(z)$},
+          at = (bottomleft.east), anchor=west, xshift=.7cm
+        ]
+        \addplot [domain=-4:4, samples=100, ultra thick]
+        {(exp(x) - exp(-x))/(exp(x) + exp(-x))};
+        \addplot [domain=-4:4, samples=2, dashed] {1};
+        \addplot [domain=-4:4, samples=2, dashed] {-1};
+      \end{axis}
+    \end{tikzpicture}
+:::
 
 
 The original idea for neural networks involved using the **step** function as an activation, but because the derivative of the step function is zero everywhere except at the discontinuity (and there it is undefined), gradient-descent methods won't be useful in finding a good setting of the weights, and so we won't consider them further. They have been replaced, in a sense, by the sigmoid, ReLU, and tanh activation functions.
