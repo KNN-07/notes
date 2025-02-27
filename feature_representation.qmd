@@ -290,7 +290,7 @@ The problem of taking a text (such as a tweet or a product review, or even this 
 
 There are some simple encodings that work well for basic applications. One of them is the *bag of words* (bow) model, which can be used to encode documents. The idea is to let $d$ be the number of words in our vocabulary (either computed from the training set or some other body of text or dictionary). We will then make a binary vector (with values $1.0$ and $0.0$) of length $d$, where element $j$ has value $1.0$ if word $j$ occurs in the document, and $0.0$ otherwise.
 
-### Numeric values {#realFeatures}
+### Numeric values {#sec-realFeatures}
 
 If some feature is already encoded as a numeric value (heart rate, stock price, distance, etc.) then we should generally keep it as a numeric value. An exception might be a situation in which we know there are natural "breakpoints" in the semantics: for example, encoding someone's age in the US, we might make an explicit distinction between under and over 18 (or 21), depending on what kind of thing we are trying to predict. It might make sense to divide into discrete bins (possibly spacing them closer together for the very young) and to use a one-hot encoding for some sorts of medical situations in which we don't expect a linear (or even monotonic) relationship between age and some physiological features.
 
