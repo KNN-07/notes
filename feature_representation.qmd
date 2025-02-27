@@ -46,7 +46,7 @@ Let's look at an example data set that starts in 1-D:
 :::
 :::
 
-These points are not linearly separable, but consider the transformation $\phi(x) = [x,x^2]^T$. Putting the data in $\phi$ space, we see that it is now separable. There are lots of possible separators; we have just shown one of them here.
+These points are not linearly separable, but consider the transformation $\phi(x) = [x,x^2]^T$. Plotting this transformed data (in two-dimensional space, since there are now two features), we see that it is now separable. There are lots of possible separators; we have just shown one of them here.
 
 :::{.callout-note}
 ## Example
@@ -77,7 +77,7 @@ These points are not linearly separable, but consider the transformation $\phi(x
 :::
 :::
 
-A linear separator in $\phi$ space is a nonlinear separator in the original space! Let's see how this plays out in our simple example. Consider the separator $x^2  - 1 = 0$, which labels the half-plane $x^2 -1 > 0$ as positive. What separator does it correspond to in the original 1-D space? We have to ask the question: which $x$ values have the property that $x^2 - 1 = 0$. The answer is $+1$ and $-1$, so those two points constitute our separator, back in the original space. And we can use the same reasoning to find the region of 1D space that is labeled positive by this separator.
+A linear separator in $\phi$ space is a nonlinear separator in the original space! Let's see how this plays out in our simple example. Consider the separator $x^2  - 1 = 0$ (which corresponds to $\theta = [0,1]^T$ and $\theta_0 = -1$ in our transformed space), which labels the half-plane $x^2 -1 > 0$ as positive. What separator does it correspond to in the original 1-D space? We have to ask the question: which $x$ values have the property that $x^2 - 1 = 0$. The answer is $+1$ and $-1$, so those two points constitute our separator, back in the original space. Similarly, by evaluating where $x^2 - 1 > 0$ and where $x^2 - 1 < 0$, we can find the regions of 1D space that are labeled positive and negative (respectively) by this separator.
 
 :::{.callout-note}
 ## Example
@@ -135,15 +135,15 @@ Here is a table illustrating the $k$th order polynomial basis for different valu
 |   1   |     $[1,x]^T$     |     $[1,x_1, \ldots, x_d]^T$     |
 |   2   |   $[1,x,x^2]^T$   |       $[1,x_1, \ldots, x_d,      
                                    x_1^2, x_1x_2, \ldots]^T$   |
-|   3   | $[1,x,x^2,x^3]^T$ |         $[1,x_1, \ldots,         
+|   3   | $[1,x,x^2,x^3]^T$ |         $[1,x_1, \ldots, x_d,        
                                         x_1^2, x_1x_2, \ldots, 
-                                     x_1x_2x_3, \ldots]^T$     |
+                                     x_1^3, x_1x_2^2, x_1x_2x_3, \ldots]^T$     |
 |   ⋮   |         ⋮         |                ⋮                 |
 :::
 
 This transformation can be used in combination with linear regression or logistic regression (or any other regression or classification model). When we're using a linear regression or classification model, the key insight is that a linear regressor or separator in the *transformed space* is a non-linear regressor or separator in the original space.
 
-For example, the wavelet pictured at the start of this chapter can be fit much better than with just a hyperplane, using linear regression with polynomials up to order $k=8$:
+To give a regression example, the wavelet pictured at the start of this chapter can be fit much better using a polynomial feature representation up to order $k=8$, compared to just using a simple hyperplane in the original (single-dimensional) feature space:
 
 ![](figures/regression_features2_fitsombrero.png){width="90%" fig-align="center"}
 
@@ -178,7 +178,7 @@ D. Melanogaster is a species of fruit fly, used as a simple system in which to s
 :::
 :::
 
-Clearly, this data set is not linearly separable. So, what if we try to solve the xor classification problem using a polynomial basis as the feature transformation? We can just take our two-dimensional data and transform it into a higher-dimensional data set, by applying $\phi$. Now, we have a classification problem as usual.
+Clearly, this data set is not linearly separable. So, what if we try to solve the xor classification problem using a polynomial basis as the feature transformation? We can just take our two-dimensional data and transform it into a higher-dimensional data set, by applying some feature transformation $\phi$. Now, we have a classification problem as usual.
 
 Let's try it for $k = 2$ on our xor problem. The feature transformation is 
 $$
@@ -250,7 +250,7 @@ The parameter $\beta$ governs how quickly the feature value decays as we move aw
 Now, given a dataset ${\cal D}$ containing $n$ points, we can make a feature transformation $\phi$ that maps points in our original space, $\mathbb{R}^d$, into points in a new space, $\mathbb{R}^n$. It is defined as follows: $$\phi(x) = [f_{x^{(1)}}(x), f_{x^{(2)}}(x), \ldots,
   f_{x^{(n)}}(x)]^T\;\;.$$ So, we represent a new datapoint $x$ in terms of how far it is from each of the datapoints in our training set.
 
-This idea can be generalized in several ways and is the fundamental concept underlying *kernel methods*, that you should read about some time. This idea of describing objects in terms of their similarity to a set of reference objects is very powerful and can be applied to cases where $\mathcal{X}$ is not a simple vector space, but where the inputs are graphs or strings or other types of objects, as long as there is a distance metric defined on it.
+This idea can be generalized in several ways and is the fundamental concept underlying *kernel methods*, that are not directly covered in this class but we recommend you read about some time. This idea of describing objects in terms of their similarity to a set of reference objects is very powerful and can be applied to cases where $\mathcal{X}$ is not a simple vector space, but where the inputs are graphs or strings or other types of objects, as long as there is a distance metric defined on the input space.
 
 ## Hand-constructing features for real domains {#handBuiltFeatures}
 
@@ -258,7 +258,7 @@ In many machine-learning applications, we are given descriptions of the inputs w
 
 ### Discrete features
 
-Getting a good encoding of discrete features is particularly important. You want to create "opportunities" for the ML system to find the underlying regularities. Although there are machine-learning methods that have special mechanisms for handling discrete inputs, most of the methods we consider in this class will assume the input vectors $x$ are in $\mathbb{R}^d$. So, we have to figure out some reasonable strategies for turning discrete values into (vectors of) real numbers.
+Getting a good encoding of discrete features is particularly important. You want to create "opportunities" for the ML system to find the underlying patterns. Although there are machine-learning methods that have special mechanisms for handling discrete inputs, most of the methods we consider in this class will assume the input vectors $x$ are in $\mathbb{R}^d$. So, we have to figure out some reasonable strategies for turning discrete values into (vectors of) real numbers.
 
 We'll start by listing some encoding strategies, and then work through some examples. Let's assume we have some feature in our raw data that can take on one of $k$ discrete values.
 
@@ -288,7 +288,7 @@ How would you encode $A+$ in both of these approaches?
 
 The problem of taking a text (such as a tweet or a product review, or even this document!) and encoding it as an input for a machine-learning algorithm is interesting and complicated. Much later in the class, we'll study sequential input models, where, rather than having to encode a text as a fixed-length feature vector, we feed it into a hypothesis word by word (or even character by character!).
 
-There are some simple encodings that work well for basic applications. One of them is the *bag of words* (bow) model. The idea is to let $d$ be the number of words in our vocabulary (either computed from the training set or some other body of text or dictionary). We will then make a binary vector (with values $1.0$ and $0.0$) of length $d$, where element $j$ has value $1.0$ if word $j$ occurs in the document, and $0.0$ otherwise.
+There are some simple encodings that work well for basic applications. One of them is the *bag of words* (bow) model, which can be used to encode documents. The idea is to let $d$ be the number of words in our vocabulary (either computed from the training set or some other body of text or dictionary). We will then make a binary vector (with values $1.0$ and $0.0$) of length $d$, where element $j$ has value $1.0$ if word $j$ occurs in the document, and $0.0$ otherwise.
 
 ### Numeric values {#realFeatures}
 
