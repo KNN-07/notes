@@ -1,13 +1,14 @@
-:::{.callout-warning}
-This chapter's HTML notes are in active development. For a more stable version, you can access the PDF notes [here](https://introml.mit.edu/_static/spring25/notes.pdf).
+:::{.callout-note}
+This page contains all content from the legacy [PDF notes](https://introml.mit.edu/_static/spring25/notes.pdf); features chapter.
+
+As we phase out the PDF, this page may receive updates not reflected in the static PDF.
 :::
 
-
-# Feature representation {#sec-features}
+# Feature Representation {#sec-features}
 
 Linear regression and classification are powerful tools, but in the real world, data often exhibit *non-linear* behavior that cannot immediately be captured by the linear models which we have built so far. For example, suppose the true behavior of a system (with $d=2$) looks like this wavelet:
 
-![image](figures/regression_features1_sombrero_comp1.pdf){width="50%"}
+![](figures/regression_features1_sombrero_comp1.png){width="50%" fig-align="center"}
 
 Such behavior is actually ubiquitous in physical systems, e.g., in the vibrations of the surface of a drum, or scattering of light through an aperture. However, no single hyperplane would be a very good fit to such peaked responses!
 
@@ -21,24 +22,101 @@ In this section, we explore the effects of non-linear feature transformations on
 
 Let's look at an example data set that starts in 1-D:
 
-:::: examplebox
-::: center
+:::{.callout-note}
+## Example
+:::{.imagify}
+\begin{tikzpicture}
+    % Draw the x-axis
+    \draw [<->, gray] (-3,0) -- (3,0) node [black, right] {$x$};
+    
+    % Draw the vertical marker at x = 0
+    \draw [gray] (0,.6) -- (0,-.6) node [black, below] {0};
+
+    % Add plus and minus signs at specified positions
+    \draw[ultra thick] (-1.7,0) -- (-1.3,0); % Plus horizontal
+    \draw[ultra thick] (-1.5,-.2) -- (-1.5,.2); % Plus vertical
+
+    \draw[ultra thick] (-.7,0) -- (-.3,0); % Minus horizontal
+
+    \draw[ultra thick] (.3,0) -- (.7,0); % Minus horizontal
+
+    \draw[ultra thick] (1.3,0) -- (1.7,0); % Plus horizontal
+    \draw[ultra thick] (1.5,-.2) -- (1.5,.2); % Plus vertical
+\end{tikzpicture}
 :::
-::::
+:::
 
 These points are not linearly separable, but consider the transformation $\phi(x) = [x,x^2]^T$. Putting the data in $\phi$ space, we see that it is now separable. There are lots of possible separators; we have just shown one of them here.
 
-:::: examplebox
-::: center
+:::{.callout-note}
+## Example
+:::{.imagify}
+\begin{tikzpicture}
+  % Draw x-axis
+  \draw [<->, gray] (-3,0) -- (3,0) node [black, right] {$x$};
+  % Draw y-axis (labeled as x²)
+  \draw [<->, gray] (0,-0.6) -- (0,4) node [black, above] {$x^2$};
+
+  % Draw dashed separator line
+  \draw [dashed] (-3,1.25) -- (3,1.25) node [below, xshift=-1cm] {separator};
+
+  % Plus sign at (-1.5, 2.25)
+  \draw[ultra thick] (-1.7,2.25) -- (-1.3,2.25); % horizontal line
+  \draw[ultra thick] (-1.5,2.05) -- (-1.5,2.45); % vertical line
+
+  % Minus sign at (-0.5, 0.25)
+  \draw[ultra thick] (-0.7,0.25) -- (-0.3,0.25);
+
+  % Minus sign at (0.5, 0.25)
+  \draw[ultra thick] (0.3,0.25) -- (0.7,0.25);
+
+  % Plus sign at (1.5, 2.25)
+  \draw[ultra thick] (1.3,2.25) -- (1.7,2.25); % horizontal line
+  \draw[ultra thick] (1.5,2.05) -- (1.5,2.45); % vertical line
+\end{tikzpicture}
 :::
-::::
+:::
 
 A linear separator in $\phi$ space is a nonlinear separator in the original space! Let's see how this plays out in our simple example. Consider the separator $x^2  - 1 = 0$, which labels the half-plane $x^2 -1 > 0$ as positive. What separator does it correspond to in the original 1-D space? We have to ask the question: which $x$ values have the property that $x^2 - 1 = 0$. The answer is $+1$ and $-1$, so those two points constitute our separator, back in the original space. And we can use the same reasoning to find the region of 1D space that is labeled positive by this separator.
 
-:::: examplebox
-::: center
+:::{.callout-note}
+## Example
+:::{.imagify}
+\begin{tikzpicture}
+  % Draw x-axis
+  \draw [<->, gray] (-3,0) -- (3,0)
+    node [black, right] {$x$};
+  
+  % Draw tick marks on the x-axis with labels
+  \draw [gray] (0,0.6) -- (0,-0.6) node [black, below] {0};
+  \draw [gray] (1,0.2) -- (1,-0.2) node [black, below] {1};
+  \draw [gray] (-1,0.2) -- (-1,-0.2) node [black, below] {-1};
+  
+  % Fill points at x = 1 and x = -1
+  \fill (1,0) circle (2.5pt);
+  \fill (-1,0) circle (2.5pt);
+  
+  % Draw braces using the standard 'brace' decoration
+  \draw[decoration={brace, amplitude=5pt}, decorate, line width=1.25pt]
+    (-2.95,0.2) -- (-1.05,0.2);
+  \draw[decoration={brace, amplitude=5pt}, decorate, line width=1.25pt]
+    (-0.95,0.2) -- (0.95,0.2);
+  \draw[decoration={brace, amplitude=5pt}, decorate, line width=1.25pt]
+    (1.05,0.2) -- (2.95,0.2);
+  
+  % Draw plus sign at (-2, 0.7)
+  \draw[ultra thick] (-2.2,0.7) -- (-1.8,0.7);  % horizontal line
+  \draw[ultra thick] (-2,0.5) -- (-2,0.9);        % vertical line
+  
+  % Draw minus sign at (0, 0.7)
+  \draw[ultra thick] (-0.2,0.7) -- (0.2,0.7);       % horizontal line
+  
+  % Draw plus sign at (2, 0.7)
+  \draw[ultra thick] (1.8,0.7) -- (2.2,0.7);        % horizontal line
+  \draw[ultra thick] (2,0.5) -- (2,0.9);            % vertical line
+\end{tikzpicture}
 :::
-::::
+:::
 
 ## Systematic feature construction
 
@@ -67,7 +145,7 @@ This transformation can be used in combination with linear regression or logisti
 
 For example, the wavelet pictured at the start of this chapter can be fit much better than with just a hyperplane, using linear regression with polynomials up to order $k=8$:
 
-![image](figures/regression_features2_fitsombrero.pdf){width="90%"}
+![](figures/regression_features2_fitsombrero.png){width="90%" fig-align="center"}
 
 The raw data (with $n=1000$ random samples) is plotted on the left, and the regression result (curved surface) is on the right.
 
@@ -75,39 +153,93 @@ Now let's look at a classification example and see how polynomial feature transf
 
 One well-known example is the "exclusive or" (xor) data set, the drosophila of machine-learning data sets:
 
-:::: examplebox
-::: center
+:::{.column-margin}
+D. Melanogaster is a species of fruit fly, used as a simple system in which to study genetics, since 1910.
 :::
-::::
+
+:::{.callout-note}
+## Example
+:::{.imagify}
+\begin{tikzpicture}
+  % Plus sign at (-1,-1)
+  \draw[ultra thick] (-1.2,-1) -- (-0.8,-1);  % horizontal stroke
+  \draw[ultra thick] (-1,-1.2) -- (-1,-0.8);    % vertical stroke
+
+  % Minus sign at (-1,+1)
+  \draw[ultra thick] (-1.2,1) -- (-0.8,1);      % horizontal stroke
+
+  % Minus sign at (+1,-1)
+  \draw[ultra thick] (0.8,-1) -- (1.2,-1);      % horizontal stroke
+
+  % Plus sign at (+1,+1)
+  \draw[ultra thick] (0.8,1) -- (1.2,1);        % horizontal stroke
+  \draw[ultra thick] (1,0.8) -- (1,1.2);        % vertical stroke
+\end{tikzpicture}
+:::
+:::
 
 Clearly, this data set is not linearly separable. So, what if we try to solve the xor classification problem using a polynomial basis as the feature transformation? We can just take our two-dimensional data and transform it into a higher-dimensional data set, by applying $\phi$. Now, we have a classification problem as usual.
 
-Let's try it for $k = 2$ on our xor problem. The feature transformation is $$\phi([x_1, x_2]^T) = [1, x_1, x_2, x_1^2, x_1 x_2, x_2^2]^T\;\;.$$ We might run a classification learning algorithm and find a separator with coefficients $\theta = [0, 0, 0, 0, 4, 0]^T$ and $\theta_0 = 0$. This corresponds to $$0 + 0 x_1 + 0 x_2 + 0 x_1^2 + 4 x_1 x_2 + 0x_2^2 + 0 = 0$$ and is plotted below, with the gray shaded region classified as negative and the white region classified as positive:
+Let's try it for $k = 2$ on our xor problem. The feature transformation is 
+$$
+\phi([x_1, x_2]^T) = [1, x_1, x_2, x_1^2, x_1 x_2, x_2^2]^T\;\;.
+$$ 
 
-:::: examplebox
-::: center
-![image](figures/feature_representation_xor_sign.pdf)
+:::{.study-question-callout}
+If we train a classifier after performing this feature
+  transformation, would we lose any expressive
+  power if we let $\theta_0 = 0$ (i.e., trained without offset instead of
+  with offset)?
 :::
-::::
+
+
+We might run a classification learning algorithm and find a separator with coefficients $\theta = [0, 0, 0, 0, 4, 0]^T$ and $\theta_0 = 0$. This corresponds to $$0 + 0 x_1 + 0 x_2 + 0 x_1^2 + 4 x_1 x_2 + 0x_2^2 + 0 = 0$$ and is plotted below, with the gray shaded region classified as negative and the white region classified as positive:
+
+:::{.callout-note}
+## Example
+![](figures/feature_representation_xor_sign.png){width="50%" fig-align="center"}
+:::
+
+:::{.study-question-callout}
+Be sure you understand why this high-dimensional hyperplane is a separator, and how it corresponds to the figure.
+:::
 
 For fun, we show some more plots below. Here is another result for a linear classifier on xor generated with logistic regression and gradient descent, using a random initial starting point and second-order polynomial basis:
 
-:::: examplebox
-::: center
-![image](figures/feature_representation_xor_order2.pdf)
+:::{.callout-note}
+## Example
+![](figures/feature_representation_xor_order2.png){width="50%" fig-align="center"}
 :::
-::::
 
 Here is a harder data set. Logistic regression with gradient descent failed to separate it with a second, third, or fourth-order basis feature representation, but succeeded with a fifth-order basis. Shown below are some results after $\sim1000$ gradient descent iterations (from random starting points) for bases of order 2 (upper left), 3 (upper right), 4 (lower left), and 5 (lower right).
 
-:::: examplebox
-::: center
-![image](figures/feature_representation_hard_order2.pdf){width="48%"} ![image](figures/feature_representation_hard_order3.pdf){width="48%"}\
-![image](figures/feature_representation_hard_order4.pdf){width="48%"} ![image](figures/feature_representation_hard_order5.pdf){width="48%"}
-:::
-::::
+:::{.callout-note}
+## Example
 
-### Radial basis functions
+:::{layout-ncol=2 layout-nrow=2}
+![](figures/feature_representation_hard_order2.png){width="48%"} 
+
+![](figures/feature_representation_hard_order3.png){width="48%"}
+
+![](figures/feature_representation_hard_order4.png){width="48%"} 
+
+![](figures/feature_representation_hard_order5.png){width="48%"}
+:::
+
+:::
+
+:::{.study-question-callout}
+Percy Eptron has a domain with four numeric input features, $(x_1, \ldots, x_4)$.  He decides to use a representation of the form
+$$\phi(x) = {\rm PolyBasis}((x_1, x_2), 3) ^\frown
+{\rm PolyBasis}((x_3, x_4), 3)$$
+where $a^\frown b$ means the vector $a$ concatenated with the vector
+$b$.   
+
+What is the dimension of Percy's representation?  Under what
+assumptions about the original features is this a reasonable choice?
+:::
+
+### Radial basis functions (Optional)
 
 Another cool idea is to use *the training data itself* to construct a feature space. The idea works as follows. For any particular point $p$ in the input space $\mathcal{X}$, we can construct a feature $f_p$ which takes any element $x \in \mathcal{X}$ and returns a scalar value that is related to how far $x$ is from the $p$ we started with.
 
@@ -148,6 +280,10 @@ As an example, imagine that we want to encode blood types, that are drawn from t
 
 -   Use a 3-D vector, with one dimension for each factor, encoding its presence as $1.0$ and absence as $-1.0$ (this is sometimes better than $0.0$). In this case, $AB+$ would be $[1.0, 1.0, 1.0]^T$ and $O-$ would be $[-1.0, -1.0, -1.0]^T$.
 
+:::{.study-question-callout}
+How would you encode $A+$ in both of these approaches?
+:::
+
 ### Text
 
 The problem of taking a text (such as a tweet or a product review, or even this document!) and encoding it as an input for a machine-learning algorithm is interesting and complicated. Much later in the class, we'll study sequential input models, where, rather than having to encode a text as a fixed-length feature vector, we feed it into a hypothesis word by word (or even character by character!).
@@ -158,6 +294,9 @@ There are some simple encodings that work well for basic applications. One of th
 
 If some feature is already encoded as a numeric value (heart rate, stock price, distance, etc.) then we should generally keep it as a numeric value. An exception might be a situation in which we know there are natural "breakpoints" in the semantics: for example, encoding someone's age in the US, we might make an explicit distinction between under and over 18 (or 21), depending on what kind of thing we are trying to predict. It might make sense to divide into discrete bins (possibly spacing them closer together for the very young) and to use a one-hot encoding for some sorts of medical situations in which we don't expect a linear (or even monotonic) relationship between age and some physiological features.
 
-If we choose to leave a feature as numeric, it is typically useful to *scale* it, so that it tends to be in the range $[-1, +1]$. Without performing this transformation, if we have one feature with much larger values than another, it will take the learning algorithm a lot of work to find parameters that can put them on an equal basis. We could also perform a more involved scaling/transformation $\phi(x) = \dfrac{x - \overline{x}}{\sigma}$, where $\overline{x}$ is the average of the $x^{(i)}$, and $\sigma$ is the standard deviation of the $x^{(i)}$. The resulting feature values will have mean $0$ and standard deviation $1$. This transformation is sometimes called *standardizing* a variable.
 
-Then, of course, we might apply a higher-order polynomial-basis transformation to one or more groups of numeric features.
+:::{.study-question-callout}
+  Consider using a polynomial basis of order $k$ as a feature
+  transformation $\phi$ on our data.  Would increasing $k$ tend to
+  increase or decrease structural error?  What about estimation error?
+:::

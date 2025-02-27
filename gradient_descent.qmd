@@ -1,6 +1,10 @@
-:::{.callout-caution}
-This chapter's HTML notes are in active development. For a more stable version, you can access the PDF notes [here](https://introml.mit.edu/_static/spring25/notes.pdf).
+:::{.callout-note}
+This page contains all content from the legacy [PDF notes](https://introml.mit.edu/_static/spring25/notes.pdf); gradient descent chapter.
+
+
+As we phase out the PDF, this page may receive updates not reflected in the static PDF.
 :::
+
 
 # Gradient Descent {#sec-gradient}
 
@@ -9,7 +13,7 @@ In the previous chapter, we showed how to describe an interesting objective func
 There is an enormous and fascinating literature on the mathematical and algorithmic foundations of optimization, but for this class, we will consider one of the simplest methods, called *gradient descent.*
 
 :::{.column-margin}
-you should consider studying optimization some day!
+You might want to consider studying optimization some day! It's one of the fundamental tools enabling machine learning, and it's a beautiful and deep field.
 :::
 
 Intuitively, in one or two dimensions, we can easily think of $J(\Theta)$ as defining a surface over $\Theta$; that same idea extends to higher dimensions. Now, our objective is to find the $\Theta$ value at the lowest point on that surface. One way to think about gradient descent is that you start at some arbitrary point on the surface, look to see in which direction the "hill" goes down most steeply, take a small step in that direction, determine the direction of steepest descent from where you are, take another small step, etc.
@@ -22,20 +26,39 @@ We start by considering gradient descent in one dimension. Assume $\Theta \in \m
 
 The hyper-parameter $\eta$ is often called *learning rate* when gradient descent is applied in machine learning. For simplicity, $\eta$ may be taken as a constant, as is the case in the pseudo-code below; and we'll see adaptive (non-constant) step-sizes soon. What's important to notice though, is that even when $\eta$ is constant, the actual magnitude of the change to $\Theta$ may not be constant, as that change depends on the magnitude of the gradient itself too.
 
-::: codebox
-$\Theta^{(0)} \gets \Theta_{\it init}$ $t \gets 0$ $t \gets t+1$ $\Theta^{(t)} = \Theta^{(t-1)} - \eta \, f'(\Theta^{(t-1)})$ $|f'(\Theta^{(t)})| < \epsilon$ $\Theta^{(t)}$
-:::
+```pseudocode
+#| html-indent-size: "1.2em"
+#| html-comment-delimiter: "//"
+#| html-line-number: true
+#| html-line-number-punc: ":"
+#| html-no-end: false
+#| pdf-placement: "htb!"
+#| pdf-line-number: true
+
+\begin{algorithm}
+\begin{algorithmic}
+\Procedure{1D-Gradient-Descent}{$\Theta_{init}, \eta, f, f', \epsilon$}
+  \State $\Theta^{(0)} \gets \Theta_{init}$ 
+  \State $t \gets 0$ 
+  \Repeat
+    \State $t \gets t+1$
+    \State $\Theta^{(t)} = \Theta^{(t-1)} - \eta \, f'(\Theta^{(t-1)})$
+  \Until{$|f'(\Theta^{(t)})| < \epsilon$}
+  \Return{$\Theta^{(t)}$}
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+```
 
 Note that this algorithm terminates when the derivative of the function $f$ is sufficiently small. There are many other reasonable ways to decide to terminate, including:
 
 -   Stop after a fixed number of iterations $T$, i.e., when $t = T$. Practically, this is the most common choice.
 
--   Stop when the change in the value of the parameter $\Theta$ is sufficiently small, i.e., when $\left| \Theta^{(t)} - \Theta^{(t-1)} \right|
-              <\epsilon$.
+-   Stop when the change in the value of the parameter $\Theta$ is sufficiently small, i.e., when $\left| \Theta^{(t)} - \Theta^{(t-1)} \right| <\epsilon$.
 
 
 :::{.study-question-callout}
-Consider all of the potential stopping criteria for $\proc{1D-Gradient-Descent}$, both in the algorithm as it appears and listed separately later. Can you think of ways that any two of the criteria relate to each other?
+Consider all of the potential stopping criteria for `1D-Gradient-Descent`, both in the algorithm as it appears and listed separately later. Can you think of ways that any two of the criteria relate to each other?
 :::
 
 :::{#thm-gd}
@@ -46,6 +69,26 @@ However, we must be careful when choosing the learning rate to prevent slow conv
 
 The following plot illustrates a convex function $f(x) = (x - 2)^2$, starting gradient descent at $x_\textrm{init} = 4.0$ with a step-size of $1/2$. It is very well-behaved!
 
+
+
+::: imagify
+\begin{tikzpicture}
+    \begin{axis}[
+        axis lines=middle,
+        xmin=-1, xmax=6,
+        ymin=-1, ymax=5,
+        xlabel={$x$}, ylabel={$f(x)$},
+      ]
+      \addplot [domain=-1:6, samples=100] {(x-2)^2};
+      \addplot [only marks,color=black,mark=*,mark size=1.5pt] coordinates {
+          (2,0)
+          (4,4)};
+      \draw[-latex,blue,thick] (axis cs: 4,4) -- (axis cs: 2,0);
+    \end{axis}
+  \end{tikzpicture}
+::::
+
+
 If $f$ is non-convex, where gradient descent converges to depends on $x_{\it init}$. First, let's establish some definitions. Let $f$ be a real-valued function defined over some domain $D$. A point $x_0 \in D$ is called a *global minimum point* of $f$ if $f(x_0) \leq f(x)$ for all other $x \in D$. A point $x_0 \in D$ is instead called a *local minimum point* of a function $f$ if there exists some constant $\epsilon > 0$ such that for all $x$ within the interval defined by $d(x,x_0) < \epsilon,$ $f(x_0) \leq f(x)$, where $d$ is some distance metric, e.g., $d(x,x_0) = || x - x_0 ||.$ A global minimum point is also a local minimum point, but a local minimum point does not have to be a global minimum point.
 
 
@@ -53,9 +96,7 @@ If $f$ is non-convex, where gradient descent converges to depends on $x_{\it ini
 What happens in this example with very small $\eta$?  With very big $\eta$?
 :::
 
-<!-- TODO: figure missing -->
-<!-- need to add the figure -->
-<!-- ![](images/gradient_descent.png) -->
+
 
 If $f$ is non-convex (and sufficiently smooth), one expects that gradient descent (run long enough with small enough learning rate) will get very close to a point at which the gradient is zero, though we cannot guarantee that it will converge to a global minimum point.
 
@@ -63,8 +104,33 @@ There are two notable exceptions to this common sense expectation: First, gradie
 
 The plot below shows two different $x_{\it init}$, and how gradient descent started from each point heads toward two different local optimum points.
 
-<!-- TODO -->
-<!-- missing plot -->
+::: imagify
+\begin{tikzpicture}
+    \begin{axis}[
+        axis lines=middle,
+        xmin=-2, xmax=4,
+        ymin=2, ymax=10,
+        xlabel={$x$}, ylabel={$f(x)$},
+      ]
+      \addplot [domain=-2:4, samples=100] {0.5*x^4 - 3*x^3 + 4*x^2 + 3*x + 3};
+      \draw[-latex,blue,thick] (axis cs: -1,7.5) -- (axis cs: -0.52,2.98);
+      \draw[-latex,blue,thick] (axis cs: -.52,2.98) -- (axis cs: -0.40, 2.65);
+      \draw[-latex,blue,thick] (axis cs: -0.40, 2.65) -- (axis cs: -0.28, 2.54);
+
+      \draw[-latex,blue,thick] (axis cs: 2,9) -- (axis cs: 2.15,8.81);
+      \draw[-latex,blue,thick] (axis cs: 2.15,8.81) -- (axis cs: 2.38,8.40);
+      \draw[-latex,blue,thick] (axis cs: 2.38,8.40) -- (axis cs: 2.68, 7.82);
+      \draw[-latex,blue,thick] (axis cs: 2.68, 7.82) -- (axis cs: 2.93, 7.52);
+      \draw[-latex,blue,thick] (axis cs: 2.93, 7.52) -- (axis cs: 3, 7.5);
+
+      \addplot [only marks,color=black,mark=*,mark size=1.5pt] coordinates {
+          (-1, 7.5)
+          (-.4, 2.65)
+          (2, 9)
+          (3, 7.5)};
+    \end{axis}
+  \end{tikzpicture}
+:::
 
 ## Multiple dimensions {#sec-gd}
 
@@ -82,15 +148,18 @@ The extension to the case of multi-dimensional $\Theta$ is straightforward. Let'
   \end{bmatrix}
   $$
    
-The algorithm remains the same, except that the update step in line 5 becomes $$\Theta^{(t)} = \Theta^{(t-1)} - \eta\nabla_\Theta f(\Theta^{(t-1)})$$ and any termination criteria that depended on the dimensionality of $\Theta$ would have to change. The easiest thing is to keep the test in line 6 as 
+The algorithm remains the same, except that the update step in line 5 becomes 
+$$
+\Theta^{(t)} = \Theta^{(t-1)} - \eta\nabla_\Theta f(\Theta^{(t-1)})
+$$ and any termination criteria that depended on the dimensionality of $\Theta$ would have to change. The easiest thing is to keep the test in line 6 as $\left|f(\Theta^{(t)}) - f(\Theta^{(t-1)}) \right| < \epsilon$, which is sensible no matter the dimensionality of $\Theta$.
 
-$\left|f(\Theta^{(t)}) -
-  f(\Theta^{(t-1)}) \right| < \epsilon
-$, which is sensible no matter the dimensionality of $\Theta$.
+::: {.study-question-callout}
+Which termination criteria from the 1D case were defined in a way that assumes $\Theta$ is one dimensional?
+:::
 
 ## Application to regression {#sec-gd_ridge}
 
-Recall from the previous chapter that choosing a loss function is the first step in formulating a machine-learning problem as an optimization problem, and for regression we studied the mean square loss, which captures loss as $({\rm guess} - {\rm actual})^2$. This leads to the *ordinary least squares* objective 
+Recall from the previous chapter that choosing a loss function is the first step in formulating a machine-learning problem as an optimization problem, and for regression we studied the mean square loss, which captures losws as $({\rm guess} - {\rm actual})^2$. This leads to the *ordinary least squares* objective 
 
 $$J(\theta) = \frac{1}{n}\sum_{i =
     1}^n\left(\theta^Tx^{(i)} - y^{(i)}\right)^2 \;\;.   
@@ -98,20 +167,23 @@ $$
 
 We use the gradient of the objective with respect to the parameters, 
 
-$$\nabla_{\theta}J = \frac{2}{n}\underbrace{\tilde{X}^T}_{d \times
-    n}\underbrace{(\tilde{X}\theta - \tilde{Y})}_{n \times 1}\;\;,
+$$\nabla_{\theta}J = \frac{2}{n}\underbrace{{X}^T}_{d \times
+    n}\underbrace{({X}\theta - {Y})}_{n \times 1}\;\;,
 $${#eq-reg_gd_deriv} to obtain an analytical solution to the linear regression problem. Gradient descent could also be applied to numerically compute a solution, using the update rule 
 $$
 \theta^{(t)} = \theta^{(t-1)} - \eta \frac{2}{n} \sum_{i=1}^{n} \left( \left[ \theta^{(t-1)}\right]^T x^{(i)} - y^{(i)} \right) x^{(i)}
   \,.
-$$   
+$$
+
 
 ### Ridge regression
-
-Now, let's add in the regularization term, to get the ridge-regression objective: 
-$$
+Now, let's add in the regularization term, to get the ridge-regression
+objective:
+$$ 
 J_{\text{ridge}}(\theta, \theta_0) = \frac{1}{n}\sum_{i = 1}^n\left(\theta^Tx^{(i)} + \theta_0 - y^{(i)}\right)^2 + \lambda\|\theta\|^2 \;\;.
 $$
+ 
+
 
 Recall that in ordinary least squares, we finessed handling $\theta_0$ by adding an extra dimension of all 1's. In ridge regression, we really do need to separate the parameter vector $\theta$ from the offset $\theta_0$, and so, from the perspective of our general-purpose gradient descent method, our whole parameter set $\Theta$ is defined to be $\Theta = (\theta, \theta_0)$. We will go ahead and find the gradients separately for each one: 
 
@@ -129,36 +201,125 @@ $$
 
 Note that $\nabla_\theta J_\text{ridge}$ will be of shape $d \times 1$ and $\partial J_\text{ridge}/\partial \theta_0$ will be a scalar since we have separated $\theta_0$ from $\theta$ here.
 
+::: {.study-question-callout}
+Convince yourself that the dimensions of all these
+  quantities are correct, under the assumption that $\theta$ is $d
+    \times 1$. How does $d$ relate to $m$ as discussed for $\Theta$ in the
+  previous section?
+:::
+
+::: {.study-question-callout}
+Compute $\nabla_\theta ||\theta||^2$ by finding the
+  vector of partial derivatives $(\partial ||\theta||^2 / \partial
+    \theta_1, \ldots, \partial ||\theta||^2 / \partial
+    \theta_d)$. What is the shape of $\nabla_\theta ||\theta||^2$?
+:::
+
+::: {.study-question-callout}
+Compute $\nabla_\theta J_\text{ridge}(
+    \theta^T x + \theta_0, y)$ by finding the
+  vector of partial derivatives $(\partial J_\text{ridge}(
+    \theta^T x + \theta_0, y)/ \partial \theta_1, \ldots,
+    \partial J_\text{ridge}(
+    \theta^T x + \theta_0, y) / \partial
+    \theta_d)$.
+:::
+
+::: {.study-question-callout}
+Use these last two results to verify our derivation above.
+:::
+
 Putting everything together, our gradient descent algorithm for ridge regression becomes
 
-::: codebox
-$\theta^{(0)} \gets \theta_{\it init}$ $\theta_0^{(0)} \gets \theta_{0 {\it init}}$ $t \gets 0$ $t \gets t+1$ $\theta^{(t)} = \theta^{(t-1)} - \eta\left(\frac{1}{n}\sum_{i=1}^n
-    \left({\theta^{(t-1)}}^T x^{(i)} + \theta_0^{(t-1)} -
-      y^{(i)}\right) x^{(i)}
-    + \lambda\theta^{(t-1)}
-    \right)$ $\theta_0^{(t)} = \theta_0^{(t-1)} - \eta\left(\frac{1}{n}\sum_{i=1}^n
-    \left({\theta^{(t-1)}}^T x^{(i)} + \theta_0^{(t-1)} -
-      y^{(i)} \right)
-    \right)$ $\left| J_{\text{ridge}}(\theta^{(t)},\theta_0^{(t)}) - J_{\text{ridge}}(\theta^{(t-1)},
-    \theta_0^{(t-1)}) \right| <\epsilon$ $\theta^{(t)},\theta_0^{(t)}$
+```pseudocode
+#| html-indent-size: "1.2em"
+#| html-comment-delimiter: "//"
+#| html-line-number: true
+#| html-line-number-punc: ":"
+#| html-no-end: false
+#| pdf-placement: "htb!"
+#| pdf-line-number: true
+
+\begin{algorithm}
+\begin{algorithmic}
+\Procedure{RR-Gradient-Descent}{$\theta_{\it init}, \theta_{0 {\it init}},\eta,\epsilon$}
+  \State $\theta^{(0)} \gets \theta_{\it init}$
+  \State $\theta_0^{(0)} \gets \theta_{0 {\it init}}$
+  \State $t \gets 0$
+  \Repeat
+    \State   $t \gets t+1$
+    \State   $\theta^{(t)} = \theta^{(t-1)} - \eta\left(\frac{1}{n}\sum_{i=1}^n
+    \left({{\theta}^{(t-1)}}^T {x}^{(i)} + {\theta_0}^{(t-1)} -
+      {y}^{(i)}\right) {x}^{(i)}
+    + \lambda{\theta}^{(t-1)}
+    \right)$
+  \State $\theta_0^{(t)} = \theta_0^{(t-1)} - \eta\left(\frac{1}{n}\sum_{i=1}^n
+    \left({{\theta}^{(t-1)}}^T {x}^{(i)} + {\theta_0}^{(t-1)} -
+      {y}^{(i)} \right)
+    \right)$
+  \Until{$\left| J_{\text{ridge}}(\theta^{(t)},\theta_0^{(t)}) - J_{\text{ridge}}(\theta^{(t-1)},\theta_0^{(t-1)}) \right| <\epsilon$}
+  \Return{$\theta^{(t)},\theta_0^{(t)}$}
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+```
+:::{.column-margin}
+Beware double superscripts!  $\left[ \theta \right]^T$ is the transpose of the vector $\theta$.
+:::
+
+:::{.study-question-callout}
+Is it okay that $\lambda$ doesn't appear in line 8?
+:::
+
+:::{.study-question-callout}
+Is it okay that the 2's from the gradient definitions don't appear in the algorithm?
 :::
 
 ## Stochastic gradient descent {#sec-sgd}
 
 When the form of the gradient is a sum, rather than take one big(ish) step in the direction of the gradient, we can, instead, randomly select one term of the sum, and take a very small step in that direction. This seems sort of crazy, but remember that all the little steps would average out to the same direction as the big step if you were to stay in one place. Of course, you're not staying in that place, so you move, in expectation, in the direction of the gradient.
 
-Most objective functions in machine learning can end up being written as a sum over data points, in which case, stochastic gradient descent (sgd) is implemented by picking a data point randomly out of the data set, computing the gradient as if there were only that one point in the data set, and taking a small step in the negative direction.
+Most objective functions in machine learning can end up being written as an average over data points, in which case, stochastic gradient descent (sgd) is implemented by picking a data point randomly out of the data set, computing the gradient as if there were only that one point in the data set, and taking a small step in the negative direction.
 
 Let's assume our objective has the form 
 
-$$f(\Theta) = \sum_{i = 1}^n f_i(\Theta)
+$$f(\Theta) = \frac{1}{n}\sum_{i = 1}^n f_i(\Theta)
   \;\;,
-$$ where $n$ is the number of data points used in the objective (and this may be different from the number of points available in the whole data set). Here is pseudocode for applying sgd to such an objective $f$; it assumes we know the form of 
+$$ 
+where $n$ is the number of data points used in the objective (and this may be different from the number of points available in the whole data set). 
+
+:::{.column-margin}
+Sometimes you will see that the objective being written as a sum, instead of an average. In the "sum" convention, the $\frac{1}{n}$ normalizing constant is getting "absorbed" into individual $f_i$.
+$$
+f(\Theta) = \sum_{i = 1}^n f_i(\Theta)\;\;.
+$$ 
+:::
+
+Here is pseudocode for applying sgd to such an objective $f$; it assumes we know the form of 
 $\nabla_\Theta f_i$ for all $i$ in $1\ldots n$:
 
-::: codebox
-$\Theta^{(0)} \gets \Theta_{\it init}$ $t \gets 1$ $T$ randomly select $i \in \{1, 2, \dots, n\}$ $\Theta^{(t)} = \Theta^{(t-1)} - \eta(t) \, \nabla_\Theta f_i(\Theta^{(t-1)})$ $\Theta^{(t)}$
-:::
+```pseudocode
+#| html-indent-size: "1.2em"
+#| html-comment-delimiter: "//"
+#| html-line-number: true
+#| html-line-number-punc: ":"
+#| html-no-end: false
+#| pdf-placement: "htb!"
+#| pdf-line-number: true
+
+\begin{algorithm}
+\begin{algorithmic}
+\Procedure{Stochastic-Gradient-Descent}{$\Theta_{init},\eta,f,\nabla_{\Theta}f_1,...,\nabla_{\Theta} f_n,T$}
+  \State $\Theta^{(0)} \gets \Theta_{\it init}$ 
+  \For{$t \gets 1$}
+    \State randomly select $i \in \{1, 2, \dots, n\}$
+    \State $\Theta^{(t)} = \Theta^{(t-1)} - \eta(t) \, \nabla_\Theta f_i(\Theta^{(t-1)})$ 
+  \EndFor
+
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+```
 
 Note that now instead of a fixed value of $\eta$, $\eta$ is indexed by the iteration of the algorithm, $t$. Choosing a good stopping criterion can be a little trickier for sgd than traditional gradient descent. Here we've just chosen to stop after a fixed number of iterations $T$.
 
@@ -172,6 +333,10 @@ For sgd to converge to a local optimum point as $t$ increases, the learning rate
 Why these two conditions? The intuition is that the first condition, on $\sum \eta(t)$, is needed to allow for the possibility of an unbounded potential range of exploration, while the second condition, on $\sum\eta(t)^2$, ensures that the learning rates get smaller and smaller as $t$ increases.
 
 One "legal" way of setting the learning rate is to make $\eta(t) = 1/t$ but people often use rules that decrease more slowly, and so don't strictly satisfy the criteria for convergence.
+
+::: {.study-question-callout}
+If you start a long way from the optimum, would making $\eta(t)$ decrease more slowly tend to make you move more quickly or more slowly to the optimum?
+:::
 
 There are multiple intuitions for why sgd might be a better choice algorithmically than regular gd (which is sometimes called *batch* gd (bgd)):
 

@@ -2,16 +2,16 @@ project:
   type: book
 
 book:
-  title: Intro to Machine Learning Notes
+  title: 6.390 - Intro to Machine Learning
+  subtitle: Course Notes
   repo-url: https://github.com/390introml/notes
   repo-branch: main
   repo-actions: [edit, issue]
-  repo-subdir: /
+  repo-subdir: ""
   site-url: https://introml.mit.edu/notes
   twitter-card: true
-  favicon: Figures/favicon.ico
-  cover-image: 390.png
-
+  favicon: logo/favicon.svg
+  # cover-image: logo/390.png
   chapters:
     - index.qmd
     - regression.qmd
@@ -117,6 +117,33 @@ resources:
   - demos/
 filters:
   - pseudocode
+  - imagify
+# imagify:
+# scope: all
+# debug: true
+# embed: true
+# lazy: true
+# output-folder: _imagify_files
+# pdf-engine: xelatex
+# keep-sources: false
+# zoom: 1.5
+# imagify-classes:
+#   pre-render:
+#     zoom: 4 # will show if it's not overriden
+#     # block-style: "border: 1px solid red;"
+#   fitch:
+#     # debug: false
+#     header-includes: \usepackage{pdfpages}
 # tikz:
 # cache: true
 
+imagify:
+  scope: selected
+  embed: true
+  lazy: true
+  output-folder: _imagify_files
+  header-includes: |
+    \usepackage{pgfplots}
+    \usetikzlibrary{tikzmark, shapes.geometric, shapes.arrows, fit, bending}
+  pdf-engine: pdflatex
+# engine: knitr

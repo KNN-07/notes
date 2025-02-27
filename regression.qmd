@@ -1,9 +1,7 @@
 :::{.callout-warning}
-This chapter's HTML notes are in active development. For a more stable version, you can access the PDF notes [here](https://introml.mit.edu/_static/spring25/notes.pdf).
+We had legacy [PDF notes](https://introml.mit.edu/_static/spring25/notes.pdf) that used mixed conventions for data matrices: "each row as a data point" and "each column as a data point". 
 
-Note that despite stable content, this chapter's PDF notes has two simultaneous conventions for a data matrix -- both the "each row as data" and "each column as data" convention. We are working to unifying these to just "each row as data point"; in other words, $X$ below and in assignments corresponds to the $\tilde{X}$ in the PDF notes.
-
-If there is an inconsistency or confusion, please raise an issue so we can address and correct. Thanks! 
+We are standardizing to "each row as a data point." Thus, $X$ aligns with $\tilde{X}$ in the PDF notes if you've read those. If you spot inconsistencies or experience any confusion, please raise an issue. Thanks!
 :::
 
 # Regression {#sec-regression}
@@ -271,6 +269,16 @@ $$
 \theta^* = \left(X^T X\right)^{-1} X^T Y
 $${#eq-ols_solution}
 
+:::{.column-margin}
+Here are two related alternate angles to view this formula, for intuition's sake:
+
+1) Note that $(X^TX)^{-1}X^T \eqqcolon X^+$ is the [pseudo-inverse](https://en.wikipedia.org/wiki/Moore%E2%80%93Penrose_inverse#Linearly_independent_columns) of $X$. 
+Thus, $\theta^*$ "pseudo-solves" $X\theta=Y$ (multiply both sides of this on the left by $X^+$).
+
+2) Note that $X(X^TX)^{-1}X^T = \text{proj}_{\text{col}(X)}$ is the [projection matrix](https://en.wikipedia.org/wiki/Projection_matrix#Intuition) onto the column space of $X$.
+Thus, $\theta^*$ solves $X\theta=\text{proj}_{\text{col}(X)}Y$.
+:::
+
 and the dimensions work out! So, given our data, we can directly compute the linear regression that minimizes mean squared error. That's pretty awesome!
 
 :::{.column-margin}
@@ -321,27 +329,33 @@ Stop and prove to yourself that adding that extra feature with value 1 to every 
 
 ## Centering
 
-In fact, augmenting a “fake” feature of 1, as described above, is also useful for demonstrating the idea of **centering**, which provides an alternative way to avoid dealing with $\theta_0$ directly.
+In fact, augmenting a “fake” feature of 1, as described above, is also useful for an important idea: namely, why utilizing the so-called **centering** eliminates the need for fitting an intercept, and thereby offers an alternative way to avoid dealing with $\theta_0$ directly.
 
-By **centering**, we mean subtracting the mean of each feature from all data points, and we apply the same operation to the labels. For an example of a dataset before and after centering, see [here](https://slides.com/shensquared/introml-sp25-lec2#/4/5)
+By **centering**, we mean subtracting the average (mean) of each feature from all data points, and we apply the same operation to the labels. For an example of a dataset before and after centering, see [here](https://slides.com/shensquared/introml-sp25-lec2#/4/5)
 
-The idea is that, with centered dataset, even if we were to search for an offset term $\theta_0$, it would naturally fall out to be 0. Intuitively, this makes sense -- if a dataset is centered around the origin, it seems natrual that the best fitting plane would go through the origin.
+The idea is that, with centered dataset, even if we were to search for an offset term $\theta_0$, it would naturally fall out to be 0. Intuitively, this makes sense -- if a dataset is centered around the origin, it seems natural that the best fitting plane would go through the origin.
 
-Let's see how this works out mathematically. First, for a *centered* dataset, two claims immediatly follow  (recall that $\mathbb{1}$ is an $n$-by-1 vector of all ones):
+Let's see how this works out mathematically. First, for a *centered* dataset, two claims immediately follow  (recall that $\mathbb{1}$ is an $n$-by-1 vector of all ones):
 
-1. Each column of $X$ sums up to one, that is, $X^T\mathbb{1} = 0$.
+1. Each column of $X$ sums up to zero, that is, $X^T\mathbb{1} = 0$.
 
 2. Similarly, the mean of the labels is 0, so $Y^T\mathbb{1} = \mathbb{1} ^T Y = 0$.
 
-Our ultimate goal is to find an optimal fitting hyperplane, parameterized by $\theta$ and $\theta_0$. In other words, we aim to find $\theta_{\text{aug}},$ which at this point, involves simply plugging $\theta_{\text{aug}}$ into @eq-ols_solution. 
+Recall that our ultimate goal is to find an optimal fitting hyperplane, parameterized by $\theta$ and $\theta_0$. In other words, we aim to find $\theta_{\text{aug}},$ which at this point, involves simply plugging $X_{\text{aug}}=\left[\begin{array}{c}X \quad  \mathbb{1} \end{array}\right]$ into @eq-ols_solution. 
 
-With centererd dataset, we claim that the optimal $\theta_0$ natrually will fall out to be 0.
+$$\begin{aligned}
+\theta_{\text{aug}}^*&=\left ( \begin{bmatrix} X^T\\\mathbb{1}^T\end{bmatrix}\begin{bmatrix}X&\mathbb{1}\end{bmatrix}\right)^{-1}\begin{bmatrix}X^T\\ \mathbb{1}^T\end{bmatrix}Y\\
+&=\begin{bmatrix}X^TX&X^T\mathbb{1}\\\mathbb{1}^TX&\mathbb{1}^T\mathbb{1}\end{bmatrix}^{-1}\begin{bmatrix}X^T\\ \mathbb{1}^T\end{bmatrix}Y\\
+&=\begin{bmatrix}X^TX&X^T\mathbb{1}\\\mathbb{1}^TX&\mathbb{1}^T\mathbb{1}\end{bmatrix}^{-1}\begin{bmatrix}X^T\\ \mathbb{1}^T\end{bmatrix}Y\\
+&=\begin{bmatrix}X^TX&0\\0&n\end{bmatrix}^{-1}\begin{bmatrix}X^T\\\mathbb{1}^T\end{bmatrix}Y\\
+&=\begin{bmatrix}(X^TX)^{-1}X^TY\\n\mathbb{1}^TY\end{bmatrix}\\
+&=\begin{bmatrix}(X^TX)^{-1}X^TY\\0\end{bmatrix}\\
+&=\begin{bmatrix}\theta^*\\\theta_0^*\end{bmatrix}\\
+\end{aligned}
+$$
 
-![](figures/centering_proof.png){width="100%"}
 
-
-
-
+Indeed, the optimal $\theta_0$ naturally falls out to be 0.
 
 
 ## Regularization {#sec-regularization}
@@ -372,22 +386,37 @@ There are some kinds of trouble we can get into in regression problems. What if 
 
 Another kind of problem is *overfitting*: we have formulated an objective that is just about fitting the data as well as possible, but we might also want to *regularize* to keep the hypothesis from getting *too* attached to the data.
 
-We address both the problem of not being able to invert $({X}^T{X})^{-1}$ and the problem of overfitting using a mechanism called *ridge regression*. We add a regularization term $\|\theta\|^2$ to the ols objective, with a non-negative scalar value $\lambda$ to control the tradeoff between the training error and the regularization term. Here is the ridge regression objective function: 
-$$J_{\text{ridge}}(\theta, \theta_0) = \frac{1}{n}\sum_{i = 1}^n\left(\theta^Tx^{(i)} + \theta_0 - y^{(i)}\right)^2 + \lambda\|\theta\|^2$$
-Larger $\lambda$ values pressure $\theta$ values to be near zero. 
+We address both the problem of not being able to invert $({X}^T{X})^{-1}$ and the problem of overfitting using a mechanism called *ridge regression*. We add a regularization term $\|\theta\|^2$ to the OLS objective, with a non-negative scalar value $\lambda$ to control the tradeoff between the training error and the regularization term. Here is the ridge regression objective function: 
+
+$$
+J_{\text{ridge}}(\theta, \theta_0) = \frac{1}{n}\sum_{i = 1}^n\left(\theta^Tx^{(i)} + \theta_0 - y^{(i)}\right)^2 + \lambda\|\theta\|^2
+$${#eq-uncentered_ridge_objective}
+
+Larger $\lambda$ values (in magnitude) pressure $\theta$ values to be near zero. 
  
-Note that we don't penalize $\theta_0$; intuitively, $\theta_0$ is what "floats" the regression surface to the right level for the data you have, and so you shouldn't make it harder to fit a data set where the $y$ values tend to be around one million than one where they tend to be around one. The other parameters control the orientation of the regression surface, and we prefer it to have a not-too-crazy orientation.
+Note that, when data isn't centered, we don't penalize $\theta_0$; intuitively, $\theta_0$ is what "floats" the regression surface to the right level for the data you have, and so we shouldn't make it harder to fit a data set where the $y$ values tend to be around one million than one where they tend to be around one. The other parameters control the orientation of the regression surface, and we prefer it to have a not-too-crazy orientation.
 
-There is an analytical expression for the $\theta, \theta_0$ values that minimize $J_\text{ridge}$, but it's a little bit more complicated to derive than the solution for ols. See the collaposed box for derivation. But alas, via similar calculus, the solution is: 
+There is an analytical expression for the $\theta, \theta_0$ values that minimize $J_\text{ridge}$, even when the data isn't centered, but it's a more complicated to derive than the solution for OLS, even though the process is conceptually similar: taking the gradient, setting it to zero, and solving for the parameters.
 
-<!-- TODO: This part is hairy needs rework -->
+The good news is, when the dataset is *centered*, we again have very clean set up and derivation. In particular, the objective can be written as:
+
+$$
+J_{\text{ridge}}(\theta) = \frac{1}{n}\sum_{i = 1}^n\left(\theta^Tx^{(i)}  - y^{(i)}\right)^2 + \lambda\|\theta\|^2
+$${#eq-centered_ridge_objective}
+
+:::{.column-margin}
+Compare @eq-uncentered_ridge_objective and @eq-centered_ridge_objective. What is the difference between the two? How is it possible to drop the offset here?
+:::
+
+and the solution is: 
 $$
 \theta_{\text{ridge}} = \left({X}^T{X}+ n\lambda I\right)^{-1}{X}^T{Y}
 $${#eq-ridge_regression_solution}
 
+
+
 :::{.callout-note collapse="true"}
-## Derivation of the ridge regression solution
-If we decide not to treat $\theta_0$ specially (so we add a 1 feature to our input vectors as discussed above), then we get: 
+## Derivation of the Ridge Regression Solution for Centered Data Set
 $$\nabla_{\theta}J_\text{ridge} = \frac{2}{n}{X}^T({X}\theta - {Y}) + 2
   \lambda \theta\;\;.$${#eq-regularized-solution}
 
@@ -404,7 +433,7 @@ $$\begin{aligned}
 :::
 
 
-One great news is that in @eq-regularized-solution, the matrix we are trying to invert can always be inverted! Why is the term $\left({X}^T{X}+ n\lambda I\right)$ invertible? Explaining this requires some linear algebra. The matrix ${X}^T{X}$ is positive semidefinite, which implies that its eigenvalues $\{\gamma_i\}_i$ are greater than or equal to 0. The matrix ${X}^T{X}+n\lambda I$ has eigenvalues $\{\gamma_i+n\lambda\}_i$ which are guaranteed to be strictly positive since $\lambda>0$. Recalling that the determinant of a matrix is simply the product of its eigenvalues, we get that $\det({X}^T{X}+ n\lambda I)>0$ and conclude that ${X}^T{X}+ n\lambda I$ is invertible.
+One other great news is that in @eq-regularized-solution, the matrix we are trying to invert can always be inverted! Why is the term $\left({X}^T{X}+ n\lambda I\right)$ invertible? Explaining this requires some linear algebra. The matrix ${X}^T{X}$ is positive semidefinite, which implies that its eigenvalues $\{\gamma_i\}_i$ are greater than or equal to 0. The matrix ${X}^T{X}+n\lambda I$ has eigenvalues $\{\gamma_i+n\lambda\}_i$ which are guaranteed to be strictly positive since $\lambda>0$. Recalling that the determinant of a matrix is simply the product of its eigenvalues, we get that $\det({X}^T{X}+ n\lambda I)>0$ and conclude that ${X}^T{X}+ n\lambda I$ is invertible.
 
 ## Evaluating learning algorithms {#sec-reg_learn_alg}
 
@@ -502,7 +531,5 @@ You can think about each different setting of a hyper-parameter as specifying a 
 In order to pick a good value of the hyper-parameter, we often end up just trying a lot of values and seeing which one works best via validation or cross-validation.
 
 :::{.study-question-callout}
-How could you use cross-validation to decide whether to use
-  analytic ridge regression or our random-regression algorithm and to pick
-  $K$ for random regression or $\lambda$ for ridge regression?
+How could you use cross-validation to decide whether to use analytic ridge regression or our random-regression algorithm and to pick $k$ for random regression or $\lambda$ for ridge regression?
 :::
