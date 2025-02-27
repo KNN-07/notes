@@ -1,5 +1,7 @@
-:::{.callout-warning}
-This chapter's HTML notes are in active development. For a more stable version, you can access the PDF notes [here](https://introml.mit.edu/_static/spring25/notes.pdf).
+:::{.callout-note}
+Section 6.1 - 6.4 contains all corresponding content from the legacy [PDF notes](https://introml.mit.edu/_static/spring25/notes.pdf).
+
+As we phase out the PDF, this page may receive updates not reflected in the static PDF.
 :::
 
 # Neural Networks {#sec-neural_networks}
@@ -259,6 +261,11 @@ Different loss functions make different assumptions about the range of values th
 
 We explored squared loss in @sec-regression and (nll and nllm) in @sec-classification.
 
+
+:::{.callout-warning}
+Sections below are in active development. For a more stable version, you can access the PDF notes [here](https://introml.mit.edu/_static/spring25/notes.pdf).
+:::
+
 ## Error back-propagation
 
 We will train neural networks using gradient descent methods. It's possible to use *batch* gradient descent, in which we sum up the gradient over all the points (as in @sec-gd of @sec-gradient or stochastic gradient descent (sgd), in which we take a small step with respect to the gradient considering a single point at a time (as in @sec-sgd of @sec-gradient).
@@ -428,15 +435,64 @@ If we view our neural network as a sequential composition of modules (in our wor
 
 In homework we will ask you to implement these modules for neural network components, and then use them to construct a network and train it as described in the next section.
 
+
+
+
+
 ## Training
 
 Here we go! Here's how to do stochastic gradient descent training on a feed-forward neural network. After this pseudo-code, we motivate the choice of initialization in lines 2 and 3. The actual computation of the gradient values (e.g., $\partial\text{loss}/\partial A^L$) is not directly defined in this code, because we want to make the structure of the computation clear.
 
-::: codebox
-$l \gets 1$ $L$ $W_{ij}^l \sim \text{Gaussian}(0, 1/m^l)$ $W_{0j}^l \sim \text{Gaussian}(0, 1)$ $t \gets 1$ $T$ $i \gets \text{random sample from } \{1,\ldots,n\}$ $A^0 \gets x^{(i)}$ forward pass to compute the output $A^L$ $l \gets 1$ $L$ $Z^l \gets W^{l^T}A^{l-1} + W_0^l$ $A^l \gets f^l(Z^l)$ $\text{loss} \gets \text{Loss}(A^L, y^{(i)})$ $l \gets L$ : error back-propagation $\partial \text{loss}/\partial A^l \gets$ **if** $l < L$ **then** $\partial Z^{l+1}/\partial A^l \cdot \partial \text{loss}/\partial Z^{l+1}$ **else** $\partial \text{loss}/\partial A^L$ $\partial \text{loss}/\partial Z^l \gets \partial
-  A^l/\partial Z^l  \cdot \partial
-  \text{loss}/\partial A^l$ compute gradient with respect to weights $\partial \text{loss}/\partial W^l  \gets        A^{l-1}      \cdot    \left( \partial \text{loss}/\partial Z^l  \right)^T$ $\partial \text{loss}/\partial W_0^l \gets       \partial \text{loss}/\partial Z^l$ stochastic gradient descent update $W^l = W^l - \eta(t)\cdot \partial \text{loss}/\partial W^l$ $W^l_0 = W_0^l - \eta(t)\cdot \partial \text{loss}/\partial W_0^l$
-:::
+
+
+```pseudocode
+#| html-indent-size: "1.2em"
+#| html-comment-delimiter: "//"
+#| html-line-number: true
+#| html-line-number-punc: ":"
+#| html-no-end: false
+#| pdf-placement: "htb!"
+#| pdf-line-number: true
+\begin{algorithm}
+\begin{algorithmic}[1]
+\Procedure{SGD-NEURAL-NET}{$\mathcal{D}_n, T, L,\left(m^1, \ldots, m^L\right),\left(f^1, \ldots, f^{L}\right), \text{Loss}$}
+  \For{$l \gets 1$ to $L$}
+    \State $W_{ij}^l \sim \text{Gaussian}(0, 1/m^l)$
+    \State $W_{0j}^l \sim \text{Gaussian}(0, 1)$
+  \EndFor
+
+  \For{$t \gets 1$ to $T$}
+    \State $i \gets \text{random sample from } \{1,\ldots,n\}$
+    \State $A^0 \gets x^{(i)}$  \Comment{forward pass to compute $A^L$}
+    \For{$l \gets 1$ to $L$}
+      \State $Z^l \gets W^{l^T} A^{l-1} + W_0^l$
+      \State $A^l \gets f^l(Z^l)$
+    \EndFor
+
+    \State $\text{loss} \gets \text{Loss}(A^L,\ y^{(i)})$
+    \For{$l \gets L$ down to $1$} \Comment{error back-propagation}
+      \State $\displaystyle \frac{\partial\text{loss}}{\partial A^l} \gets 
+         \begin{cases}
+           \frac{\partial Z^{l+1}}{\partial A^l}\cdot\frac{\partial \text{loss}}{\partial Z^{l+1}} & \text{if } l < L,\\
+           \frac{\partial \text{loss}}{\partial A^L} & \text{otherwise}
+         \end{cases}$
+      \State $\displaystyle \frac{\partial\text{loss}}{\partial Z^l} \gets 
+              \frac{\partial A^l}{\partial Z^l} \cdot 
+              \frac{\partial \text{loss}}{\partial A^l}$
+      \State $\displaystyle \frac{\partial\text{loss}}{\partial W^l} \gets 
+              A^{l-1}\,\bigl(\frac{\partial \text{loss}}{\partial Z^l}\bigr)^\top$
+      \State $\displaystyle \frac{\partial\text{loss}}{\partial W_0^l} \gets 
+              \frac{\partial \text{loss}}{\partial Z^l}$
+
+      \Comment{SGD update}
+      \State $W^l \gets W^l - \eta(t)\,\frac{\partial \text{loss}}{\partial W^l}$
+      \State $W_0^l \gets W_0^l - \eta(t)\,\frac{\partial \text{loss}}{\partial W_0^l}$
+    \EndFor
+  \EndFor
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+```
 
 Initializing $W$ is important; if you do it badly there is a good chance the neural network training won't work well. First, it is important to initialize the weights to random values. We want different parts of the network to tend to "address" different aspects of the problem; if they all start at the same weights, the symmetry will often keep the values from moving in useful directions. Second, many of our activation functions have (near) zero slope when the pre-activation $z$ values have large magnitude, so we generally want to keep the initial weights small so we will be in a situation where the gradients are non-zero, so that gradient descent will have some useful signal about which way to go.
 
@@ -478,11 +534,30 @@ Most neural network software packages are set up to do mini-batches.
 
 Picking $K$ unique data points at random from a large data-set is potentially computationally difficult. An alternative strategy, if you have an efficient procedure for randomly shuffling the data set (or randomly shuffling a list of indices into the data set) is to operate in a loop, roughly as follows:
 
-::: codebox
-$n =$ length(data) not done: $\proc{Random-Shuffle}$(data) $i \gets 1$ $\lceil n/K \rceil$ $\proc{Batch-Gradient-Update}$(NN, data$[(i - 1)K:iK]$)
-:::
 
-See note on the ceiling function, for the case when $n/K$ is not an integer.
+```pseudocode
+#| html-indent-size: "1.2em"
+#| html-comment-delimiter: "//"
+#| html-line-number: true
+#| html-line-number-punc: ":"
+#| html-no-end: false
+#| pdf-placement: "htb!"
+#| pdf-line-number: true
+
+\begin{algorithm}
+\begin{algorithmic}[1]
+\Procedure{Mini-Batch-SGD}{\texttt{NN}, \texttt{data}, \texttt{K}}
+  \State $n \gets \text{length}(\texttt{data})$
+  \While{\texttt{not done}}
+    \State \Call{Random-Shuffle}{\texttt{data}}
+    \For{$i \gets 1$ to $\left\lceil \frac{n}{K} \right\rceil$}
+      \State \Call{Batch-Gradient-Update}{\texttt{NN}, \texttt{data}[(i-1)K : iK]}
+    \EndFor
+  \EndWhile
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+```
 
 :::{.column-margin}
 In line 4 of the algorithm above, $\lceil \cdot \rceil$ is known as the *ceiling* function; it returns the smallest integer greater than or equal to its input. E.g., $\lceil 2.5 \rceil = 3$ and $\lceil 3 \rceil = 3$.
