@@ -239,7 +239,7 @@ What is the dimension of Percy's representation?  Under what
 assumptions about the original features is this a reasonable choice?
 :::
 
-### Radial basis functions (Optional)
+### (Optional) Radial basis functions 
 
 Another cool idea is to use *the training data itself* to construct a feature space. The idea works as follows. For any particular point $p$ in the input space $\mathcal{X}$, we can construct a feature $f_p$ which takes any element $x \in \mathcal{X}$ and returns a scalar value that is related to how far $x$ is from the $p$ we started with.
 
@@ -252,7 +252,7 @@ Now, given a dataset ${\cal D}$ containing $n$ points, we can make a feature tra
 
 This idea can be generalized in several ways and is the fundamental concept underlying *kernel methods*, that are not directly covered in this class but we recommend you read about some time. This idea of describing objects in terms of their similarity to a set of reference objects is very powerful and can be applied to cases where $\mathcal{X}$ is not a simple vector space, but where the inputs are graphs or strings or other types of objects, as long as there is a distance metric defined on the input space.
 
-## Hand-constructing features for real domains {#handBuiltFeatures} (Optional)
+## (Optional) Hand-constructing features for real domains {#handBuiltFeatures}
 
 In many machine-learning applications, we are given descriptions of the inputs with many different types of attributes, including numbers, words, and discrete features. An important factor in the success of an ML application is the way that the features are chosen to be encoded by the human who is framing the learning problem.
 
