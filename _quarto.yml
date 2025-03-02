@@ -28,6 +28,7 @@ book:
     - non_parametric.qmd
   appendices:
     - matrix_derivative.qmd
+    - neural_network_appendix.qmd
 
   reader-mode: true
   sharing: [twitter, linkedin]
@@ -129,7 +130,7 @@ filters:
 # zoom: 1.5
 # imagify-classes:
 #   pre-render:
-#     zoom: 4 # will show if it's not overriden
+#     zoom: 4 # will show if it's not override
 #     # block-style: "border: 1px solid red;"
 #   fitch:
 #     # debug: false

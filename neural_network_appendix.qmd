@@ -119,7 +119,7 @@ Define \(\hat{m}_{t,j}\) directly as a moving average of \(g_{t,j}\). What is th
 
 Even though we now have a step size for each weight, and we have to update various quantities on each iteration of gradient descent, it's relatively easy to implement by maintaining a matrix for each quantity (\(m^{\ell}_t\), \(v^{\ell}_t\), \(g^{\ell}_t\), \({g^{2}_t}^{\ell}\)) in each layer of the network.
 
-## Batch Normalization Details {#batch-norm-appendix}
+## Batch Normalization Details {#sec-batch-norm-appendix}
 
 Let's think of the batch-normalization layer as taking \(Z^l\) as input and producing an output \(\widehat{Z}^l\). But now, instead of thinking of \(Z^l\) as an \(n^l \times 1\) vector, we have to explicitly think about handling a mini-batch of data of size \(K\) all at once, so \(Z^l\) will be an \(n^l \times K\) matrix, and so will the output \(\widehat{Z}^l\).
 
