@@ -667,6 +667,14 @@ In homework we will ask you to implement these modules for neural network compon
 
 Here we go! Here's how to do stochastic gradient descent training on a feed-forward neural network. After this pseudo-code, we motivate the choice of initialization in lines 2 and 3. The actual computation of the gradient values (e.g., $\partial\text{loss}/\partial A^L$) is not directly defined in this code, because we want to make the structure of the computation clear.
 
+:::{.study-question-callout}
+What is $\partial Z^l / \partial W^l$?
+:::
+
+:::{.study-question-callout}
+Which terms in the code below depend on $f^L$?
+:::
+
 
 
 ```pseudocode
@@ -720,8 +728,16 @@ Here we go! Here's how to do stochastic gradient descent training on a feed-forw
 
 Initializing $W$ is important; if you do it badly there is a good chance the neural network training won't work well. First, it is important to initialize the weights to random values. We want different parts of the network to tend to "address" different aspects of the problem; if they all start at the same weights, the symmetry will often keep the values from moving in useful directions. Second, many of our activation functions have (near) zero slope when the pre-activation $z$ values have large magnitude, so we generally want to keep the initial weights small so we will be in a situation where the gradients are non-zero, so that gradient descent will have some useful signal about which way to go.
 
-One good general-purpose strategy is to choose each weight at random from a Gaussian (normal) distribution with mean 0 and standard deviation $(1/m)$ where $m$ is the number of inputs to the unit. We write this choice (where $\sim$ means "is drawn randomly from the distribution") as $W^l_{ij} \sim \text{Gaussian}\left(0,
-  \frac{1}{m^l}\right).$ It will often turn out (especially for fancier activations and loss functions) that computing $\frac{\partial \text{loss}}{\partial Z^L}$ is easier than computing $\frac{\partial \text{loss}}{\partial A^L}$ and $\frac{\partial A^L}{\partial Z^L}.$ So, we may instead ask for an implementation of a loss function to provide a backward method that computes $\partial \text{loss}/\partial Z^L$ directly.
+One good general-purpose strategy is to choose each weight at random from a Gaussian (normal) distribution with mean 0 and standard deviation $(1/m)$ where $m$ is the number of inputs to the unit. 
+
+:::{.study-question-callout}
+If the input $x$ to this unit is a vector of 1's, what would the expected pre-activation $z$ value be with these initial weights?
+:::
+
+
+We write this choice (where $\sim$ means "is drawn randomly from the distribution") as $W^l_{ij} \sim \text{Gaussian}\left(0, \frac{1}{m^l}\right).$ 
+
+It will often turn out (especially for fancier activations and loss functions) that computing $\frac{\partial \text{loss}}{\partial Z^L}$ is easier than computing $\frac{\partial \text{loss}}{\partial A^L}$ and $\frac{\partial A^L}{\partial Z^L}.$ So, we may instead ask for an implementation of a loss function to provide a backward method that computes $\partial \text{loss}/\partial Z^L$ directly.
 
 ## Optimizing neural network parameters {#sec-make_nn_work}
 
@@ -755,6 +771,10 @@ W_t = W_{t-1} - \frac{\eta}{K}\sum_{i=1}^K \nabla_W \mathcal{L}(h(x^{(i)}; W_{t-
 $$
 
 Most neural network software packages are set up to do mini-batches.
+
+:::{.study-question-callout}
+For what value of $K$ is mini-batch gradient descent equivalent to stochastic gradient descent? To batch gradient descent?
+:::
 
 Picking $K$ unique data points at random from a large data-set is potentially computationally difficult. An alternative strategy, if you have an efficient procedure for randomly shuffling the data set (or randomly shuffling a list of indices into the data set) is to operate in a loop, roughly as follows:
 
@@ -793,7 +813,15 @@ Picking a value for $\eta$ is difficult and time-consuming. If it's too small, t
 
 It's also true that, within a single neural network, we may well want to have different step sizes. As our networks become *deep* (with increasing numbers of layers) we can find that magnitude of the gradient of the loss with respect the weights in the last layer, $\partial \text{loss} / \partial W_L$, may be substantially different from the gradient of the loss with respect to the weights in the first layer $\partial \text{loss} / \partial W_1$. If you look carefully at @eq-gradz, you can see that the output gradient is multiplied by all the weight matrices of the network and is "fed back" through all the derivatives of all the activation functions. This can lead to a problem of *exploding* or *vanishing* gradients, in which the back-propagated gradient is much too big or small to be used in an update rule with the same step size.
 
-So, we can consider having an independent step-size parameter *for each weight*, and updating it based on a local view of how the gradient updates have been going. Some common strategies for this include *momentum* ("averaging" recent gradient updates), *Adadelta* (take larger steps in parts of the space where $J(W)$ is nearly flat), and *Adam* (which combines these two previous ideas). Details of these approaches are described in @adaptive-step-size-appendix.
+So, we can consider having an independent step-size parameter *for each weight*, and updating it based on a local view of how the gradient updates have been going. 
+
+:::{.column-margin}
+This section is very strongly influenced
+by Sebastian Ruder's excellent blog posts on the topic:
+{ruder.io/optimizing-gradient-descent}
+:::
+
+Some common strategies for this include *momentum* ("averaging" recent gradient updates), *Adadelta* (take larger steps in parts of the space where $J(W)$ is nearly flat), and *Adam* (which combines these two previous ideas). Details of these approaches are described in @adaptive-step-size-appendix.
 
 ## Regularization
 
@@ -802,6 +830,12 @@ So far, we have only considered optimizing loss on the training data as our obje
 ### Methods related to ridge regression
 
 One group of strategies can, interestingly, be shown to have similar effects to each other: early stopping, weight decay, and adding noise to the training data.
+
+
+:::{.column-margin}
+Result is due to Bishop, described in his textbook and [here](doi.org/10.1162/neco.1995.7.1.108).
+:::
+
 
 Early stopping is the easiest to implement and is in fairly common use. The idea is to train on your training set, but at every *epoch* (a pass through the whole training set, or possibly more frequently), evaluate the loss of the current $W$ on a *validation set*. It will generally be the case that the loss on the training set goes down fairly consistently with each iteration, the loss on the validation set will initially decrease, but then begin to increase again. Once you see that the validation loss is systematically increasing, you can stop training and return the weights that had the lowest validation error.
 
@@ -841,9 +875,21 @@ It is common to set $p$ to $0.5$, but this is something one might experiment wit
 
 ### Batch normalization
 
-Another strategy that seems to help with regularization and robustness in training is *batch normalization*. It was originally developed to address a problem of *covariate shift*: that is, if you consider the second layer of a two-layer neural network, the distribution of its input values is changing over time as the first layer's weights change. Learning when the input distribution is changing is extra difficult: you have to change your weights to improve your predictions, but also just to compensate for a change in your inputs (imagine, for instance, that the magnitude of the inputs to your layer is increasing over time---then your weights will have to decrease, just to keep your predictions the same).
+Another strategy that seems to help with regularization and robustness in training is *batch normalization*. 
+
+:::{.column-margin}
+For more details see arxiv.org/abs/1502.03167.
+:::
+
+
+
+It was originally developed to address a problem of *covariate shift*: that is, if you consider the second layer of a two-layer neural network, the distribution of its input values is changing over time as the first layer's weights change. Learning when the input distribution is changing is extra difficult: you have to change your weights to improve your predictions, but also just to compensate for a change in your inputs (imagine, for instance, that the magnitude of the inputs to your layer is increasing over time---then your weights will have to decrease, just to keep your predictions the same).
 
 So, when training with mini-batches, the idea is to *standardize* the input values for each mini-batch, just in the way that we did it in @sec-realFeature of @sec-features, subtracting off the mean and dividing by the standard deviation of each input dimension. This means that the scale of the inputs to each layer remains the same, no matter how the weights in previous layers change. However, this somewhat complicates matters, because the computation of the weight updates will need to take into account that we are performing this transformation. In the modular view, batch normalization can be seen as a module that is applied to $z^l$, interposed after the product with $W^l$ and before input to $f^l$.
+
+:::{.column-margin}
+We follow here the suggestion from the original paper of applying batch normalization before the activation function.  Since then it has been shown that, in some cases, applying it after works a bit better. But there aren't any definite findings on which works better and when.
+:::
 
 Although batch-norm was originally justified based on the problem of covariate shift, it's not clear that that is actually why it seems to improve performance. Batch normalization can also end up having a regularizing effect for similar reasons that adding noise and dropout do: each mini-batch of data ends up being mildly perturbed, which prevents the network from exploiting very particular values of the data points. For those interested, the equations for batch normalization, including a derivation of the forward pass and backward pass, are described in @sec-batch-norm-appendix.
 
