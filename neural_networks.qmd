@@ -1,5 +1,5 @@
 :::{.callout-note}
-Section 6.1 - 6.4 contains all corresponding content from the legacy [PDF notes](https://introml.mit.edu/_static/spring25/notes.pdf).
+This page contains all content from the legacy [PDF notes](https://introml.mit.edu/_static/spring25/notes.pdf);  neural networks chapter.
 
 As we phase out the PDF, this page may receive updates not reflected in the static PDF.
 :::
@@ -364,11 +364,6 @@ Different loss functions make different assumptions about the range of values th
 :::
 
 We explored squared loss in @sec-regression and (nll and nllm) in @sec-classification.
-
-
-:::{.callout-warning}
-Sections below are in active development. For a more stable version, you can access the PDF notes [here](https://introml.mit.edu/_static/spring25/notes.pdf).
-:::
 
 ## Error back-propagation
 
