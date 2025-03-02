@@ -449,6 +449,10 @@ It's pretty typical to run the chain rule from left to right like we did above. 
 $$\begin{aligned}
   \frac{ \partial \text{loss} }{ \partial w^l }
   &= a^{l-1} \cdot \frac{ \partial \text{loss} }{ \partial z^l } \\
+\end{aligned}
+$${#eq-gradloss_oned}
+
+$$\begin{aligned}
   \frac{ \partial \text{loss} }{ \partial z^l }
   &= \frac{ \partial a^{l} }{ \partial z^l }
   \cdot \frac{ \partial z^{l+1} }{ \partial a^{l} }
@@ -457,11 +461,17 @@ $$\begin{aligned}
   \cdot \frac{ \partial z^L }{ \partial a^{L-1} }
   \cdot \frac{ \partial a^L }{ \partial z^L }
   \cdot \frac{ \partial \text{loss} }{ \partial a^L } \\
+\end{aligned}
+$${#eq-gradz_intermediate_oned}
+
+$$
+\begin{aligned}
   &= \frac{ \partial a^{l} }{ \partial z^l } \cdot w^{l+1}
   \cdots
   \frac{ \partial a^{L-1} }{ \partial z^{L-1} } \cdot w^L \cdot \frac{ \partial a^L }{ \partial z^L }
   \cdot \frac{ \partial \text{loss} }{ \partial a^L }.
-\end{aligned}$${#eq-gradz_oned}
+\end{aligned}
+$${#eq-gradz_oned}
 
 ### The general case
 
@@ -469,12 +479,18 @@ Next we're going to do everything that we did above, but this time we'll allow a
 
 OK, let's start with the results! Again, below we'll be using "loss" as an abbreviation for $\mathcal{L}(\text{NN}(x;W),y)$. Then, 
 
-$$\begin{aligned}
-  \underbrace{\frac{\partial \text{loss}}{\partial W^l}}_{m^l \times n^l}
+$$
+\begin{aligned}
+\underbrace{\frac{\partial \text{loss}}{\partial W^l}}_{m^l \times n^l}
   &=
   \underbrace{A^{l-1}}_{m^l \times 1} \;
   \underbrace{\left(\frac{\partial \text{loss}}{\partial
       Z^l}\right)^T}_{1 \times n^l} \\
+\end{aligned}
+$${#eq-gradloss}
+
+$$
+\begin{aligned}
   \frac{\partial \text{loss}}{\partial Z^l}
   &= \frac{\partial A^l}{\partial Z^l}
   \cdot \frac{\partial Z^{l+1}}{ \partial A^l}
@@ -484,6 +500,11 @@ $$\begin{aligned}
   \cdot \frac{\partial A^{L}}{\partial Z^{L}}
   \cdot \frac{\partial \text{loss}}{\partial A^L}
   \\
+\end{aligned}
+$${#eq-gradz_intermediate}
+
+$$
+\begin{aligned}
   &= \frac{\partial A^l}{\partial Z^l}
   \cdot W^{l+1}
   \cdots
@@ -491,7 +512,8 @@ $$\begin{aligned}
   \cdot W^{L}
   \cdot \frac{\partial A^{L}}{\partial Z^{L}}
   \cdot \frac{\partial \text{loss}}{\partial A^L} \; .
-\end{aligned}$$
+\end{aligned}
+$${#eq-gradz}
 
 First, compare each equation to its one-dimensional counterpart, and make sure you see the similarities. That is, compare the general weight derivatives in @eq-gradloss to the one-dimensional case in @eq-gradloss_oned. Compare the intermediate derivative of loss with respect to the pre-activations $Z^l$ in @eq-gradz_intermediate to the one-dimensional case in @eq-gradz_intermediate_oned. And finally compare the version where we've substituted in some of the derivatives in @eq-gradz to @eq-gradz_oned. Hopefully you see how the forms are very analogous. But in the matrix case, we now have to be careful about the matrix dimensions. We'll check these matrix dimensions below.
 
@@ -688,7 +710,11 @@ Early stopping is the easiest to implement and is in fairly common use. The idea
 Another common strategy is to simply penalize the norm of all the weights, as we did in ridge regression. This method is known as *weight decay*, because when we take the gradient of the objective 
 $$
 J(W) = \sum_{i = 1}^{n}\mathcal{L}(\text{NN}(x^{(i)}), y^{(i)}; W)
-  + \lambda\|W\|^2$$ we end up with an update of the form $$\begin{aligned}
+  + \lambda\|W\|^2
+$$ we end up with an update of the form 
+
+$$
+\begin{aligned}
   W_t & = W_{t-1} -
   \eta\left(\left(\nabla_{W}\mathcal{L}(\text{NN}(x^{(i)}),
   y^{(i)}; W_{t-1})\right) + 2\lambda W_{t-1}\right)                                      \\
