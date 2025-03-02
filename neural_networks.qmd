@@ -282,7 +282,7 @@ $$
 $$
 
 :::{.imagify}
-\begin{tikzpicture}%[scale=.9]
+\begin{tikzpicture}
       \begin{axis}[
           name=topleft,
           axis lines=middle, axis equal image,
@@ -332,7 +332,7 @@ $$
         \addplot [domain=-4:4, samples=2, dashed] {1};
         \addplot [domain=-4:4, samples=2, dashed] {-1};
       \end{axis}
-    \end{tikzpicture}
+\end{tikzpicture}
 :::
 
 
@@ -376,8 +376,13 @@ We will train neural networks using gradient descent methods. It's possible to u
 
 Our notation is going to get pretty hairy pretty quickly. To keep it as simple as we can, we'll focus on computing the contribution of one data point $x^{(i)}$ to the gradient of the loss with respect to the weights, for sgd; you can simply sum up these gradients over all the data points if you wish to do batch descent.
 
-So, to do sgd for a training example $(x, y)$, we need to compute $\nabla_W \mathcal{L}(\text{NN}(x;W),y)$, where $W$ represents all weights $W^l, W_0^l$ in all the layers $l =
-  (1, \ldots, L)$. This seems terrifying, but is actually quite easy to do using the chain rule.
+So, to do sgd for a training example $(x, y)$, we need to compute $\nabla_W \mathcal{L}(\text{NN}(x;W),y)$, where $W$ represents all weights $W^l, W_0^l$ in all the layers $l = (1, \ldots, L)$. This seems terrifying, but is actually quite easy to do using the chain rule.
+
+:::{.column-margin}
+Remember the chain rule!  If $a = f(b)$ and $b = g(c)$, so that\\
+  $a = f(g(c))$, then $\frac{d a}{d c} = \frac{d a}{d b} \cdot \frac{d
+    b}{d c} = f'(b) g'(c) = f'(g(c)) g'(c)$.
+:::
 
 Remember that we are always computing the gradient of the loss function *with respect to the weights* for a particular value of $(x,  y)$. That tells us how much we want to change the weights, in order to reduce the loss incurred on this particular training example.
 
@@ -385,7 +390,13 @@ Remember that we are always computing the gradient of the loss function *with re
 
 To get some intuition for how these derivations work, we'll first suppose everything in our neural network is one-dimensional. In particular, we'll assume there are $m^l = 1$ inputs and $n^l = 1$ outputs at every layer. So layer $l$ looks like: $$a^l = f^l(z^l), \quad z^l = w^l a^{l-1} + w^l_0.$$ In the equation above, we're using the lowercase letters $a^l, z^l, w^l, a^{l-1}, w^l_0$ to emphasize that all of these quantities are scalars just for the moment. We'll look at the more general matrix case below.
 
-To use sgd, then, we want to compute $\partial \mathcal{L}(\text{NN}(x;W),y) / \partial w^l$ and $\partial \mathcal{L}(\text{NN}(x;W),y) / \partial w_0^l$ for each layer $l$ and each data point $(x,y)$. Below we'll write "loss" as an abbreviation for $\mathcal{L}(\text{NN}(x;W),y)$. Then our first quantity of interest is $\partial \text{loss} / \partial w^l$. The chain rule gives us the following. First, let's look at the case $l=L$: 
+To use sgd, then, we want to compute $\partial \mathcal{L}(\text{NN}(x;W),y) / \partial w^l$ and $\partial \mathcal{L}(\text{NN}(x;W),y) / \partial w_0^l$ for each layer $l$ and each data point $(x,y)$. Below we'll write "loss" as an abbreviation for $\mathcal{L}(\text{NN}(x;W),y)$. Then our first quantity of interest is $\partial \text{loss} / \partial w^l$. The chain rule gives us the following. 
+:::{.column-margin}
+Check your understanding: why do we need exactly these quantities for SGD?
+:::
+
+
+First, let's look at the case $l=L$: 
 
 $$\begin{aligned}
   \frac{ \partial \text{loss} }{ \partial w^L }
@@ -523,6 +534,14 @@ The next quantity we see in @eq-gradloss is $A^{l-1}$, which we recall has size 
 
 Now let's look at @eq-gradz. We're computing $\partial \text{loss} / \partial Z^l$ so that we can use it in @eq-gradloss. The weights are familiar. The one part that remains is terms of the form $\partial A^l / \partial Z^l$. Checking out @sec-matrix_deriv, we see that this term should be a matrix of size $n^l \times n^l$ since $A^l$ and $Z^l$ both have size $n^l \times 1$. The $(i,j)$ entry of this matrix is $\partial A^l_j / \partial Z^l_i$. This scalar derivative is something that you can compute when you know your activation function. If you're not using a softmax activation function, $A^l_j$ typically is a function only of $Z^l_j$, which means that $\partial A^l_j / \partial Z^l_i$ should equal 0 whenever $i \ne j$, and that $\partial A^l_j / \partial Z^l_j = (f^l)'(Z^l_j)$.
 
+:::{.study-question-callout}
+Compute the dimensions of every term in @eq-gradz_intermediate and @eq-gradz using @sec-matrix. After you've done that, check that all the matrix multiplications work; that is, check that the inner dimensions agree and that the lefthand side and righthand side of these equations have the same dimensions.
+:::
+
+:::{.study-question-callout}
+If I use the identity activation function, what is $\partial A^l_j / \partial Z^l_j$ for any $j$? What is the full matrix $\partial A^l / \partial Z^l$?
+:::
+
 ### Derivations for the general case
 
 You can use everything above without deriving it yourself. But if you want to find the gradients of loss with respect to $W^l_0$ (which we need for SGD!), then you'll want to know how to actually do these derivations. So next we'll work out the derivations.
@@ -544,10 +563,89 @@ $${#eq-partial_loss_partial_W_entries}
 
 Finally, then, we match entries of the matrices on both sides of the equation above to recover @eq-gradloss.
 
+
+:::{.study-question-callout}
+Check that @eq-partial_loss_partial_W_entries and @eq-gradloss say the same thing.
+:::
+
+:::{.study-question-callout}
+Convince yourself that $\partial Z^{l} / \partial A^{l-1} = W^l$ by comparing the entries of the matrices on both sides on the equality sign.
+:::
+
+:::{.study-question-callout}
+Convince yourself that @eq-gradz_intermediate is true.
+:::
+
+:::{.study-question-callout}
+Apply the same reasoning to find the gradients of $\text{loss}$ with respect to $W_0^l$.
+:::
+
+
 ### Reflecting on backpropagation
 
-This general process of computing the gradients of the loss with respect to the weights is called *error back-propagation*. The idea is that we first do a *forward pass* to compute all the $a$ and $z$ values at all the layers, and finally the actual loss. Then, we can work backward and compute the gradient of the loss with respect to the weights in each layer, starting at layer $L$ and going back to layer 1.
+This general process of computing the gradients of the loss with respect to the weights is called *error back-propagation*. 
 
+:::{.column-margin}
+\note{We could call this
+  ``blame propagation''.  Think of $\text{loss}$ as how mad we
+  are about the prediction just made.  Then $\partial
+    \text{loss}/ \partial A^L$ is how much we blame $A^L$ for the loss.
+  The last module has to take in $\partial \text{loss}/ \partial A^L$
+  and compute $\partial \text{loss}/ \partial Z^L$, which is how much
+  we blame $Z^L$ for the loss.  The next module (working backwards)
+  takes in $\partial \text{loss}/ \partial Z^L$ and computes $\partial
+    \text{loss}/ \partial A^{L-1}$.  So every module is accepting its
+  blame for the loss, computing how much of it to allocate to each of
+  its inputs, and passing the blame back to them.}
+:::
+
+
+The idea is that we first do a *forward pass* to compute all the $a$ and $z$ values at all the layers, and finally the actual loss. Then, we can work backward and compute the gradient of the loss with respect to the weights in each layer, starting at layer $L$ and going back to layer 1.
+
+:::{.imagify}
+\begin{tikzpicture}[scale=.98]
+    \coordinate (x) at (0,0);
+    \node[inner sep=0em] (w1) at (1.7,0)
+    {\begin{tabular}{c} $W^1$ \\ $W^1_0$\end{tabular}};
+    \node[inner sep=1em] (f1) at ($2*(w1)$) {$f^1$};
+    \node[inner sep=0em] (w2) at ($3*(w1)$)
+    {\begin{tabular}{c} $W^2$ \\ $W^2_0$\end{tabular}};
+    \node[inner sep=1em] (f2) at ($4*(w1)$) {$f^2$};
+    \node (dots) at ($5*(w1)$) {$\cdots$};
+    \node[inner sep=0em] (wL) at ($6*(w1)$)
+    {\begin{tabular}{c} $W^L$ \\ $W^L_0$\end{tabular}};
+    \node[inner sep=1em] (fL) at ($7*(w1)$) {$f^L$};
+    \node (loss) at ($8*(w1)$) {Loss};
+    \coordinate (y) at ($8*(w1) + (0,1.5)$);
+
+    \draw[->] (x) -- node[above] {$X = A^0$} (w1);
+    \draw[->] (w1) -- node[above] {$Z^1$} (f1);
+    \draw[->] (f1) -- node[above] {$A^1$} (w2);
+    \draw[->] (w2) -- node[above] {$Z^2$} (f2);
+    \draw[->] (f2) -- node[above] {$A^2$} (dots);
+    \draw[->] (dots) -- node[above] {$A^{L-1}$} (wL);
+    \draw[->] (wL) -- node[above] {$Z^L$} (fL);
+    \draw[->] (fL) -- node[above] {$A^L$} (loss);
+    \draw[->] (y) -- node[right] {$y$} ($(loss)+(0,.65)$);
+
+    %\draw[->,yshift=0.5cm] (loss.west) to [out=150,in=30] (fL.east);
+    \foreach \s/\e/\t in {loss/fL/A^L,
+    fL/wL/Z^L,
+    wL/dots/A^{L-1},
+    dots/f2/A^2,
+    f2/w2/Z^2,
+    w2/f1/A^1,
+    f1/w1/Z^1}{
+    \path[->] ($(\s.west) - (0,.5)$) edge[out=210,in=-30] node[below]
+      {$\frac{\partial \text{loss}}{\partial \t}$}
+    ($(\e.east) - (0,.5)$);
+    }
+    \foreach \point in {w1, f1, w2, f2, wL, fL}{
+        \draw ($(\point) + (-.3,-.5)$) rectangle ($(\point) + (.3,.5)$);
+      }
+    \draw ($(loss) + (-.4,-.5)$) rectangle ($(loss) + (.4,.5)$);
+  \end{tikzpicture}
+:::
 
 If we view our neural network as a sequential composition of modules (in our work so far, it has been an alternation between a linear transformation with a weight matrix, and a component-wise application of a non-linear activation function), then we can define a simple API for a module that will let us compute the forward and backward passes, as well as do the necessary weight updates for gradient descent. Each module has to provide the following "methods." We are already using letters $a, x, y, z$ with particular meanings, so here we will use $u$ as the vector input to the module and $v$ as the vector output:
 
