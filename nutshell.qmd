@@ -190,39 +190,37 @@ define customer_val(theta):
 
 In binary logistic regression the problem formulation is as follows. We are writing the class labels as 1 and 0.
 
-- $ \mathcal{X} = \mathbb{R}^d $
-- $ \mathcal{Y} = {+1, 0} $
-- $ \hclass = {\sigma(\theta^T x + \theta_0)} $ for values of parameters $ \theta \in \mathbb{R}^d $ and $ \theta_0 \in \mathbb{R} $.
-- $ \mathcal{L}(g, y) = \mathcal{L}_{01}(g, h) $
-- Proxy loss $ \mathcal{L}_\text{nll}(g, y) = -\Bigl(y \log(g) + (1 - y)\log(1 - g)\Bigr) $
-
-Our learning algorithm has hyperparameter $ \lambda $ and can be written as:
+- $\mathcal{X} = \mathbb{R}^d$
+- $y=\{+1,0\}$
+- $\mathcal{H}=\left\{\sigma\left(\theta^{\top} x+\theta_0\right)\right\}$ for values of parameters $\theta \in \mathbb{R}^d$ and $\theta_0 \in \mathbb{R}$.
+- $\mathcal{L}(\mathrm{g}, \mathrm{y})=\mathcal{L}_{01}(\mathrm{~g}, \mathrm{~h})$
+- Proxy loss $\mathcal{L}_{\mathrm{nll}}(\mathrm{g}, \mathrm{y})=-(\mathrm{y} \log (g)+(1-y) \log (1-g))$
+Our learning algorithm has hyperparameter $\lambda$ and can be written as:
 
 $$
-\mathcal{A}(\cal D; \lambda) = \Theta^*(\lambda, \cal D) = \arg\min_{\theta, \theta_0} \frac{1}{|\cal D|} \sum_{(x, y) \in \cal D} \mathcal{L}_\text{nll}\Bigl(\sigma(\theta^T x + \theta_0), y\Bigr) + \lambda |\theta|^2;.
+\mathcal{A}(\mathcal{D} ; \lambda)=\Theta^*(\lambda, \mathcal{D})=\arg \min _{\theta, \theta_0} \frac{1}{|\mathcal{D}|} \sum_{(x, y) \in \mathcal{D}} \mathcal{L}_{\mathrm{nll}}\left(\sigma\left(\theta^{\top} x+\theta_0\right), y\right)+\lambda\|\theta\|^2
 $$
 
-For a particular training data set and parameter $ \lambda $, it finds the best hypothesis on this data, specified with parameters $ \Theta = (\theta, \theta_0) $, written $ \Theta^*(\lambda, \cal D) $ according to the proxy loss $ \mathcal{L}_\text{nll} $.
+For a particular training data set and parameter $\lambda$, it finds the best hypothesis on this data, specified with parameters $\Theta=\left(\theta, \theta_0\right)$, written $\Theta^*(\lambda, \mathcal{D})$ according to the proxy loss $\mathcal{L}_{\text {nll }}$.
 
-Picking the best value of the hyperparameter is choosing among learning algorithms based on their actual predictions. We could, most simply, optimize using a single training / validation split, so that $ \cal D = \cal D^\text{train} \cup \cal D^\text{val} $, and we use the real 01 loss:
+Picking the best value of the hyperparameter is choosing among learning algorithms based on their actual predictions. We could, most simply, optimize using a single training / validation split, so $\mathcal{D}=\mathcal{D}^{\text {train }} \cup \mathcal{D}^{\mathrm{val}}$, and we use the real 01 loss:
 
 $$
 \begin{aligned}
-\lambda^* &= \arg\min_{\lambda} \mathcal{V}(\mathcal{A}_\lambda, \mathcal{L}_{01}, \cal D^\text{val}) \
-&= \arg\min_{\lambda} \mathcal{E}(\Theta^(\lambda, \cal D^\text{train}), \mathcal{L}_{01}, \cal D^\text{val}) \
-&= \arg\min_{\lambda} \frac{1}{|\cal D_\text{val}|} \sum_{(x, y) \in \cal D_\text{val}} \mathcal{L}_{01}\Bigl(\sigma\Bigl(\theta^(\lambda, \cal D^\text{train})^T x + \theta^*_0(\lambda, \cal D^\text{train})\Bigr), y\Bigr)
+\lambda^* & =\arg \min _\lambda \mathcal{V}\left(\mathcal{A}_\lambda, \mathcal{L}_{01}, \mathcal{D}^{\text {val }}\right) \\
+& =\arg \min _\lambda \mathcal{E}\left(\Theta^*\left(\lambda, \mathcal{D}^{\text {train }}\right), \mathcal{L}_{01}, \mathcal{D}^{\text {val }}\right) \\
+& =\arg \min _\lambda \frac{1}{\left|\mathcal{D}_{\text {val }}\right|} \sum_{(x, y) \in \mathcal{D}_{\text {val }}} \mathcal{L}_{01}\left(\sigma\left(\theta^*\left(\lambda, \mathcal{D}^{\text {train }}\right)^{\top} x+\theta_0^*\left(\lambda, \mathcal{D}^{\text {train }}\right)\right), y\right)
 \end{aligned}
 $$
 
-It would be much better to select the best $ \lambda $ using multiple runs or cross-validation; that would just be a different choice of the validation procedure $ \mathcal{V} $ in the top line.
+It would be much better to select the best $\lambda$ using multiple runs or cross-validation; that would just be a different choices of the validation procedure $\mathcal{V}$ in the top line.
 
-Finally! To make a predictor to ship out into the world, we would use all the data we have, $ \cal D $, to train, using the best hyperparameters we know, and return
-
+Finally! To make a predictor to ship out into the world, we would use all the data we have, $\mathcal{D}$, to train, using the best hyperparameters we know, and return
 $$
 \Theta^* = \mathcal{A}(\cal D; \lambda^*)
 $$
 
-::: {.study_question_callout}
+:::{.study-question-callout}
 What loss function is being optimized inside this algorithm?
 :::
 
@@ -232,4 +230,4 @@ $$
 \mathcal{E}^\text{test} = \mathcal{E}(\Theta^*, \mathcal{L}_{01}, \cal D^\text{test})
 $$
 
-The customer just wants to buy the right stocks! So we use the real $ \mathcal{L}_{01} $ here for validation.
+The customer just wants to buy the right stocks! So we use the real $\mathcal{L}_{01}$ here for validation.
