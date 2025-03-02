@@ -652,7 +652,7 @@ These two methods have offsetting virtues. The batch method takes steps in the e
 
 An effective strategy is to "average" between batch and stochastic gradient descent by using *mini-batches*. For a mini-batch of size $K$, we select $K$ distinct data points uniformly at random from the data set and do the update based just on their contributions to the gradient 
 $$
-W_t = W_{t-1} - \eta\sum_{i=1}^K \nabla_W \mathcal{L}(h(x^{(i)}; W_{t-1}),
+W_t = W_{t-1} - \frac{\eta}{K}\sum_{i=1}^K \nabla_W \mathcal{L}(h(x^{(i)}; W_{t-1}),
   y^{(i)})\;\;.
 $$
 
