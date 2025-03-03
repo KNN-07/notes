@@ -226,7 +226,7 @@ Here's a diagram of a many-layered network, with two blocks for each layer, one 
     ($(w2) + (-.4, -.7)$) -- node[yshift=-1.8em] {layer 2}
     ($(f2) + (.4,-.7)$);
     \draw [decorate,decoration={brace,mirror,amplitude=10pt}]
-    ($(wL) + (-.4, -.7)$) -- node[yshift=-1.8em] {layer $L$}
+    ($(wL) + (-.4, -.7)$) -- node[yshift=-1.8em, align=center] {layer $L$}
     ($(fL) + (.4,-.7)$);
 
 
@@ -353,7 +353,7 @@ ReLUs are especially common in internal ("hidden") layers, sigmoid activations a
 
 ## Loss functions and activation functions
 
-Different loss functions make different assumptions about the range of values they will get as input and, as we have seen, different activation functions will produce output values in different ranges. When you are designing a neural network, it's important to make these things fit together well. In particular, we will think about matching loss functions with the activation function in the last layer, $f^L$. Here is a table of loss functions and activations that make sense for them:
+At layer $L,$ which is the output layer, we need to specify a loss function, and possibly an activation function as well. Different loss functions make different assumptions about the range of values they will get as input and, as we have seen, different activation functions will produce output values in different ranges. When you are designing a neural network, it's important to make these things fit together well. In particular, we will think about matching loss functions with the activation function in the last layer, $f^L$. Here is a table of loss functions and activations that make sense for them:
 
 ::: center
 |  Loss   |  $f^L$  | task                       |
@@ -374,9 +374,14 @@ Our notation is going to get pretty hairy pretty quickly. To keep it as simple a
 So, to do sgd for a training example $(x, y)$, we need to compute $\nabla_W \mathcal{L}(\text{NN}(x;W),y)$, where $W$ represents all weights $W^l, W_0^l$ in all the layers $l = (1, \ldots, L)$. This seems terrifying, but is actually quite easy to do using the chain rule.
 
 :::{.column-margin}
-Remember the chain rule!  If $a = f(b)$ and $b = g(c)$, so that\\
-  $a = f(g(c))$, then $\frac{d a}{d c} = \frac{d a}{d b} \cdot \frac{d
-    b}{d c} = f'(b) g'(c) = f'(g(c)) g'(c)$.
+Remember the chain rule!  If $a = f(b)$ and $b = g(c)$, so that $a = f(g(c))$, then 
+$$
+\begin{aligned}
+\frac{d a}{d c} &= \frac{d a}{d b} \cdot \frac{d b}{d c} \\
+&= f'(b) g'(c) \\
+&= f'(g(c)) g'(c)
+\end{aligned}
+$$
 :::
 
 Remember that we are always computing the gradient of the loss function *with respect to the weights* for a particular value of $(x,  y)$. That tells us how much we want to change the weights, in order to reduce the loss incurred on this particular training example.
@@ -812,8 +817,7 @@ So, we can consider having an independent step-size parameter *for each weight*,
 
 :::{.column-margin}
 This section is very strongly influenced
-by Sebastian Ruder's excellent blog posts on the topic:
-{ruder.io/optimizing-gradient-descent}
+by Sebastian Ruder's excellent blog posts on the topic:{ruder.io/optimizing-gradient-descent}
 :::
 
 Some common strategies for this include *momentum* ("averaging" recent gradient updates), *Adadelta* (take larger steps in parts of the space where $J(W)$ is nearly flat), and *Adam* (which combines these two previous ideas). Details of these approaches are described in @adaptive-step-size-appendix.
