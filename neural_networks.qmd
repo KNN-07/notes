@@ -535,7 +535,7 @@ The next quantity we see in @eq-gradloss is $A^{l-1}$, which we recall has size 
 Now let's look at @eq-gradz. We're computing $\partial \text{loss} / \partial Z^l$ so that we can use it in @eq-gradloss. The weights are familiar. The one part that remains is terms of the form $\partial A^l / \partial Z^l$. Checking out @sec-matrix-derivative, we see that this term should be a matrix of size $n^l \times n^l$ since $A^l$ and $Z^l$ both have size $n^l \times 1$. The $(i,j)$ entry of this matrix is $\partial A^l_j / \partial Z^l_i$. This scalar derivative is something that you can compute when you know your activation function. If you're not using a softmax activation function, $A^l_j$ typically is a function only of $Z^l_j$, which means that $\partial A^l_j / \partial Z^l_i$ should equal 0 whenever $i \ne j$, and that $\partial A^l_j / \partial Z^l_j = (f^l)'(Z^l_j)$.
 
 :::{.study-question-callout}
-Compute the dimensions of every term in @eq-gradz_intermediate and @eq-gradz using @sec-matrix. After you've done that, check that all the matrix multiplications work; that is, check that the inner dimensions agree and that the lefthand side and righthand side of these equations have the same dimensions.
+Compute the dimensions of every term in @eq-gradz_intermediate and @eq-gradz using @sec-matrix-derivative. After you've done that, check that all the matrix multiplications work; that is, check that the inner dimensions agree and that the lefthand side and righthand side of these equations have the same dimensions.
 :::
 
 :::{.study-question-callout}
@@ -820,7 +820,7 @@ This section is very strongly influenced
 by Sebastian Ruder's excellent blog posts on the topic:{ruder.io/optimizing-gradient-descent}
 :::
 
-Some common strategies for this include *momentum* ("averaging" recent gradient updates), *Adadelta* (take larger steps in parts of the space where $J(W)$ is nearly flat), and *Adam* (which combines these two previous ideas). Details of these approaches are described in @adaptive-step-size-appendix.
+Some common strategies for this include *momentum* ("averaging" recent gradient updates), *Adadelta* (take larger steps in parts of the space where $J(W)$ is nearly flat), and *Adam* (which combines these two previous ideas). Details of these approaches are described in @sec-adaptive-step-size-appendix.
 
 ## Regularization
 
