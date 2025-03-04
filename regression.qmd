@@ -493,7 +493,7 @@ Generally, to evaluate how well a learning *algorithm* works, given an unlimited
 
 Running the algorithm multiple times controls for possible poor choices of training set or unfortunate randomization inside the algorithm itself.
 
-#### Cross validation
+#### Cross validation {#sec-cross-validation}
 
 One concern is that we might need a lot of data to do this, and in many applications data is expensive or difficult to acquire. We can re-use data with *cross validation* (but it's harder to do theoretical analysis).
 
