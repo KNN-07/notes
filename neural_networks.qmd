@@ -6,7 +6,7 @@ As we phase out the PDF, this page may receive updates not reflected in the stat
 
 # Neural Networks {#sec-neural_networks}
 
-You've probably been hearing a lot about "neural networks." Now that we have several useful machine-learning concepts (hypothesis classes, classification, regression, gradient descent, regularization, etc.) we are well equipped to understand neural networks in detail.
+You've probably been hearing a lot about "neural networks." Now that we have several useful machine-learning concepts (hypothesis classes, classification, regression, gradient descent, regularization, etc.), we are well equipped to understand neural networks in detail.
 
 This is, in some sense, the "third wave" of neural nets. The basic idea is founded on the 1943 model of neurons of McCulloch and Pitts and the learning ideas of Hebb. There was a great deal of excitement, but not a lot of practical success: there were good training methods (e.g., perceptron) for linear functions, and interesting examples of non-linear functions, but no good way to train non-linear functions from data. Interest died out for a while, but was re-kindled in the 1980s when several people came up with a way to train neural networks with "back-propagation," which is a particular style of implementing gradient descent, that we will study here. 
 
@@ -18,9 +18,9 @@ As with many good ideas in science,
 :::
 
 
-By the mid-90s, the enthusiasm waned again, because although we could train non-linear networks, the training tended to be slow and was plagued by a problem of getting stuck in local optima. Support vector machines (svms) that use regularization of high-dimensional hypotheses by seeking to maximize the margin, and kernel methods that are an efficient and beautiful way of using feature transformations to non-linearly transform data into a higher-dimensional space, provided reliable learning methods with guaranteed convergence and no local optima.
+By the mid-90s, the enthusiasm waned again, because although we could train non-linear networks, the training tended to be slow and was plagued by a problem of getting stuck in local optima. Support vector machines (SVMs) that use regularization of high-dimensional hypotheses by seeking to maximize the margin, alongside kernel methods that provide an efficient and beautiful way of using feature transformations to non-linearly transform data into a higher-dimensional space, provided reliable learning methods with guaranteed convergence and no local optima.
 
-However, during the svm enthusiasm, several groups kept working on neural networks, and their work, in combination with an increase in available data and computation, has made them rise again. They have become much more reliable and capable, and are now the method of choice in many applications. There are many, many variations of neural networks, which we can't even begin to survey. We will study the core "feed-forward" networks with "back-propagation" training, and then, in later chapters, address some of the major advances beyond this core.
+However, during the SVM enthusiasm, several groups kept working on neural networks, and their work, in combination with an increase in available data and computation, has made neural networks rise again. They have become much more reliable and capable, and are now the method of choice in many applications. There are many, many variations of neural networks, which we can't even begin to survey. We will study the core "feed-forward" networks with "back-propagation" training, and then, in later chapters, address some of the major advances beyond this core.
 
 :::{.column-margin}
 The number increases daily, as may be seen on `arxiv.org`.
@@ -75,7 +75,7 @@ The basic element of a neural network is a "neuron," pictured schematically belo
   \end{tikzpicture}
 :::
 
-It is a non-linear function of an input vector $x \in \mathbb{R}^m$ to a single output value $a \in \mathbb{R}$. 
+It is a (generally non-linear) function of an input vector $x \in \mathbb{R}^m$ to a single output value $a \in \mathbb{R}$. 
 
 :::{.column-margin}
 Sorry for changing our notation here.  We were using $d$ as the dimension of the input, but we are trying to be consistent here with many other accounts of neural  networks.  It is impossible to be consistent with all of them though---there are many different ways of telling this story.
@@ -89,7 +89,7 @@ $(w_1, \ldots, w_m) \in \mathbb{R}^m$ and an *offset* or *threshold* $w_0 \in \m
 This should remind you of our $\theta$ and $\theta_0$ for linear models.
 :::
 
-In order for the neuron to be non-linear, we also specify an *activation function* $f : \mathbb{R}\rightarrow \mathbb{R}$, which can be the identity ($f(x) = x$, in that case the neuron is a linear function of $x$), but can also be any other function, though we will only be able to work with it if it is differentiable.
+We also specify an *activation function* $f : \mathbb{R}\rightarrow \mathbb{R}$. In general, this is chosen to be a non-linear function, which means the neuron is non-linear. In the case that the activation function is the identity ($f(x) = x$) or another linear function, then the neuron is a linear function of $x$). The activation can theoretically be any function, though we will only be able to work with it if it is differentiable.
 
 The function represented by the neuron is expressed as: $$a = f(z) = f\left(\left(\sum_{j=1}^m x_jw_j\right) + w_0\right) = f(w^Tx + w_0)\;\;.$$
 
@@ -107,11 +107,11 @@ Just for a single neuron, imagine for some reason, that we decide to
 
 ## Networks
 
-Now, we'll put multiple neurons together into a *network*. A neural network in general takes in an input $x \in \mathbb{R}^m$ and generates an output $a \in \mathbb{R}^n$. It is constructed out of multiple neurons; the inputs of each neuron might be elements of $x$ and/or outputs of other neurons. The outputs are generated by $n$ *output units*.
+Now, we'll put multiple neurons together into a *network*. A neural network in general takes in an input $x \in \mathbb{R}^m$ and generates an output $a \in \mathbb{R}^n$. It is constructed out of multiple neurons; the inputs of each neuron might be elements of $x$ and/or outputs of other neurons. The outputs of the neural network are generated by $n$ *output units*.
 
 In this chapter, we will only consider *feed-forward* networks. In a feed-forward network, you can think of the network as defining a function-call graph that is *acyclic*: that is, the input to a neuron can never depend on that neuron's output. Data flows one way, from the inputs to the outputs, and the function computed by the network is just a composition of the functions computed by the individual neurons.
 
-Although the graph structure of a feed-forward neural network can really be anything (as long as it satisfies the feed-forward constraint), for simplicity in software and analysis, we usually organize them into *layers*. A layer is a group of neurons that are essentially "in parallel": their inputs are outputs of neurons in the previous layer, and their outputs are the input to the neurons in the next layer. We'll start by describing a single layer, and then go on to the case of multiple layers.
+Although the graph structure of a feed-forward neural network can really be anything (as long as it satisfies the feed-forward constraint), for simplicity in software and analysis, we usually organize them into *layers*. A layer is a group of neurons that are essentially "in parallel": their inputs are the outputs of neurons in the previous layer, and their outputs are the inputs to the neurons in the next layer. We'll start by describing a single layer, and then go on to the case of multiple layers.
 
 ### Single layer
 
@@ -336,7 +336,7 @@ $$
 :::
 
 
-The original idea for neural networks involved using the **step** function as an activation, but because the derivative of the step function is zero everywhere except at the discontinuity (and there it is undefined), gradient-descent methods won't be useful in finding a good setting of the weights, and so we won't consider them further. They have been replaced, in a sense, by the sigmoid, ReLU, and tanh activation functions.
+The original idea for neural networks involved using the **step** function as an activation, but because the derivative of the step function is zero everywhere except at the discontinuity (and there it is undefined), gradient-descent methods won't be useful in finding a good setting of the weights, and so we won't consider the step function further. Step functions have been replaced, in a sense, by the sigmoid, ReLU, and tanh activation functions.
 
 :::{.study-question-callout}
 Consider sigmoid, ReLU, and tanh activations.  Which one is most like
@@ -367,11 +367,11 @@ We explored squared loss in @sec-regression and (nll and nllm) in @sec-classific
 
 ## Error back-propagation
 
-We will train neural networks using gradient descent methods. It's possible to use *batch* gradient descent, in which we sum up the gradient over all the points (as in @sec-gd of @sec-gradient or stochastic gradient descent (sgd), in which we take a small step with respect to the gradient considering a single point at a time (as in @sec-sgd of @sec-gradient).
+We will train neural networks using gradient descent methods. It's possible to use *batch* gradient descent, in which we sum up the gradient over all the points (as in @sec-gd of @sec-gradient) or stochastic gradient descent (SGD), in which we take a small step with respect to the gradient considering a single point at a time (as in @sec-sgd of @sec-gradient).
 
-Our notation is going to get pretty hairy pretty quickly. To keep it as simple as we can, we'll focus on computing the contribution of one data point $x^{(i)}$ to the gradient of the loss with respect to the weights, for sgd; you can simply sum up these gradients over all the data points if you wish to do batch descent.
+Our notation is going to get pretty hairy pretty quickly. To keep it as simple as we can, we'll focus on computing the contribution of one data point $x^{(i)}$ to the gradient of the loss with respect to the weights, for SGD; you can simply sum up these gradients over all the data points if you wish to do batch descent.
 
-So, to do sgd for a training example $(x, y)$, we need to compute $\nabla_W \mathcal{L}(\text{NN}(x;W),y)$, where $W$ represents all weights $W^l, W_0^l$ in all the layers $l = (1, \ldots, L)$. This seems terrifying, but is actually quite easy to do using the chain rule.
+So, to do SGD for a training example $(x, y)$, we need to compute $\nabla_W \mathcal{L}(\text{NN}(x;W),y)$, where $W$ represents all weights $W^l, W_0^l$ in all the layers $l = (1, \ldots, L)$. This seems terrifying, but is actually quite easy to do using the chain rule.
 
 :::{.column-margin}
 Remember the chain rule!  If $a = f(b)$ and $b = g(c)$, so that $a = f(g(c))$, then 
@@ -390,7 +390,8 @@ Remember that we are always computing the gradient of the loss function *with re
 
 To get some intuition for how these derivations work, we'll first suppose everything in our neural network is one-dimensional. In particular, we'll assume there are $m^l = 1$ inputs and $n^l = 1$ outputs at every layer. So layer $l$ looks like: $$a^l = f^l(z^l), \quad z^l = w^l a^{l-1} + w^l_0.$$ In the equation above, we're using the lowercase letters $a^l, z^l, w^l, a^{l-1}, w^l_0$ to emphasize that all of these quantities are scalars just for the moment. We'll look at the more general matrix case below.
 
-To use sgd, then, we want to compute $\partial \mathcal{L}(\text{NN}(x;W),y) / \partial w^l$ and $\partial \mathcal{L}(\text{NN}(x;W),y) / \partial w_0^l$ for each layer $l$ and each data point $(x,y)$. Below we'll write "loss" as an abbreviation for $\mathcal{L}(\text{NN}(x;W),y)$. Then our first quantity of interest is $\partial \text{loss} / \partial w^l$. The chain rule gives us the following. 
+To use SGD, then, we want to compute $\partial \mathcal{L}(\text{NN}(x;W),y) / \partial w^l$ and $\partial \mathcal{L}(\text{NN}(x;W),y) / \partial w_0^l$ for each layer $l$ and each data point $(x,y)$. Below we'll write "loss" as an abbreviation for $\mathcal{L}(\text{NN}(x;W),y)$. Then our first quantity of interest is $\partial \text{loss} / \partial w^l$. The chain rule gives us the following. 
+
 :::{.column-margin}
 Check your understanding: why do we need exactly these quantities for SGD?
 :::
@@ -484,6 +485,10 @@ $$
 \end{aligned}
 $${#eq-gradz_oned}
 
+:::{.column-margin}
+Even though we have reordered the gradients for notational convenience, when actually computing the product in @eq-gradz_oned, it is computationally much cheaper to run the multiplications from right-to-left than from left-to-right. Convince yourself of this, by reasoning through the cost of the matrix multiplications in each case.
+:::
+
 ### The general case
 
 Next we're going to do everything that we did above, but this time we'll allow any number of inputs $m^l$ and outputs $n^l$ at every layer. First, we'll tell you the results that correspond to our derivations above. Then we'll talk about why they make sense. And finally we'll derive them carefully.
@@ -499,6 +504,10 @@ $$
       Z^l}\right)^T}_{1 \times n^l} \\
 \end{aligned}
 $${#eq-gradloss}
+
+:::{.column-margin}
+There are lots of weights in a neural network, which means we need to compute a lot of gradients. Luckily, as we can see, the gradients associated with weights in earlier layers depend on the same terms as the gradients associated with weights in later layers. This means we can reuse terms and save ourselves some computation!
+:::
 
 $$
 \begin{aligned}
@@ -535,7 +544,7 @@ The next quantity we see in @eq-gradloss is $A^{l-1}$, which we recall has size 
 Now let's look at @eq-gradz. We're computing $\partial \text{loss} / \partial Z^l$ so that we can use it in @eq-gradloss. The weights are familiar. The one part that remains is terms of the form $\partial A^l / \partial Z^l$. Checking out @sec-matrix-derivative, we see that this term should be a matrix of size $n^l \times n^l$ since $A^l$ and $Z^l$ both have size $n^l \times 1$. The $(i,j)$ entry of this matrix is $\partial A^l_j / \partial Z^l_i$. This scalar derivative is something that you can compute when you know your activation function. If you're not using a softmax activation function, $A^l_j$ typically is a function only of $Z^l_j$, which means that $\partial A^l_j / \partial Z^l_i$ should equal 0 whenever $i \ne j$, and that $\partial A^l_j / \partial Z^l_j = (f^l)'(Z^l_j)$.
 
 :::{.study-question-callout}
-Compute the dimensions of every term in @eq-gradz_intermediate and @eq-gradz using @sec-matrix. After you've done that, check that all the matrix multiplications work; that is, check that the inner dimensions agree and that the lefthand side and righthand side of these equations have the same dimensions.
+Compute the dimensions of every term in @eq-gradz_intermediate and @eq-gradz using @sec-matrix-derivative. After you've done that, check that all the matrix multiplications work; that is, check that the inner dimensions agree and that the lefthand side and righthand side of these equations have the same dimensions.
 :::
 
 :::{.study-question-callout}
@@ -653,6 +662,10 @@ If we view our neural network as a sequential composition of modules (in our wor
 
 -   backward: $u, v, \partial L /
               \partial v \rightarrow \partial L / \partial u$
+
+:::{.column-margin}
+Notice that the backward pass does not output $\partial v / \partial u$, even though the forward pass maps from $u$ to $v$. In the backward pass, we are always directly computing and ``passing around'' gradients of the loss.
+:::
 
 -   weight grad: $u, \partial L / \partial v \rightarrow \partial L
               / \partial W$ only needed for modules that have weights $W$
@@ -837,6 +850,10 @@ Result is due to Bishop, described in his textbook and [here](doi.org/10.1162/ne
 
 
 Early stopping is the easiest to implement and is in fairly common use. The idea is to train on your training set, but at every *epoch* (a pass through the whole training set, or possibly more frequently), evaluate the loss of the current $W$ on a *validation set*. It will generally be the case that the loss on the training set goes down fairly consistently with each iteration, the loss on the validation set will initially decrease, but then begin to increase again. Once you see that the validation loss is systematically increasing, you can stop training and return the weights that had the lowest validation error.
+
+:::{.column-margin}
+Warning: If you use your validation set in this way -- i.e., to set the number of epochs (or any other hyperparameter associated with your learning algorithm) -- then error on the validation set no longer provides a "pure" estimate of error on the test set (i.e., generalization error). This is because information about the validation set has "leaked" into the design of your algorithm. See also the discussion on Validation and Cross-Validation in @sec-regression.
+:::
 
 Another common strategy is to simply penalize the norm of all the weights, as we did in ridge regression. This method is known as *weight decay*, because when we take the gradient of the objective 
 $$
