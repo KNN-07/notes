@@ -1,7 +1,6 @@
 .study-question-callout {
     border-left: 4px solid #007BFF; /* Change color as needed */
     padding: 10px;
-    background-color: #f9f9f9;
     margin-bottom: 20px;
 }
 .study-question-callout::before {

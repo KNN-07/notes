@@ -343,7 +343,17 @@ Let's see how this works out mathematically. First, for a *centered* dataset, tw
 
 Recall that our ultimate goal is to find an optimal fitting hyperplane, parameterized by $\theta$ and $\theta_0$. In other words, we aim to find $\theta_{\text{aug}},$ which at this point, involves simply plugging $X_{\text{aug}}=\left[\begin{array}{c}X \quad  \mathbb{1} \end{array}\right]$ into @eq-ols_solution. 
 
-![](figures/centering_proof.png){width="100%"}
+$$\begin{aligned}
+\theta_{\text{aug}}^*&=\left ( \begin{bmatrix} X^T\\\mathbb{1}^T\end{bmatrix}\begin{bmatrix}X&\mathbb{1}\end{bmatrix}\right)^{-1}\begin{bmatrix}X^T\\ \mathbb{1}^T\end{bmatrix}Y\\
+&=\begin{bmatrix}X^TX&X^T\mathbb{1}\\\mathbb{1}^TX&\mathbb{1}^T\mathbb{1}\end{bmatrix}^{-1}\begin{bmatrix}X^T\\ \mathbb{1}^T\end{bmatrix}Y\\
+&=\begin{bmatrix}X^TX&X^T\mathbb{1}\\\mathbb{1}^TX&\mathbb{1}^T\mathbb{1}\end{bmatrix}^{-1}\begin{bmatrix}X^T\\ \mathbb{1}^T\end{bmatrix}Y\\
+&=\begin{bmatrix}X^TX&0\\0&n\end{bmatrix}^{-1}\begin{bmatrix}X^T\\\mathbb{1}^T\end{bmatrix}Y\\
+&=\begin{bmatrix}(X^TX)^{-1}X^TY\\n\mathbb{1}^TY\end{bmatrix}\\
+&=\begin{bmatrix}(X^TX)^{-1}X^TY\\0\end{bmatrix}\\
+&=\begin{bmatrix}\theta^*\\\theta_0^*\end{bmatrix}\\
+\end{aligned}
+$$
+
 
 Indeed, the optimal $\theta_0$ naturally falls out to be 0.
 
@@ -483,7 +493,7 @@ Generally, to evaluate how well a learning *algorithm* works, given an unlimited
 
 Running the algorithm multiple times controls for possible poor choices of training set or unfortunate randomization inside the algorithm itself.
 
-#### Cross validation
+#### Cross validation {#sec-cross-validation}
 
 One concern is that we might need a lot of data to do this, and in many applications data is expensive or difficult to acquire. We can re-use data with *cross validation* (but it's harder to do theoretical analysis).
 
