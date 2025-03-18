@@ -22,12 +22,12 @@ book:
     - feature_representation.qmd
     - neural_networks.qmd
     - convolutional_neural_networks.qmd
-    - transformers.qmd
     - autoencoders.qmd
-    - clustering.qmd
+    - transformers.qmd
     - mdp.qmd
     - reinforcement_learning.qmd
     - non_parametric.qmd
+    - clustering.qmd
   appendices:
     - matrix_derivative.qmd
     - neural_network_appendix.qmd
@@ -40,6 +40,11 @@ book:
     collapse-level: 2
     border: true
     search: true
+    github: false
+    tools:
+      - text: Accessibility
+        href: https://accessibility.mit.edu/
+        icon: universal-access
   # page-footer:
   page-navigation: true
 
@@ -148,6 +153,6 @@ imagify:
   output-folder: _imagify_files
   header-includes: |
     \usepackage{pgfplots}
-    \usetikzlibrary{tikzmark, shapes.geometric, shapes.arrows, fit, bending, calc}
+    \usetikzlibrary{tikzmark, shapes.geometric, shapes.arrows, fit, bending, calc, backgrounds, automata, positioning}
   pdf-engine: pdflatex
 # engine: knitr
