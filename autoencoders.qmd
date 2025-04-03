@@ -10,7 +10,7 @@ In previous chapters, we have largely focused on classification and regression p
 
 In contrast to supervised learning paradigm, we can also have an unsupervised learning setting, where we only have features but no corresponding outputs or labels for our dataset. On natural question aries then: if there are no labels, what are we learning?
 
-One canonical example of unsupervised learning is clustering, which we learned about in @sec-clustering. In clustering, the goal is to develop algorithms that can reason about "similarity" among data points's features, and group the data points into clusters.
+One canonical example of unsupervised learning is clustering, which is discussed in @sec-clustering. In clustering, the goal is to develop algorithms that can reason about "similarity" among data points's features, and group the data points into clusters.
 
 *Autoencoders* are another family of unsupervised learning algorithms, in this case seeking to obtain insights about our data by learning compressed versions of the original data, or, in other words, by finding a good lower-dimensional feature representations of the same data set. Such insights might help us to discover and characterize underlying factors of variation in data, which can aid in scientific discovery; to compress data for efficient storage or communication; or to pre-process our data prior to supervised learning, perhaps to reduce the amount of data that is needed to learn a good classifier or regressor.
 
