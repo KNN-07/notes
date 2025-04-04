@@ -31,7 +31,7 @@ In general, the encoder and decoder functions might be any functions appropriate
   \mathbb{R}^{d \times k}$ and $W^1_0 \in \mathbb{R}^k$, and where the non-linearity $f_1$ is applied to each dimension of the vector. To recover (an approximation to) the original instance, we then apply the decoder $h(a; W^2, W^2_0) = f_2(W{^2}^T
   a + W^2_0)$, where $f_2$ denotes a different non-linearity (activation function). In general, both the decoder and the encoder could involve multiple layers, as opposed to the single layer shown here. Learning seeks parameters $W^1, W^1_0$ and $W^2, W^2_0$ such that the reconstructed instances, $h(g(x^{(i)}; W^{1}, W^1_0); W^{2}, W^2_0)$, are close to the original input $x^{(i)}$.
 
-![Autoencoder structure, showing the encoder (left half, light green), and the decoder (right half, light blue), encoding inputs $x$ to the representation $a$, and decoding the representation to produce $\tilde{x}$, the reconstruction. In this specific example, the representation ($a_1$, $a_2$, $a_3$) only has three dimensions.[]{#fig:autoencoder label="fig:autoencoder"}](figures/autoencoder.png){#fig-autoencoder width=".8"}
+![Autoencoder structure, showing the encoder (left half, light green), and the decoder (right half, light blue), encoding inputs $x$ to the representation $a$, and decoding the representation to produce $\tilde{x}$, the reconstruction. In this specific example, the representation ($a_1$, $a_2$, $a_3$) only has three dimensions.[]{#fig:autoencoder label="fig:autoencoder"}](figures/autoencoder.png){#fig-autoencoder width="60%"}
 
 ## Autoencoder Learning
 
@@ -93,6 +93,4 @@ Or a model could be built that tries to correctly predict words in the middle of
 
 This task exemplifies *self-supervision*, a training approach where models generate labels directly from the data itself, eliminating the need for manual labeling. Training neural networks through self-supervision involves optimizing their ability to predict words accurately from large text corpora (e.g., Wikipedia). Through such optimization, embeddings capture subtle semantic and syntactic nuances, greatly enhancing NLP capabilities.
 
-The idea of good embeddings will play a central role when we discuss attention mechanisms in @sec-transformers, 
-
-We’ll return to the concept of embedding space soon—but with a powerful twist. In Transformer models, each word occurrence gets its own context-sensitive embedding that shifts dynamically depending on surrounding words. This opens the door to much more nuanced understanding of language.
+The idea of good embeddings will play a central role when we discuss attention mechanisms in @sec-transformers, where embeddings dynamically adjust based on context (via the so-called attention mechanism), enabling a more nuanced understanding of language.
