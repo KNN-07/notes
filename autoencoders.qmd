@@ -4,7 +4,7 @@ This page contains all content from the legacy [PDF notes](https://introml.mit.e
 As we phase out the PDF, this page may receive updates not reflected in the static PDF.
 :::
 
-# Autoencoders {#sec-autoencoders}
+# Representation Learning (Autoencoders) {#sec-autoencoders}
 
 In previous chapters, we have largely focused on classification and regression problems, where we use supervised learning with training samples that have both features/inputs and corresponding outputs or labels, to learn hypotheses or models that can then be used to predict labels for new data.
 
@@ -63,48 +63,36 @@ Another influential encoder-decoder architecture is the Transformer, covered in 
 
 Central to autoencoders and Transformers is the idea of learning representations. Autoencoders compress data into efficient, informative representations, while NLP models encode language—words, phrases, sentences—into numerical forms. This numerical encoding leads us to the concept of vector embeddings.
 
-## Vector Embeddings
+## Embeddings
 
-Before we can fully understand the attention mechanism used in Transformers, we need to introduce a new way of representing language data in neural networks.
+In NLP, words are represented as vectors, commonly known as *word embeddings*. A key property of good embeddings is that their numerical closeness mirrors semantic similarity. For instance, semantically related words such as "dog" and "cat" should have vectors close together, while unrelated words like "cat" and "table" should be farther apart.
 
-In NLP, words are often represented as *vectors*, commonly referred to as *word embeddings*. These embeddings are designed so that their numerical similarity corresponds to semantic similarity. For example, words like dog and cat—which are conceptually related—should be represented by vectors that are closer to each other in some high-dimensional space than unrelated pairs like cat and table.
+Similarity between embeddings is frequently measured using the *inner product*:
 
-A commonly used metric to compare the similarity between two embeddings is *inner product similarity*:
+$$u^T v = u \cdot v$$
 
-$$\begin{aligned}
-  u^T v = u \cdot v
-\end{aligned}$$ The result of the inner product can range from negative infinity to positive infinity. When two vectors are very similar and point in the same direction, their inner product is highly positive. If they point in completely opposite directions, the inner product becomes highly negative. When the vectors are perpendicular (i.e., have no directional alignment), the inner product is zero, indicating no similarity. In general, larger positive values suggest a stronger semantic connection between the words.
+The inner product indicates how aligned two vectors are: highly positive values imply strong similarity, negative values indicate opposition, and values near zero suggest no similarity.
 
-Importantly, as we’ll see when we discuss attention-based models, the same word may have different embeddings depending on context. That is, the word “bank” in river bank and bank account may be represented by entirely different vectors, shaped by the surrounding words. In fact, it's now typical for each individual occurrence of a word to have its own unique embedding, even within the same document. For example, in a story that mentions the word “dog” a dozen times, each instance may be encoded slightly differently, depending on its role and context within the sentence and narrative.
-
-## Embedding Space
-
-One of the most compelling properties of word embeddings is that they do more than just capture pairwise similarity—they can encode meaningful relationships between words as well.
-
-While word embeddings—and various approaches to create them—have existed for decades, the first approach that produced astonishingly effective embeddings was *word2vec*, introduced in 2012. This revolutionary method was the first highly successful application of deep learning to NLP, and it enabled nearly all the subsequent progress in the field, including the development of Transformers.
-
-The details of *word2vec* are beyond the scope of this course, but it's worth noting that it produced word embeddings so useful that many relationships between the vectors corresponded with real-world semantic relatedness.
-
-For example, when using *Euclidean distance* as a distance metric between two vectors, word2vec produced word embeddings with properties such as (where $v_{\tt word}$ is the vector for ${\tt word}$):
+A groundbreaking embedding method, *word2vec* (2012), significantly advanced NLP by producing embeddings where vector arithmetic corresponded to real-world semantic relationships. For instance:
 
 $$\begin{aligned}
   v_{\tt paris} - v_{\tt france} + v_{\tt italy} \approx v_{\tt rome}
 \end{aligned}$$
 
-This corresponds with the real-world property that Paris is to France what Rome is to Italy. This incredible finding existed not only for geographic words but all sorts of real-world concepts in the vocabulary (e.g., king - man + woman ≈ queen). 
+Such embeddings revealed meaningful semantic relationships like analogies across diverse vocabulary (e.g., *uncle* – *man* + *woman* ≈ *aunt*).
 
-That said, the exact coordinates of a given word vector are arbitrary; what matters is the relative arrangement of all the vectors in the embedding space. In practice, an embedding is judged to be “good” if it is useful for a downstream task—such as predicting the next word in a sequence, classifying text, or translating languages.
+Importantly, embeddings don't need exact coordinates—it's their relative positioning within the vector space that matters. Embeddings are considered effective if they facilitate downstream NLP tasks, such as predicting missing words, classifying texts, or language translation.
 
-For example, an embedding may be considered good if it accurately captures the conditional probability for a given word to appear next in a sequence of words. You probably have a good idea of what words might typically fill in the blank at the end of this sentence:
+For example, effective embeddings allow models to accurately predict a missing word in a sentence:
 
-> After the rain, the grass was ____
+> After the rain, the grass was ____.
 
 Or a model could be built that tries to correctly predict words in the middle of sentences:
 
 > The child fell __ __ during the long car ride
 
-The model can be built by minimizing a loss function that penalizes incorrect word guesses, and rewards correct ones. This is done by training a model on a very large corpus of written material, such as all of Wikipedia, or even all the accessible digitized written materials produced by humans.
+This task exemplifies *self-supervision*, a training approach where models generate labels directly from the data itself, eliminating the need for manual labeling. Training neural networks through self-supervision involves optimizing their ability to predict words accurately from large text corpora (e.g., Wikipedia). Through such optimization, embeddings capture subtle semantic and syntactic nuances, greatly enhancing NLP capabilities.
 
-However, it’s important to note that these word2vec embeddings were not context-aware. Each word had a unique fixed vector, regardless of where or how it appeared. So, the word *“bank”* would be represented the same way whether it appeared in *“river bank”* or *“bank account”*, even though the meanings are clearly different.
+The idea of good embeddings will play a central role when we discuss attention mechanisms in @sec-transformers, 
 
 We’ll return to the concept of embedding space soon—but with a powerful twist. In Transformer models, each word occurrence gets its own context-sensitive embedding that shifts dynamically depending on surrounding words. This opens the door to much more nuanced understanding of language.
