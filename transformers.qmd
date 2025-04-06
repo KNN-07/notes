@@ -103,7 +103,7 @@ Note that the above procedure should sound familiar since it is almost the same 
 Importantly, self-attention is indepent for every query $q_i$ which means it essentially performs the same procedure indepdently for every query. By stacking these computations together, we can express the full attention matrix $A \in \mathbb{R}^{n \times n}$ as follows:
 
 $$\begin{aligned}
-\alpha = \begin{bmatrix}
+A = \begin{bmatrix}
     \text{softmax}\left( \begin{bmatrix}
                            q_1^\top k_1 & q_1^\top k_2 & \cdots & q_1^\top k_{n}
                          \end{bmatrix} / \sqrt{d_k} \right) \\
@@ -139,17 +139,27 @@ More generally, a *mask* may be applied to limit which tokens are used in the at
 $$
 M = 
 \begin{bmatrix}
-  1 & 0 & 0 & \cdots & 0 \\
-  1 & 1       & 0 & \cdots & 0 \\
-  1 & 1       & 1       & \cdots & 0 \\
+  0 & -\infty & -\infty & \cdots & -\infty \\
+  0 & 0       & -\infty & \cdots & -\infty \\
+  0 & 0       & 0       & \cdots & -\infty \\
   \vdots & \vdots & \vdots & \ddots & \vdots \\
-  1 & 1       & 1       & \cdots & 1
+  0 & 0       & 0       & \cdots & 0
 \end{bmatrix}
-$$Then we mask out the attention matrix by element-wise multiplication and use it to calculate the final attention output:
-
 $$
-\alpha^\prime=M \ddot \alpha, Y= \alpha^\prime V
-$$Essentially, the lower-triangular property of $M$ ensures that the self-attention operation for the $j$-th query only considers tokens $0,1,...,j$.
+
+and we now have the masked attention matrix:
+
+$$\begin{aligned}
+A = \text{softmax}\left(
+\frac{1}{\sqrt{d_k}}
+\begin{bmatrix}
+q_1^\top k_1 & q_1^\top k_2 & \cdots & q_1^\top k_n \\
+q_2^\top k_1 & q_2^\top k_2 & \cdots & q_2^\top k_n \\
+\vdots       & \vdots       & \ddots & \vdots       \\
+q_n^\top k_1 & q_n^\top k_2 & \cdots & q_n^\top k_n
+\end{bmatrix}
++ M \right)
+$$ The softmax is performed to each row independently. The attention output is still $Y= \alpha^\prime V$. Essentially, the lower-triangular property of $M$ ensures that the self-attention operation for the $j$-th query only considers tokens $0,1,...,j$. Note that we should apply the masking before performing softmax, so that the attention matrix can be properly normalized (i.e., each row sum to 1).
 
 
 Each self-attention stage is trained to have key, value, and query embeddings that lead it to pay specific attention to some particular feature of the input. We generally want to pay attention to many different kinds of features in the input; for example, in translation one feature might be be the verbs, and another might be objects or subjects. A transformer utilizes multiple instances of self-attention, each known as an "attention head," to allow combinations of attention paid to many different features.
