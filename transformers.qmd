@@ -53,67 +53,56 @@ While we will not dive into the full details of *tokenization*, the high-level i
 Attention is a strategy for processing global information efficiently, focusing just on the parts of the signal that are most salient to the task at hand.
 
 :::{.column-margin}
-What we present below is the so-called ``dot-product attention'' mechanism; there can be other variants that involve more complex attention functions
+What we present below is the so-called ``dot-product attention'' mechanism; there can be other variants that involve more complex attention functions.
 :::
 
-It might help our understanding of the "attention" mechanism to think about a dictionary look-up scenario. Consider a dictionary with keys $k$ mapping to some values $v(k)$. For example, let $k$ be the name of some foods, such as `pizza`, `apple`, `sandwich`, `donut`, `chili`, `burrito`, `sushi`, `hamburger`, $\ldots$. The corresponding values may be information about the food, such as where it is available, how much it costs, or what its ingredients are.
+It might help our understanding of the "attention" mechanism to think about a dictionary look-up scenario. Consider a dictionary with keys $k$ mapping to some values $v(k)$. For example, let $k$ be the name of some foods, such as `pizza`, `apple`, `sandwich`, `donut`, `chili`, `burrito`, `sushi`, `hamburger`, $\ldots$. The corresponding values $v(k)$ may be information about the food, such as where it is available, how much it costs, or what its ingredients are.
 
-Suppose that instead of looking up foods by a specific name, we wanted to query by cuisine, e.g., "`mexican`" foods. Clearly, we cannot simply look for the word "`mexican`" among the dictionary keys, since that word is not a food. What does work is to utilize again the idea of finding "similarity\" between vector embeddings of the query and the keys. The end result we'd hope to get, is a probability distribution over the foods, $p(k|q)$ indicating which are best matches for a given query $q$. With such a distribution, we can look for keys that are semantically close to the given query.
+Suppose that instead of looking up food information by a specific name, we want to query by cuisine, e.g., "`mexican`" foods. Clearly, we cannot simply look for the word "`mexican`" among the dictionary keys, since that word is not a food. What does work is to utilize again the idea of finding "similarity\" between vector embeddings of the query and the keys. Roughly, we first embed both the query "`mexican`" and the dictionary entries (such as `pizza`, `apple`, `sandwich`) into a same embedding space, where semantically related words are close to each other. This enables us to retrieve relevant entries based on semantic similarity rather than exact string matching.
 
-More concretely, to get such distribution, we follow these steps: First, embed the word we are interested in ("`mexican`" in our example) into a so-called query vector, denoted simply as $q \in \mathbb{R}^{d_k \times 1}$ where $d_k$ is the embedding dimension.
+Formally, we follow these steps: First, embed the word we are interested in ("`mexican`" in our example) into a so-called query vector, denoted simply as $q \in \mathbb{R}^{d_k \times 1}$ where $d_k$ is the embedding dimension.
 
-Next, suppose our given dictionary has $n$ number of entries/entries, we embed each one of these into a so-called key vector. In particular, for each of the $j^{th}$ entry in the dictionary, we produce a $k_j \in \mathbb{R}^{d_k\times 1}$ key vector, where $j=1,2,3, \dots, n.$
+Next, suppose our given dictionary has $n$ number of entries/keys, we embed each one of these into a so-called key vector. In particular, for the $j$th entry in the dictionary, we produce a $k_j \in \mathbb{R}^{d_k\times 1}$ key vector, where $j=1,2,3, \dots, n.$
 
-We can then obtain the desired probability distribution using a softmax (@sec-classification, @sec-neural_networks) applied to the inner-product between the key and query:
+We can then apply a softmax (@sec-classification, @sec-neural_networks) to the inner-product between the key and query:
 
-$$p(k|q) = \text{softmax}\left(
-  [q^T k_1; q^T k_2; q^T k_3; \dots, q^T k_n]
+$$\text{softmax}\left(
+  \alpha = [q^T k_1; q^T k_2; q^T k_3; \dots, q^T k_n]\in\mathbb{R}^{d_n\times 1}
   \right)$$
 
-This vector-based lookup mechanism has come to be known as "attention" in the sense that $p(k|q)$ is a conditional probability distribution that says how much attention should be given to the key $k_j$ for a given query $q$.
+The raw inner-product $q^T k_j$ represents how similar the query is to the j-th dictionary entry. However, on their own, these scores are not directly interpretable—they can be any real number, positive or negative, and don’t have any clear scale. That’s why we apply the softmax function, which transforms the raw scores into a vector of normalized weights. $\alpha$ is usually referred to as the "attention weights", since the $j$th element in $\alpha$ (denoted as $\alpha_j$) states how much attention should be given to the key $k_j$ for a given query $q$. With the attention weight $\alpha$, we can calculate the "attention output" 
 
-In other words, the conditional probability distribution $p(k | q)$ gives the "attention weights," and the weighted average value 
 $$
 \begin{aligned}
-  \sum_j p(k_j|q)\ v_j
+  z = \sum_{j=1}^N \alpha_j \ v_j
 \end{aligned}
-$$ is the "attention output."
-
-The meaning of this weighted average value may be ambiguous when the values are just words. However, the attention output really becomes meaningful when the values are projected in some semantic embedding space (and such projections are typically done in transformers via learned embedding weights).
-
-The same weighted-sum idea generalizes to multiple query, key, and values. In particular, suppose there are $n_q$ number of queries, $n_k$ number of keys (and therefore $n_k$ number of values), one can compute an attention matrix
-
-$$\begin{aligned}
-\alpha = \begin{bmatrix}
-    \text{softmax}\left( \begin{bmatrix}
-                           q_1^\top k_1 & q_1^\top k_2 & \cdots & q_1^\top k_{n_k}
-                         \end{bmatrix} / \sqrt{d_k} \right) \\
-    \text{softmax}\left( \begin{bmatrix}
-                           q_2^\top k_1 & q_2^\top k_2 & \cdots & q_2^\top k_{n_k}
-                         \end{bmatrix} / \sqrt{d_k} \right) \\
-    \vdots &                                                                     \\
-    \text{softmax}\left( \begin{bmatrix}
-                           q_{n_q}^\top k_1 & q_{n_q}^\top k_2 & \cdots & q_{n_q}^\top k_{n_k}
-                         \end{bmatrix} / \sqrt{d_k} \right)
-  \end{bmatrix}
-\end{aligned}$$[]{#eq-xfm_softmax}
-
-Here, $\text{softmax}_j$ is a softmax over the $n_k$-dimensional vector indexed by $j$, so in @eq-xfm_softmax this means a softmax computed over keys. In this equation, the normalization by $\sqrt{d_k}$ is done to reduce the magnitude of the dot product, which would otherwise grow undesirably large with increasing $d_k,$ making it difficult for (overall) training.
-
-Let $\alpha_{ij}$ be the entry in $i$th row and $j$th column in the attention matrix $\alpha$. Then $\alpha_{ij}$ helps answer the question \"which tokens $x^{(j)}$ help the most with predicting the corresponding output token $y^{(i)}$?\" The attention output is given by a weighted sum over the values:
-
 $$
-{y}^{(i)} = \sum_{j=1}^n  \alpha_{ij}v_{j}
-$$
+
+The meaning of this weighted average value may be ambiguous when the values are just words. However, the attention output really becomes meaningful when the values are projected in some semantic embedding space as the query and keys (and such projections are typically done in transformers via learned embedding weights). In the next section, we will formally introduce the self-attention operation used in the Transformer architecture.
 
 ### Self Attention
 
 Self-attention is an attention mechanism where the keys, values, and queries are all generated from the same input.
 
-At a very high level, typical transformer with self-attention layers maps $\mathbb{R}^{n\times d} \longrightarrow \mathbb{R}^{n\times d}$. In particular, the transformer takes in data (a sequence of tokens) $X\in \mathbb{R}^{n\times d}$ and for each token $x^{(i)}\in \mathbb{R}^{d\times 1}$, it computes (via learned projection, to be discussed in @sec-learnedembedding), a query $q_i \in \mathbb{R}^{d_q\times 1}$, key $k_{i} \in \mathbb{R}^{d_k\times 1}$, and value $v_{i} \in \mathbb{R}^{d_v\times 1}$. In practice, $d_q=d_k=d_v$ and we often denote all three embedding dimension via a unified $d_k.$
+At a very high level, typical transformer with self-attention layers maps $\mathbb{R}^{n\times d} \longrightarrow \mathbb{R}^{n\times d}$. In particular, the transformer takes in $n$ tokens, each having feature dimension $d$. Thus, all tokens can be collectively written as $X\in \mathbb{R}^{n\times d}$, where the $i$-th row of $X$ stores the $i$-th token, denoted as $x_i\in\mathbb{R}^{1\times d}$. For each token $x^i$, self-attention computes (via learned projection, to be discussed in @sec-learnedembedding), a query $q_i \in \mathbb{R}^{d_q\times 1}$, key $k_{i} \in \mathbb{R}^{d_k\times 1}$, and value $v_{i} \in \mathbb{R}^{d_v\times 1}$, and overall, we will have $n$ queries, $n$ keys, and $n$ values. In practice, $d_q=d_k=d_v$ and we often denote all three embedding dimension via a unified $d_k$. 
 
-The self-attention layer then takes in these query, key, and values, and compute a self-attention matrix $$
-\begin{aligned}
+Let's begin by considering what self-attention does for a specific query $q_i$. Concretely, self-attention first calculates the attention weights:
+
+$$\alpha_i = \text{softmax}\left(
+  [q_i^T k_1; q_i^T k_2; q_i^T k_3; \dots, q_i^T k_n] / \sqrt{d_k}
+  \right)\in\mathbb{R}^{1\times n}$$
+
+In this equation, the normalization by $\sqrt{d_k}$ is done to reduce the magnitude of the dot product, which would otherwise grow undesirably large with increasing $d_k,$ making it difficult for (overall) training. Then the attention output is calculated as a weighted sum:
+
+$$
+{z}_i = \sum_{j=1}^n  \alpha_{ij} v_{j}\in\mathbb{R}^{d_k \times 1}
+$$where $\alpha_{ij}$ is the $j$th element in $\alpha_i$.
+
+Note that the above procedure should sound familiar since it is almost the same depicted in @sec-qkv, and perhaps the only difference is that we have deliberately omitted the normalization factor (i.e., divided by $\sqrt{d_k}$) in @sec-qkv for introduction purpose. 
+
+Importantly, self-attention is indepent for every query $q_i$ which means it essentially performs the same procedure indepdently for every query. By stacking these computations together, we can express the full attention matrix $A \in \mathbb{R}^{n \times n}$ as follows:
+
+$$\begin{aligned}
 \alpha = \begin{bmatrix}
     \text{softmax}\left( \begin{bmatrix}
                            q_1^\top k_1 & q_1^\top k_2 & \cdots & q_1^\top k_{n}
@@ -129,14 +118,14 @@ The self-attention layer then takes in these query, key, and values, and compute
 \end{aligned}
 $${#eq-self_softmax}
 
-Comparing this self-attention matrix with the attention matrix described in @eq-xfm_softmax, we notice the only difference lies in the dimensions: since in self-attention, the query, key, and value all come from the same input, we have $n_q=n_k=n_v$, and we often denote all three with a unified $n$.
 
-The self-attention output is then given by a weighted sum over the values: 
+The $i$th row $A$ of this matrix corresponds to the attention weights computed for query $q_i$ over all keys (i.e., $\alpha_i$). The full output of the self-attention layer can then be written compactly as:
 
-$$\begin{aligned}
-  {y}^{(i)} = \sum_{j=1}^n  \alpha_{ij} v_{j}
-\end{aligned}
-$${#eq-self_attention_output}
+$$
+Z=A V
+$$
+where $V\in \mathbb{R}^{n \times d_k}$ is the matrix of value vectors stacked row-wise, and $Z \in \mathbb{R}^{n \times d_k}$ is the output, whose $i$th row corresponds to the attention output for the $i$th query (i.e., $z_i$).
+
 
 This diagram below shows (only) the middle input token generating a query that is then combined with the keys computed with all tokens to generate the attention weights via a softmax. The output of the softmax is then combined with values computed from all tokens, to generate the attention output corresponding to the middle input token. Repeating this for each input token then generates the output.
 
@@ -145,7 +134,23 @@ This diagram below shows (only) the middle input token generating a query that i
 
 Note that the size of the output is the same as the size of the input. Also, observe that there is no apparent notion of ordering of the input words in the depicted structure. Positional information can be added by encoding a number for token (giving say, the token's position relative to the start of the sequence) into the vector embedding of each token. And note that a given query need not pay attention to all other tokens in the input; in this example, the token used for the query is not used for a key or value.
 
-More generally, a *mask* may be applied to limit which tokens are used in the attention computation. For example, one common mask limits the attention computation to tokens that occur previously in time to the one being used for the query. This prevents the attention mechanism from "looking ahead" in scenarios where the transformer is being used to generate one token at a time.
+More generally, a *mask* may be applied to limit which tokens are used in the attention computation. For example, one common mask limits the attention computation to tokens that occur previously in time to the one being used for the query. This prevents the attention mechanism from "looking ahead" in scenarios where the transformer is being used to generate one token at a time. This causal masking is done by introducing a mask matrix $M \in \mathbb{R}^{n \times n}$ that restricts attention to only current and previous positions. A typical causal mask is a lower-triangular matrix:
+
+$$
+M = 
+\begin{bmatrix}
+  1 & 0 & 0 & \cdots & 0 \\
+  1 & 1       & 0 & \cdots & 0 \\
+  1 & 1       & 1       & \cdots & 0 \\
+  \vdots & \vdots & \vdots & \ddots & \vdots \\
+  1 & 1       & 1       & \cdots & 1
+\end{bmatrix}
+$$Then we mask out the attention matrix by element-wise multiplication and use it to calculate the final attention output:
+
+$$
+\alpha^\prime=M \ddot \alpha, Y= \alpha^\prime V
+$$Essentially, the lower-triangular property of $M$ ensures that the self-attention operation for the $j$-th query only considers tokens $0,1,...,j$.
+
 
 Each self-attention stage is trained to have key, value, and query embeddings that lead it to pay specific attention to some particular feature of the input. We generally want to pay attention to many different kinds of features in the input; for example, in translation one feature might be be the verbs, and another might be objects or subjects. A transformer utilizes multiple instances of self-attention, each known as an "attention head," to allow combinations of attention paid to many different features.
 
