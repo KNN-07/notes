@@ -56,13 +56,13 @@ Attention is a strategy for processing global information efficiently, focusing 
 What we present below is the so-called ``dot-product attention'' mechanism; there can be other variants that involve more complex attention functions.
 :::
 
-It might help our understanding of the "attention" mechanism to think about a dictionary look-up scenario. Consider a dictionary with keys $k$ mapping to some values $v(k)$. For example, let $k$ be the name of some foods, such as `pizza`, `apple`, `sandwich`, `donut`, `chili`, `burrito`, `sushi`, `hamburger`, $\ldots$. The corresponding values $v(k)$ may be information about the food, such as where it is available, how much it costs, or what its ingredients are.
+It might help our understanding of the "attention" mechanism to think about a dictionary look-up scenario. Consider a dictionary with keys $k$ mapping to some values $v$. For example, let $k$ be the name of some foods, such as `pizza`, `apple`, `sandwich`, `donut`, `chili`, `burrito`, `sushi`, `hamburger`, $\ldots$. The corresponding values $v$ may be information about the food, such as where it is available, how much it costs, or what its ingredients are.
 
 Suppose that instead of looking up food information by a specific name, we want to query by cuisine, e.g., "`mexican`" foods. Clearly, we cannot simply look for the word "`mexican`" among the dictionary keys, since that word is not a food. What does work is to utilize again the idea of finding "similarity\" between vector embeddings of the query and the keys. Roughly, we first embed both the query "`mexican`" and the dictionary entries (such as `pizza`, `apple`, `sandwich`) into a same embedding space, where semantically related words are close to each other. This enables us to retrieve relevant entries based on semantic similarity rather than exact string matching.
 
 Formally, we follow these steps: First, embed the word we are interested in ("`mexican`" in our example) into a so-called query vector, denoted simply as $q \in \mathbb{R}^{d_k \times 1}$ where $d_k$ is the embedding dimension.
 
-Next, suppose our given dictionary has $n$ number of entries/keys, we embed each one of these into a so-called key vector. In particular, for the $j$th entry in the dictionary, we produce a $k_j \in \mathbb{R}^{d_k\times 1}$ key vector, where $j=1,2,3, \dots, n.$
+Next, suppose our given dictionary has $n$ number of entries/keys, we embed each one of these into a so-called key vector. In particular, for the $j$th entry in the dictionary, we produce a $k_j \in \mathbb{R}^{d_k\times 1}$ key vector, where $j=1,2,3, \dots, n$.
 
 We can then apply a softmax (@sec-classification, @sec-neural_networks) to the inner-product between the key and query:
 
@@ -70,11 +70,11 @@ $$\text{softmax}\left(
   \alpha = [q^T k_1; q^T k_2; q^T k_3; \dots, q^T k_n]\in\mathbb{R}^{d_n\times 1}
   \right)$$
 
-The raw inner-product $q^T k_j$ represents how similar the query is to the j-th dictionary entry. However, on their own, these scores are not directly interpretable—they can be any real number, positive or negative, and don’t have any clear scale. That’s why we apply the softmax function, which transforms the raw scores into a vector of normalized weights. $\alpha$ is usually referred to as the "attention weights", since the $j$th element in $\alpha$ (denoted as $\alpha_j$) states how much attention should be given to the key $k_j$ for a given query $q$. With the attention weight $\alpha$, we can calculate the "attention output" 
+The raw inner-product $q^T k_j$ represents how similar the query is to the $j$th dictionary entry. However, on their own, these scores are not directly interpretable—they can be any real number, positive or negative, and don’t have any clear scale. That’s why we apply the softmax function, which transforms the raw scores into a vector of normalized weights. $\alpha$ is usually referred to as the "attention weights", since the $j$th element in $\alpha$ (denoted as $\alpha_j$) states how much attention should be given to the key $k_j$ for a given query $q$. With the attention weight $\alpha$, we can calculate the "attention output" 
 
 $$
 \begin{aligned}
-  z = \sum_{j=1}^N \alpha_j \ v_j
+  z = \sum_{j=1}^n \alpha_j \ v_j
 \end{aligned}
 $$
 
