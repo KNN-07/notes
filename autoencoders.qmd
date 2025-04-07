@@ -69,14 +69,14 @@ In NLP, words are represented as vectors, commonly known as *word embeddings*. A
 
 Similarity between embeddings is frequently measured using the *inner product*:
 
-$$u^T v = u \cdot v$$
+$$a^T b = a \cdot b$$
 
-The inner product indicates how aligned two vectors are: highly positive values imply strong similarity, negative values indicate opposition, and values near zero suggest no similarity.
+The inner product indicates how aligned two vectors are: highly positive values imply strong similarity, negative values indicate opposition, and values near zero suggest no similarity (up to a scaling factor related to the magnitude).
 
 A groundbreaking embedding method, *word2vec* (2012), significantly advanced NLP by producing embeddings where vector arithmetic corresponded to real-world semantic relationships. For instance:
 
 $$\begin{aligned}
-  v_{\tt paris} - v_{\tt france} + v_{\tt italy} \approx v_{\tt rome}
+  \text{embedding}_{\tt paris} - \text{embedding}_{\tt france} + \text{embedding}_{\tt italy} \approx \text{embedding}_{\tt rome}
 \end{aligned}$$
 
 Such embeddings revealed meaningful semantic relationships like analogies across diverse vocabulary (e.g., *uncle* – *man* + *woman* ≈ *aunt*).
