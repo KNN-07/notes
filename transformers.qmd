@@ -66,9 +66,8 @@ Next, suppose our given dictionary has $n$ number of entries/keys, we embed each
 
 We can then apply a softmax (@sec-classification, @sec-neural_networks) to the inner-product between the key and query:
 
-$$\alpha = \text{softmax}\left(
-   [q^T k_1; q^T k_2; q^T k_3; \dots, q^T k_n])\in\mathbb{R}^{d_n\times 1}
-  \right
+$$
+\alpha = \text{softmax}\left([q^T k_1; q^T k_2; q^T k_3; \dots, q^T k_n]\right) \in \mathbb{R}^{n}
 $$
 
 The raw inner-product $q^T k_j$ represents how similar the query is to the $j$th dictionary entry. However, on their own, these scores are not directly interpretable—they can be any real number, positive or negative, and don’t have any clear scale. That’s why we apply the softmax function, which transforms the raw scores into a normalized vector (with all entries between 0 and 1, and sum up to 1). 
