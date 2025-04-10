@@ -224,7 +224,7 @@ $$
 
 Human language can be very nuanced. There are many properties of language that collectively contribute to a human’s understanding of any given sentence. For example, words have different tenses (past, present, future, etc), genders, abbreviations, slang references, implied words or meanings, cultural references, situational relevance, etc. While the attention mechanism allows us to appropriately focus on tokens in the input sentence, it’s unreasonable to expect a single set of $\{Q,K,V\}$ matrices to fully represent – and for a model to capture – the meaning of a sentence with all of its complexities. 
 
-To address this limitation, the idea of multi-head attention is introduced. Instead of relying on just one attention head (i.e., a single set of ${Q, K, V}$ matrices), the model uses multiple attention heads, each with its own independently learned set of ${Q, K, V}$ matrices. This allows each head to attend to different parts of the input tokens and to model different types of semantic relationships. For instance, one head might focus on syntactic structure and another on verb tense or sentiment. These different “perspectives” are then concatenated and projected to produce a richer, more expressive representation of the input.
+To address this limitation, the idea of multi-head attention is introduced. Instead of relying on just one attention head (i.e., a single set of $\{Q, K, V\}$ matrices), the model uses multiple attention heads, each with its own independently learned set of $\{Q, K, V\}$ matrices. This allows each head to attend to different parts of the input tokens and to model different types of semantic relationships. For instance, one head might focus on syntactic structure and another on verb tense or sentiment. These different “perspectives” are then concatenated and projected to produce a richer, more expressive representation of the input.
 
 Now, we introduce the formal math notations. Let us denote the numebr of head as $H$. For the $h$th head, the input $X \in \mathbb{R}^{n \times d}$ is linearly projected into query, key, and value matrices using the projection matrices $W_q^{h}\in\mathbb{R}^{d\times d_q}$, $W_k^{h}\in\mathbb{R}^{d\times d_k}$, and $W_v^{h}\in\mathbb{R}^{d\times d_v}$ (recall that usually $d_q=d_k=d_v$):
 
@@ -240,7 +240,7 @@ The output of the $i$-th head is $Z^{h}$: ${Z}^h = \text{Attention}(Q^{h}, K^{h}
 $$
 \text{MultiHead}(X) = \text{Concat}(Z^1, \dots, Z^H) W^O
 $$
-where the concatenation operation will concataneing all $Z^h$ horizontally, yielding a matrix of size $n\times Hd_k$, and $W^O \in \mathbb{R}^{d_k \times d_o}$ is a final output linear projection matrix.
+where the concatenation operation concatenates $Z^h$ horizontally, yielding a matrix of size $n\times Hd_k$, and $W^O \in \mathbb{R}^{d_k \times d_o}$ is a final linear projection matrix.
 
 ### Positional Embeddings 
 
