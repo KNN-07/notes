@@ -244,17 +244,20 @@ where the concatenation operation concatenates $Z^h$ horizontally, yielding a ma
 
 ### Positional Embeddings 
 
-An extremely observant reader might have been suspicious of a small but very important detail that we have not yet discussed: our introduced attention operation thus far has not encoded the order of the input tokens. For instance, consider the example we provide at the beginning of this chapter, "A robot must obey the orders g"
+An extremely observant reader might have been suspicious of a small but very important detail that we have not yet discussed: the attention mechanism, as introduced so far, does not encode the order of the input tokens. For instance, when computing attention scores and building token representations, the model is fundamentally permutation-invariant — the same set of tokens, even if scrambled into a different order, would result in identical outputs. But natural language is not a bag of words: meaning is tied closely to word order.
 
-As we discussed the processing of input data, we framed it as the model will ingest each token, one at a time, and for each one, the model will try to predict the next token in the sequence. Truly, that’s how the model can be designed and used. However, for any given input sequence of text, when the Attention mechanism is deciding how much focus to place on every token, and in turn produce rich representations for each token, the model actually has no clue the current set of tokens are ordered! I deliberately used the word “set” because the tokens are effectively serving as a set (unordered list of items)!
+To address this, transformers incorporate positional embeddings — additional information that encodes the position of each token in the sequence. These embeddings are added to the input token embeddings before any attention layers are applied, effectively injecting ordering information into the model.
 
-For example, let’s imagine that the following two input sequences were input into a Transformer:
+There are two main strategies for positional embeddings: (i) Learned positional embeddings, where a trainable vector is assigned to each position index (e.g., position 0, 1, 2, ..., N). These vectors are learned alongside all other model parameters and allow the model to discover how best to encode position for a given task. (ii) fixed positional embeddings, such as sinusoidal positional embedding proposed in the original Transformer paper.
 
-Scenario 1: The brown dog ran away
 
-Scenario 2: The away ran dog brown
+Importantly, these positional encodings are added to the token embeddings:
 
-In both of these scenarios, when processing any given token, let’s say “brown”, the Attention mechanism would produce identical results (attention scores and subsequent token representations z_i), despite the input words being in different order! Clearly this is sub-optimal, as it’s neglecting to use crucial information. For example, instead of the extreme scenario provided above, imagine if we had:
+$x_i^\star = x_i + p_i$​
+where $x_i$ is the $i$th input token, and $p_i$ is its positional embedding. The $x_i^\star$ will now be fed into the attention layer, so that the input to the attention mechanism now carries information about both what the token is and where it appears in the sequence.
+
+This simple additive design enables attention layers to leverage both semantic content and ordering structure when deciding where to focus. In practice, this addition occurs at the very first layer of the transformer stack, and all subsequent layers operate on position-aware representations. This is a key design choice that allows transformers to work effectively with sequences of text, audio, or even image patches (as in Vision Transformers).
+
 
 ### Causal Self-attention {#sec-causal-attention}
 More generally, a *mask* may be applied to limit which tokens are used in the attention computation. For example, one common mask limits the attention computation to tokens that occur previously in time to the one being used for the query. This prevents the attention mechanism from "looking ahead" in scenarios where the transformer is being used to generate one token at a time. This causal masking is done by introducing a mask matrix $M \in \mathbb{R}^{n \times n}$ that restricts attention to only current and previous positions. A typical causal mask is a lower-triangular matrix:
