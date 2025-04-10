@@ -92,39 +92,52 @@ $$
 k_i = W_k^T x_i
 $$
 
-Now, our attention mechanism (attention score) abstractly looks like:
+Now, our attention mechanism (attention score) abstractly looks like: $q_i^T k_j$ That is, our rich representation relies on the dot-product similarity of query-key pairs for any tokens $i$ and $j$.
 
-$$
-a_{i,j} = q_i^T k_j
+Using the dot-product as our function is an excellent choice because it provides us with a measurement of how similar two vectors are, and it’s fast to compute. 
+
+We can then do this similarity comparison for every key in the sequence. To make the discussion more simplified, let's begin by considering what self-attention does for a specific query $q$ (dropping the subscript to indicate it's a particularl fixed query). We can then calculate the softmax'd attention scores:
+
+$$a_i = \text{softmax}\left(
+  [q^T k_1; q^T k_2; q^T k_3; \dots, q^T k_n] / \sqrt{d_k}
+  \right)^T \in\mathbb{R}^{1\times n}
 $$
 
-That is, our rich representation relies on the dot-product similarity of query-key pairs for any tokens $i$ and $j$.
+All the element in this vector sum up to 1, indicating the persentage of attention that the query $q$ pays to each and every one of the key in the sequence. In this equation, the normalization by $\sqrt{d_k}$ is done to reduce the magnitude of the dot product, which would otherwise grow undesirably large with increasing $d_k,$ making it difficult for (overall) training.
 
 ### Value vectors
 
+Now that we have a way of paying attention to our "neighbors", how do we incorporate their contribution, i.e., how do we let their "meaning" influence our output? One idea, similar to how we could use abstract query and key to represent certain "aspect" of our toekns, we might allow each token to have a distinct vector representation – a value vector $v_i$ – that is solely used for contributing towards every attention output. 
+
+Specifically, the value vector will be produced via a learned value weight matrix $W_v$ (of size d*d_k again).
+
+$$
+v_i = W_v ^T v_i 
+$$
+
 ### Attention output
 
+Great, now we have rich vector representations for each input token! Just like we saw with other neural networks in our course, we can use these vectors to perform any prediction/output probability that we wish!
 
+Concretely, the idea is to use the softmax'd attention scores to form a weighted sum of all input token embeddings in the sequence. For example, suppose, we can compute the attention output for the $i$th token $z_i$ as such:
+
+$$
+{z}_i = \sum_{j=1}^n  a_{ij} v_{j}\in\mathbb{R}^{d_k \times 1}
+$$
+where $a_{ij}$ is the $j$th element in $a_i$.
+
+This is a weighted sum of the value vectors, where the weights are given by the attention scores. The attention output $z_i$ is a vector that captures the information from all tokens in the sequence, weighted by how much attention the $i$th token should pay to each of them.
 
 ## Self-attention Layer {#sec-self-attention}
 
-Self-attention is an attention mechanism where the keys, values, and queries are all generated from the same input.
+Self-attention the attention mechanism where the keys, values, and queries are all generated from the same input. It maps $\mathbb{R}^{n\times d} \longrightarrow \mathbb{R}^{n\times d}$. In particular, this layer takes in $n$ tokens, each having feature dimension $d$. Thus, all tokens can be collectively written as $X\in \mathbb{R}^{n\times d}$, where the $i$-th row of $X$ stores the $i$-th token, denoted as $x_i\in\mathbb{R}^{1\times d}$. For each token $x^i$, self-attention computes (via learned projection matrices, discussed in @sec-qkv), a query $q_i \in \mathbb{R}^{d_q\times 1}$, key $k_{i} \in \mathbb{R}^{d_k\times 1}$, and value $v_{i} \in \mathbb{R}^{d_v\times 1}$, and overall, we will have $n$ queries, $n$ keys, and $n$ values; all of these vectors live in the same dimension in practice, and we often denote all three embedding dimension via a unified $d_k$. 
 
-At a very high level, typical transformer with self-attention layers maps $\mathbb{R}^{n\times d} \longrightarrow \mathbb{R}^{n\times d}$. In particular, the transformer takes in $n$ tokens, each having feature dimension $d$. Thus, all tokens can be collectively written as $X\in \mathbb{R}^{n\times d}$, where the $i$-th row of $X$ stores the $i$-th token, denoted as $x_i\in\mathbb{R}^{1\times d}$. For each token $x^i$, self-attention computes (via learned projection, to be discussed in @sec-learnedembedding), a query $q_i \in \mathbb{R}^{d_q\times 1}$, key $k_{i} \in \mathbb{R}^{d_k\times 1}$, and value $v_{i} \in \mathbb{R}^{d_v\times 1}$, and overall, we will have $n$ queries, $n$ keys, and $n$ values. In practice, $d_q=d_k=d_v$ and we often denote all three embedding dimension via a unified $d_k$. 
-
-Let's begin by considering what self-attention does for a specific query $q_i$. Concretely, self-attention first calculates the attention weights:
-
-$$\alpha_i = \text{softmax}\left(
-  [q_i^T k_1; q_i^T k_2; q_i^T k_3; \dots, q_i^T k_n] / \sqrt{d_k}
-  \right)\in\mathbb{R}^{1\times n}$$
-
-In this equation, the normalization by $\sqrt{d_k}$ is done to reduce the magnitude of the dot product, which would otherwise grow undesirably large with increasing $d_k,$ making it difficult for (overall) training. Then the attention output is calculated as a weighted sum:
+The self-attention output is calculated as a weighted sum:
 
 $$
-{z}_i = \sum_{j=1}^n  \alpha_{ij} v_{j}\in\mathbb{R}^{d_k \times 1}
-$$where $\alpha_{ij}$ is the $j$th element in $\alpha_i$.
+{z}_i = \sum_{j=1}^n  a_{ij} v_{j}\in\mathbb{R}^{d_k \times 1}
+$$where $a_{ij}$ is the $j$th element in $a_i$.
 
-Note that the above procedure should sound familiar since it is almost the same depicted in @sec-qkv, and perhaps the only difference is that we have deliberately omitted the normalization factor (i.e., divided by $\sqrt{d_k}$) in @sec-qkv for introduction purpose. 
 
 ### Self-attention in Matrix Form {#sec-matrix-self-attn}
 
