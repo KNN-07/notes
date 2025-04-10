@@ -184,7 +184,11 @@ Note that the Softmax operation is applied in a row-wise manner. The $i$th row $
 $$
 Z=A V
 $$
-where $V\in \mathbb{R}^{n \times d_k}$ is the matrix of value vectors stacked row-wise, and $Z \in \mathbb{R}^{n \times d_k}$ is the output, whose $i$th row corresponds to the attention output for the $i$th query (i.e., $z_i$).
+where $V\in \mathbb{R}^{n \times d_k}$ is the matrix of value vectors stacked row-wise, and $Z \in \mathbb{R}^{n \times d_k}$ is the output, whose $i$th row corresponds to the attention output for the $i$th query (i.e., $z_i$). More compactly, we often see a combined notation incoporating attention score, Softmax, and final weighted sum:
+
+$$
+\text{Attention}(Q, K, V) = \text{softmax}\left(\frac{Q K^\top}{\sqrt{d_k}}\right)V
+$$
 
 
 ### Causal Self-attention {#sec-causal-attention}
@@ -226,9 +230,33 @@ Human language can be very nuanced. There are many properties of language that c
 
 To address this limitation, the idea of multi-head attention is introduced. Instead of relying on just one attention head (i.e., a single set of ${Q, K, V}$ matrices), the model uses multiple attention heads, each with its own independently learned set of ${Q, K, V}$ matrices. This allows each head to attend to different parts of the input tokens and to model different types of semantic relationships. For instance, one head might focus on syntactic structure and another on verb tense or sentiment. These different “perspectives” are then concatenated and projected to produce a richer, more expressive representation of the input.
 
+Now, we introduce the formal math notations. Let us denote the numebr of head as $H$. For the $h$th head, the input $X \in \mathbb{R}^{n \times d}$ is linearly projected into query, key, and value matrices using the projection matrices $W_q^{h}\in\mathbb{d\times d_q}$, $W_k^{h}\in\mathbb{d\times d_k}$, and $W_v^{h}\in\mathbb{d\times d_v}$ (recall that usually $d_q=d_k=d_v):
+$$\begin{align*}
+Q^{h} &= X W_q^{h} \\
+K^{h} &= X W_k^{h} \\
+V_{h} &= X W_v^{h}
+\end{align*}$$
+
+The output of the $i$-th head is $Z^{h}$: ${Z}^h = \text{Attention}(Q^{h}, K^{h}, V^{h})\in\mathbb{n\times d_k}$. After computing all $h$ heads, we concatenate their outputs and apply a final linear projection:
+$$
+\text{MultiHead}(X) = \text{Concat}(Z^1, \dots, Z^H) W^O
+$$
+where the concatation operation will concataneing all $Z^h$ horizontally, yielding a matrix of size $n\times Hd_k$, and $W^O \in \mathbb{R}^{d_k \times d_o}$ is a final output linear projection matrix.
+
 ### Positional Embeddings 
 
-A transformer is the composition of a number of transformer blocks, each of which has multiple attention heads. At a very high-level, the goal of a transformer block is to output a really rich, useful representation for each input token, all for the sake of being high-performant for whatever task the model is trained to learn.
+An extremely observant reader might have been suspicious of a small but very important detail that we have not yet discussed: our introduced attention operation thus far has not encoded the order of the input tokens. For instance, consider the example we provide at the beginning of this chapter, "A robot must obey the orders g"
+
+As we discussed the processing of input data, we framed it as the model will ingest each token, one at a time, and for each one, the model will try to predict the next token in the sequence. Truly, that’s how the model can be designed and used. However, for any given input sequence of text, when the Attention mechanism is deciding how much focus to place on every token, and in turn produce rich representations for each token, the model actually has no clue the current set of tokens are ordered! I deliberately used the word “set” because the tokens are effectively serving as a set (unordered list of items)!
+
+For example, let’s imagine that the following two input sequences were input into a Transformer:
+
+Scenario 1: The brown dog ran away
+
+Scenario 2: The away ran dog brown
+
+In both of these scenarios, when processing any given token, let’s say “brown”, the Attention mechanism would produce identical results (attention scores and subsequent token representations z_i), despite the input words being in different order! Clearly this is sub-optimal, as it’s neglecting to use crucial information. For example, instead of the extreme scenario provided above, imagine if we had:
+
 
 
 ### Variations of Training Scheme
