@@ -19,7 +19,7 @@ Like CNNs, transformers factorize the signal processing problem into stages that
 
 ## Embedding and Representations {#sec-embeddings}
 
-## Query, Key, Value {#sec-qkv}
+## Query, Key, Value, and Attention Output {#sec-qkv}
 
 Attention is a strategy for processing global information efficiently, focusing just on the parts of the signal that are most salient to the task at hand.
 
@@ -66,7 +66,7 @@ $$
 The meaning of this weighted average value may be ambiguous when the values are 
 just words. However, the attention output really becomes meaningful when the values are projected in some semantic embedding space as the query and keys (and such projections are typically done in transformers via learned embedding weights). In the next section, we will formally introduce the self-attention operation used in the Transformer architecture.
 
-### Self Attention
+## Self-attention Layer {#sec-self-attention}
 
 Self-attention is an attention mechanism where the keys, values, and queries are all generated from the same input.
 
@@ -112,13 +112,7 @@ Z=A V
 $$
 where $V\in \mathbb{R}^{n \times d_k}$ is the matrix of value vectors stacked row-wise, and $Z \in \mathbb{R}^{n \times d_k}$ is the output, whose $i$th row corresponds to the attention output for the $i$th query (i.e., $z_i$).
 
-
-This diagram below shows (only) the middle input token generating a query that is then combined with the keys computed with all tokens to generate the attention weights via a softmax. The output of the softmax is then combined with values computed from all tokens, to generate the attention output corresponding to the middle input token. Repeating this for each input token then generates the output.
-
-
-![](figures/transformer-self-attention.png)
-
-Note that the size of the output is the same as the size of the input. Also, observe that there is no apparent notion of ordering of the input words in the depicted structure. Positional information can be added by encoding a number for token (giving say, the token's position relative to the start of the sequence) into the vector embedding of each token. And note that a given query need not pay attention to all other tokens in the input; in this example, the token used for the query is not used for a key or value.
+### Self-attention in Matrix Form {#sec-matrix-self-attn}
 
 ### Masked Self-attention {#sec-masked-attention}
 More generally, a *mask* may be applied to limit which tokens are used in the attention computation. For example, one common mask limits the attention computation to tokens that occur previously in time to the one being used for the query. This prevents the attention mechanism from "looking ahead" in scenarios where the transformer is being used to generate one token at a time. This causal masking is done by introducing a mask matrix $M \in \mathbb{R}^{n \times n}$ that restricts attention to only current and previous positions. A typical causal mask is a lower-triangular matrix:
@@ -151,7 +145,11 @@ $$ The softmax is performed to each row independently. The attention output is s
 
 Each self-attention stage is trained to have key, value, and query embeddings that lead it to pay specific attention to some particular feature of the input. We generally want to pay attention to many different kinds of features in the input; for example, in translation one feature might be be the verbs, and another might be objects or subjects. A transformer utilizes multiple instances of self-attention, each known as an "attention head," to allow combinations of attention paid to many different features.
 
-## Transformers {#sec-transformers-arch}
+## Transformers Architecture Details {#sec-transformers-arch-details}
+
+### Multi-headed Attention
+
+### Positional Embeddings 
 
 A transformer is the composition of a number of transformer blocks, each of which has multiple attention heads. At a very high-level, the goal of a transformer block is to output a really rich, useful representation for each input token, all for the sake of being high-performant for whatever task the model is trained to learn.
 
