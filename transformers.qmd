@@ -30,8 +30,8 @@ A notable strength of transformers is their capacity for parallel processing. Tr
 The transformer architecture processes inputs by applying multiple identical building blocks stacked in layers. Each block performs a transformation that progressively refines the internal representation of the data. 
 
 
-
 Specifically, each block consists of two primary sub-layers: an attention layer @sec-self-attention and a feed-forward network (or multi-layer perceptron) @sec-neural_networks. Attention layers mix information across different positions (or \"chunks\") in the sequence, allowing the model to effectively capture dependencies regardless of distance. Meanwhile, the feed-forward network significantly enhances the expressiveness of these representations by applying non-linear transformations independently to each position.
+
 
 In this overview, we emphasize the auto-regressive nature of transformers, their layered approach to transforming representations, the parallel processing advantage, and the critical role of the feed-forward layers in enhancing their expressive power.
 
@@ -39,6 +39,22 @@ There are additional essential components and enhancements—such as masked atte
 
 
 ## Embedding and Representations {#sec-embeddings}
+
+We start by describing how language is commonly represented, then we provide a brief explanation of why it can be useful to predict subsequent items (e.g., words/tokens) in a sequence.
+
+As a reminder, two key components of any ML system are: (1) the representation of the data; and (2) the actual modelling to perform some desired task. Computers, by default, have no natural way of representing human language. Modern computers are based on the Von Neumann architecture and are essentially very powerful calculators, with no natural understanding of what any particular string of characters means to us humans. Considering the rich complexities of language (e.g., humor, sarcasm, social and cultural references and implications, slang, homonyms, etc), you can imagine the innate difficulties of appropriately representing languages, along with the challenges for computers to then model and “understand” language.
+
+The field of NLP aims to represent words with vectors of floating-point numbers (aka word embeddings) such that they capture semantic meaning. More precisely, the degree to which any two words are related in the ‘real-world’ to us humans should be reflected by their corresponding vectors (in terms of their numeric values). So, words such as ‘dog’ and ‘cat’ should be represented by vectors that are more similar to one another than, say, ‘cat’ and ‘table’ are.
+
+To measure how similar any two word embeddings are (in terms of their numeric values) it is common to use some similarity as the metric, e.g. the dot-product similarity we saw in @sec-autoencoders.
+
+Thus, one can imagine plotting every word embedding in N-dimensional space (where $n$ is the length of the vectors) and observing natural clusters to form, whereby similar words (e.g., synonyms) are located near each other. The problem of determining how to parse (aka tokenize) individual words is known as *tokenization*. This is an entire topic of its own, so we will not dive into the full details here. However, the high-level idea of tokenization is straightforward: the individual inputs of data that are represented and processed by a model are referred to as tokens. And, instead of processing each word as a whole, words are typically split into smaller, meaningful pieces (akin to syllables). For example, the word “evaluation” may be input into a model as 3 individual tokens (eval + ua + tion). Thus, when we refer to tokens, know that we’re referring to these sub-word units.
+For any given application/model, all of the language data must be predefined by a finite vocabulary of valid tokens (typically on the order of 40,000 distinct tokens). 
+
+:::{.column-margin}
+How can we define an optimal vocabulary of such tokens? How many distinct tokens should we have in our vocabulary? How should we handle digits or other punctuation? How does this work for non-English languages, in particular, script-based languages where word boundaries are less obvious (e.g., Chinese or Japanese)? All of these are open NLP research problems receiving increased attention lately.
+:::
+
 
 ## Query, Key, Value, and Attention Output {#sec-qkv}
 
