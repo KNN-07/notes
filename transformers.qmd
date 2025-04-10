@@ -230,14 +230,14 @@ Human language can be very nuanced. There are many properties of language that c
 
 To address this limitation, the idea of multi-head attention is introduced. Instead of relying on just one attention head (i.e., a single set of ${Q, K, V}$ matrices), the model uses multiple attention heads, each with its own independently learned set of ${Q, K, V}$ matrices. This allows each head to attend to different parts of the input tokens and to model different types of semantic relationships. For instance, one head might focus on syntactic structure and another on verb tense or sentiment. These different “perspectives” are then concatenated and projected to produce a richer, more expressive representation of the input.
 
-Now, we introduce the formal math notations. Let us denote the numebr of head as $H$. For the $h$th head, the input $X \in \mathbb{R}^{n \times d}$ is linearly projected into query, key, and value matrices using the projection matrices $W_q^{h}\in\mathbb{d\times d_q}$, $W_k^{h}\in\mathbb{d\times d_k}$, and $W_v^{h}\in\mathbb{d\times d_v}$ (recall that usually $d_q=d_k=d_v):
-$$\begin{align*}
+Now, we introduce the formal math notations. Let us denote the numebr of head as $H$. For the $h$th head, the input $X \in \mathbb{R}^{n \times d}$ is linearly projected into query, key, and value matrices using the projection matrices $W_q^{h}\in\mathbb{R}^{d\times d_q}$, $W_k^{h}\in\mathbb{R}^{d\times d_k}$, and $W_v^{h}\in\mathbb{R}^{d\times d_v}$ (recall that usually $d_q=d_k=d_v):
+$$\begin{aligned}
 Q^{h} &= X W_q^{h} \\
 K^{h} &= X W_k^{h} \\
-V_{h} &= X W_v^{h}
-\end{align*}$$
+V^{h} &= X W_v^{h}
+\end{aligned}$$
 
-The output of the $i$-th head is $Z^{h}$: ${Z}^h = \text{Attention}(Q^{h}, K^{h}, V^{h})\in\mathbb{n\times d_k}$. After computing all $h$ heads, we concatenate their outputs and apply a final linear projection:
+The output of the $i$-th head is $Z^{h}$: ${Z}^h = \text{Attention}(Q^{h}, K^{h}, V^{h})\in\mathbb{R}^{n\times d_k}$. After computing all $h$ heads, we concatenate their outputs and apply a final linear projection:
 $$
 \text{MultiHead}(X) = \text{Concat}(Z^1, \dots, Z^H) W^O
 $$
