@@ -201,13 +201,11 @@ $$
 Z=A V
 $$
 
-where $V\in \mathbb{R}^{n \times d_k}$ is the matrix of value vectors stacked row-wise, and $Z \in \mathbb{R}^{n \times d_k}$ is the output, whose $i$th row corresponds to the attention output for the $i$th query (i.e., $z_i$). More compactly, we often see a combined notation incorporating attention score, Softmax, and final weighted sum:
+where $V\in \mathbb{R}^{n \times d_k}$ is the matrix of value vectors stacked row-wise, and $Z \in \mathbb{R}^{n \times d_k}$ is the output, whose $i$th row corresponds to the attention output for the $i$th query (i.e., $z_i$). You will also see this compact notation `Attention` in the literature, which is an operation of three arguments $Q$, $K$, and $V$:
 
 $$
 \text{Attention}(Q, K, V) = \text{softmax}\left(\frac{Q K^\top}{\sqrt{d_k}}\right)V
 $$
-
-
 
 
 ## Transformers Architecture Details {#sec-transformers-arch-details}
