@@ -1,7 +1,7 @@
 :::{.callout-caution}
 This page contains all content from the legacy [PDF notes](https://introml.mit.edu/_static/spring25/notes.pdf); transformers chapter.
 
-We are actively polishing/expanding this chapter.
+We are actively overhauling this chapter to enhance clarity and presentation—stay tuned for updates!
 :::
 
 
