@@ -27,7 +27,11 @@ The animation above illustrates the auto-regressive nature of transformers. Belo
 
 A notable strength of transformers is their capacity for parallel processing. Transformers process entire sequences simultaneously rather than sequentially token-by-token. This parallelization significantly boosts computational efficiency and makes it feasible to train larger and deeper models.
 
-The transformer architecture processes inputs by applying multiple identical building blocks stacked in layers. Each block performs a transformation that progressively refines the internal representation of the data. Specifically, each block consists of two primary sub-layers: an attention layer @sec-self-attention and a feed-forward network (or multi-layer perceptron) @sec-neural_networks. Attention layers mix information across different positions (or \"chunks\") in the sequence, allowing the model to effectively capture dependencies regardless of distance. Meanwhile, the feed-forward network significantly enhances the expressiveness of these representations by applying non-linear transformations independently to each position.
+The transformer architecture processes inputs by applying multiple identical building blocks stacked in layers. Each block performs a transformation that progressively refines the internal representation of the data. 
+
+
+
+Specifically, each block consists of two primary sub-layers: an attention layer @sec-self-attention and a feed-forward network (or multi-layer perceptron) @sec-neural_networks. Attention layers mix information across different positions (or \"chunks\") in the sequence, allowing the model to effectively capture dependencies regardless of distance. Meanwhile, the feed-forward network significantly enhances the expressiveness of these representations by applying non-linear transformations independently to each position.
 
 In this overview, we emphasize the auto-regressive nature of transformers, their layered approach to transforming representations, the parallel processing advantage, and the critical role of the feed-forward layers in enhancing their expressive power.
 
@@ -169,7 +173,7 @@ Each self-attention stage is trained to have key, value, and query embeddings th
 
 ## Transformers Architecture Details {#sec-transformers-arch-details}
 
-### Multi-headed Attention
+### Multi-head Attention
 
 ### Positional Embeddings 
 
