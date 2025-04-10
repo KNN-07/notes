@@ -222,6 +222,10 @@ Each self-attention stage is trained to have key, value, and query embeddings th
 
 ### Multi-head Attention
 
+Human language can be very nuanced. There are many properties of language that collectively contribute to a human’s understanding of any given sentence. For example, words have different tenses (past, present, future, etc), genders, abbreviations, slang references, implied words or meanings, cultural references, situational relevance, etc. While the attention mechanism allows us to appropriately focus on tokens in the input sentence, it’s unreasonable to expect a single set of $\{Q,K,V\}$ matrices to fully represent – and for a model to capture – the meaning of a sentence with all of its complexities. 
+
+To address this limitation, the idea of multi-head attention is introduced. Instead of relying on just one attention head (i.e., a single set of ${Q, K, V}$ matrices), the model uses multiple attention heads, each with its own independently learned set of ${Q, K, V}$ matrices. This allows each head to attend to different parts of the input tokens and to model different types of semantic relationships. For instance, one head might focus on syntactic structure and another on verb tense or sentiment. These different “perspectives” are then concatenated and projected to produce a richer, more expressive representation of the input.
+
 ### Positional Embeddings 
 
 A transformer is the composition of a number of transformer blocks, each of which has multiple attention heads. At a very high-level, the goal of a transformer block is to output a really rich, useful representation for each input token, all for the sake of being high-performant for whatever task the model is trained to learn.
