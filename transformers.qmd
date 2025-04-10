@@ -123,7 +123,7 @@ Great, now we have rich vector representations for each input token! Just like w
 Concretely, the idea is to use the softmax'd attention scores to form a weighted sum of all input token embeddings in the sequence. For example, suppose, we can compute the attention output for the $i$th token $z_i$ as such:
 
 $$
-{z}_i = \sum_{j=1}^n  a_{ij} v_{j}\in\mathbb{R}^{d_k \times 1}
+{z}_i = \sum_{j=1}^n  a_{ij} v_{j}\in\mathbb{R}^{d_k }
 $$
 where $a_{ij}$ is the $j$th element in $a_i$.
 
@@ -131,12 +131,12 @@ This is a weighted sum of the value vectors, where the weights are given by the 
 
 ## Self-attention Layer {#sec-self-attention}
 
-Self-attention the attention mechanism where the keys, values, and queries are all generated from the same input. It maps $\mathbb{R}^{n\times d} \longrightarrow \mathbb{R}^{n\times d}$. In particular, this layer takes in $n$ tokens, each having feature dimension $d$. Thus, all tokens can be collectively written as $X\in \mathbb{R}^{n\times d}$, where the $i$-th row of $X$ stores the $i$-th token, denoted as $x_i\in\mathbb{R}^{1\times d}$. For each token $x^i$, self-attention computes (via learned projection matrices, discussed in @sec-qkv), a query $q_i \in \mathbb{R}^{d_q\times 1}$, key $k_{i} \in \mathbb{R}^{d_k\times 1}$, and value $v_{i} \in \mathbb{R}^{d_v\times 1}$, and overall, we will have $n$ queries, $n$ keys, and $n$ values; all of these vectors live in the same dimension in practice, and we often denote all three embedding dimension via a unified $d_k$. 
+Self-attention the attention mechanism where the keys, values, and queries are all generated from the same input. It maps $\mathbb{R}^{n\times d} \longrightarrow \mathbb{R}^{n\times d}$. In particular, this layer takes in $n$ tokens, each having feature dimension $d$. Thus, all tokens can be collectively written as $X\in \mathbb{R}^{n\times d}$, where the $i$-th row of $X$ stores the $i$-th token, denoted as $x_i\in\mathbb{R}^{1\times d}$. For each token $x^i$, self-attention computes (via learned projection matrices, discussed in @sec-qkv), a query $q_i \in \mathbb{R}^{d_q}$, key $k_{i} \in \mathbb{R}^{d_k}$, and value $v_{i} \in \mathbb{R}^{d_v}$, and overall, we will have $n$ queries, $n$ keys, and $n$ values; all of these vectors live in the same dimension in practice, and we often denote all three embedding dimension via a unified $d_k$. 
 
 The self-attention output is calculated as a weighted sum:
 
 $$
-{z}_i = \sum_{j=1}^n  a_{ij} v_{j}\in\mathbb{R}^{d_k \times 1}
+{z}_i = \sum_{j=1}^n  a_{ij} v_{j}\in\mathbb{R}^{d_k }
 $$where $a_{ij}$ is the $j$th element in $a_i$.
 
 So far, we've discussed self-attention focusing on a single token input-output. Actually, we can calculate all outputs $z_i$ ($i=1,2,\ldots,n$) at the same time using a matrix form. For clearness, we first introduce the $Q\in\mathbb{R}^{n\times d_k}$ query matrix, $K\in\mathbb{R}^{n\times d_k}$ key matrix, and $V\in\mathbb{R}^{n\times d_k}$ value matrix:
@@ -226,7 +226,7 @@ Human language can be very nuanced. There are many properties of language that c
 
 To address this limitation, the idea of multi-head attention is introduced. Instead of relying on just one attention head (i.e., a single set of ${Q, K, V}$ matrices), the model uses multiple attention heads, each with its own independently learned set of ${Q, K, V}$ matrices. This allows each head to attend to different parts of the input tokens and to model different types of semantic relationships. For instance, one head might focus on syntactic structure and another on verb tense or sentiment. These different “perspectives” are then concatenated and projected to produce a richer, more expressive representation of the input.
 
-Now, we introduce the formal math notations. Let us denote the numebr of head as $H$. For the $h$th head, the input $X \in \mathbb{R}^{n \times d}$ is linearly projected into query, key, and value matrices using the projection matrices $W_q^{h}\in\mathbb{R}^{d\times d_q}$, $W_k^{h}\in\mathbb{R}^{d\times d_k}$, and $W_v^{h}\in\mathbb{R}^{d\times d_v}$ (recall that usually $d_q=d_k=d_v):
+Now, we introduce the formal math notations. Let us denote the numebr of head as $H$. For the $h$th head, the input $X \in \mathbb{R}^{n \times d}$ is linearly projected into query, key, and value matrices using the projection matrices $W_q^{h}\in\mathbb{R}^{d\times d_q}$, $W_k^{h}\in\mathbb{R}^{d\times d_k}$, and $W_v^{h}\in\mathbb{R}^{d\times d_v}$ (recall that usually $d_q=d_k=d_v$):
 
 $$
 \begin{aligned}
