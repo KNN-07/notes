@@ -86,7 +86,9 @@ $$where $\alpha_{ij}$ is the $j$th element in $\alpha_i$.
 
 Note that the above procedure should sound familiar since it is almost the same depicted in @sec-qkv, and perhaps the only difference is that we have deliberately omitted the normalization factor (i.e., divided by $\sqrt{d_k}$) in @sec-qkv for introduction purpose. 
 
-Importantly, self-attention is indepent for every query $q_i$ which means it essentially performs the same procedure indepdently for every query. By stacking these computations together, we can express the full attention matrix $A \in \mathbb{R}^{n \times n}$ as follows:
+### Self-attention in Matrix Form {#sec-matrix-self-attn}
+
+Importantly, self-attention is independent for every query $q_i$ which means it essentially performs the same procedure independently for every query. By stacking these computations together, we can express the full attention matrix $A \in \mathbb{R}^{n \times n}$ as follows:
 
 $$\begin{aligned}
 A = \begin{bmatrix}
@@ -112,7 +114,7 @@ Z=A V
 $$
 where $V\in \mathbb{R}^{n \times d_k}$ is the matrix of value vectors stacked row-wise, and $Z \in \mathbb{R}^{n \times d_k}$ is the output, whose $i$th row corresponds to the attention output for the $i$th query (i.e., $z_i$).
 
-### Self-attention in Matrix Form {#sec-matrix-self-attn}
+
 
 ### Masked Self-attention {#sec-masked-attention}
 More generally, a *mask* may be applied to limit which tokens are used in the attention computation. For example, one common mask limits the attention computation to tokens that occur previously in time to the one being used for the query. This prevents the attention mechanism from "looking ahead" in scenarios where the transformer is being used to generate one token at a time. This causal masking is done by introducing a mask matrix $M \in \mathbb{R}^{n \times n}$ that restricts attention to only current and previous positions. A typical causal mask is a lower-triangular matrix:
@@ -263,4 +265,3 @@ Training large transformer models is thus generally done in two stages. A first 
 
 The second "fine-tuning" stage trains the model for a specific task, such as classification or question answering. This training stage can be relatively inexpensive, but it generally requires labeled data.
 
-[^1]: The presentation here follows the notes by John Thickstun.
