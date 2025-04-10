@@ -58,50 +58,53 @@ How can we define an optimal vocabulary of such tokens? How many distinct tokens
 
 ## Query, Key, Value, and Attention Output {#sec-qkv}
 
-Attention is a strategy for processing global information efficiently, focusing just on the parts of the signal that are most salient to the task at hand.
+Attention is a strategy for processing global information efficiently, focusing just on the parts of the signal that are most salient to the task at hand. Recall that for an input sentence, each token is input into the model, we aim to predict the token that comes next in the sentence/sequence. As we have increasing amounts of context (previous tokens) with each successive prediction, this should ideally help us. That is, if we can appropriately make use of this context. Naturally, we want our model to learn how to focus on (pay attention to) the tokens that are most useful. For example, let’s say that the model has currently processed the first two tokens of a sentence. e.g.,:
 
-:::{.column-margin}
-What we present below is the so-called ``dot-product attention'' mechanism; there can be other variants that involve more complex attention functions.
-:::
+“Anqi forgot ___”
 
-It might help our understanding of the "attention" mechanism to think about a dictionary look-up scenario. Consider a dictionary with keys $k$ mapping to some values $v$. For example, let $k$ be the name of some foods, such as `pizza`, `apple`, `sandwich`, `donut`, `chili`, `burrito`, `sushi`, `hamburger`, $\ldots$. The corresponding values $v$ may be information about the food, such as where it is available, how much it costs, or what its ingredients are.
+At this point, the current/latest input token is “forgot”, and the model is trying to produce its corresponding output token (depicted as if it’s filling in the blank). There are of course many possible valid completions to this sentence, including many article words (“the”, “an”, etc) and prepositions (“to”, “about”). There could also be possessive pronouns (“her”, “his”, “their”, etc). If the model is able to appropriately focus on the subject of the sentence, “Anqi”, the model should assign higher probability to the pronoun “her” than any other pronoun because Anqi is most often a name of female-identifying individuals). How can we assist a model to learn how to pay *attention* to the most appropriate context tokens? In transformers, this is realized using (query, key, value) vectors.
 
-Suppose that instead of looking up food information by a specific name, we want to query by cuisine, e.g., "`mexican`" foods. Clearly, we cannot simply look for the word "`mexican`" among the dictionary keys, since that word is not a food. What does work is to utilize again the idea of finding "similarity" between vector embeddings of the query and the keys. Roughly, we first embed both the query "`mexican`" and the dictionary entries (such as `pizza`, `apple`, `sandwich`) into a same embedding space, where semantically related words are close to each other. This enables us to retrieve relevant entries based on semantic similarity rather than exact string matching.
+Let’s imagine that instead of having just 1 representation for each input token, we had multiple versions/vectors, each of which could be thought of as a “surrogate” representation serving different purposes.
 
-Formally, we follow these steps: First, embed the word we are interested in ("`mexican`" in our example) into a so-called query vector, denoted simply as $q \in \mathbb{R}^{d_k}$ where $d_k$ is the embedding dimension.
+### Query vectors
 
-Next, suppose our given dictionary has $n$ number of entries/keys, we embed each one of these into a so-called key vector. In particular, for the $j$th entry in the dictionary, we produce a $k_j \in \mathbb{R}^{d_k}$ key vector, where $j=1,2,3, \dots, n$.
+Remember, our goal is for each input token to learn how much focus (attention) it should place on every other input token in the sequence.
 
-We can then apply a softmax (@sec-classification, @sec-neural_networks) to the inner-product between the key and query:
+To achieve this, we provide each input token with a unique representation, called a **query vector**, that it uses to "query" (inspect, probe, or ask) every other input token—including itself—to determine how much attention it should pay.
 
-$$
-\alpha = \text{softmax}\left([q^T k_1; q^T k_2; q^T k_3; \dots, q^T k_n]\right) \in \mathbb{R}^{n}
-$$
+To generate this query vector, we multiply each input token's representation vector $x_i$ (a $d$-dimensioanl vector) by a shared, learnable query weight matrix $W_q$ (of size $d \times d_k$), resulting in a query vector $q_i$ (a $d_k$-dimensional vector), where $d_k < d$.
 
-The raw inner-product $q^T k_j$ represents how similar the query is to the $j$th dictionary entry. However, on their own, these scores are not directly interpretable—they can be any real number, positive or negative, and don’t have any clear scale. That’s why we apply the softmax function, which transforms the raw scores into a normalized vector (with all entries between 0 and 1, and sum up to 1). 
-
-We will refer to $\alpha$ as "softmax'd attention scores", since the $j$th element in $\alpha$ (denoted as $\alpha_j$) states how much attention should be given to the key $k_j$ for a given query $q$. 
-
-:::{.column-margin}
-In the literature, oftentimes $\alpha$ will be referred to as "attention weights". The wording "weights" is quite misleadning -- because we do not get to directly learn $\alpha$ as we do with other network parameters. As such, we will more verbosely but explicitly refer to $\alpha$ as "softmax'd attention score"
-:::
-
-
-
-With $\alpha$, we can calculate the "attention output" 
+Formally, this is represented as:
 
 $$
-\begin{aligned}
-  z = \sum_{j=1}^n \alpha_j \ v_j
-\end{aligned}
+q_i = W_q ^T x_i 
 $$
 
+For instance, if our sequence has 4 input tokens, we will generate 4 distinct query vectors.
+
+### Key vectors 
+
+We wish to use the query vectors to inspect, check, or probe against every other input token. We introduce an additional "surrogate" representation called a **key vector**. The key vectors are responsible for "answering" the query vectors' requests about how much attention should be paid to each token. For example, when processing input token $x_3$, its corresponding query vector $q_3$ will be compared against the key vector $k_1$ to determine the attention on token $x_1$. Similarly, $q_3$ will be compared against $k_2$ for token $x_2$, and finally, against $k_3$ for token $x_3,$ and so on.
+
+By having independent representations for queries and keys, we grant the model significant expressive freedom. Our key vectors, like query vectors, will be of size $1 \times d_k$ and are computed by a learned weight matrix of size $d \times d_k$:
+
+$$
+k_i = W_k^T x_i
+$$
+
+Now, our attention mechanism (attention score) abstractly looks like:
+
+$$
+a_{i,j} = q_i^T k_j
+$$
+
+That is, our rich representation relies on the dot-product similarity of query-key pairs for any tokens $i$ and $j$.
+
+### Value vectors
+
+### Attention output
 
 
-
-
-The meaning of this weighted average value may be ambiguous when the values are 
-just words. However, the attention output really becomes meaningful when the values are projected in some semantic embedding space as the query and keys (and such projections are typically done in transformers via learned embedding weights). In the next section, we will formally introduce the self-attention operation used in the Transformer architecture.
 
 ## Self-attention Layer {#sec-self-attention}
 
