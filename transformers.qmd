@@ -109,7 +109,7 @@ Note that the above procedure should sound familiar since it is almost the same 
 
 ### Self-attention in Matrix Form {#sec-matrix-self-attn}
 
-In the above section, we see how self-attention behaves for a single query. Since self-attention is independent for every query $q_i$ associated with the $i$th input $x_i$, it means we actually can calculate all outputs $z_i$ at the same time, using a matrix form. For clearness, we first introduce the $Q\in\mathbb{R}^{n\times d_k}$ query matrix, $K\in\mathbb{R}^{n\times d_k}$ key matrix, and $V\in\mathbb{R}^{n\times d_k}$ value matrix as:
+In the above section, we see how self-attention behaves for a single query. Self-attention is actually independent for the $i$th query $q_i$ (which is ssociated with the $i$th input $x_i$), it implies that we  can calculate all outputs $z_i$ ($i=1,2,\ldots,n$) at the same time using a matrix form. For clearness, we first introduce the $Q\in\mathbb{R}^{n\times d_k}$ query matrix, $K\in\mathbb{R}^{n\times d_k}$ key matrix, and $V\in\mathbb{R}^{n\times d_k}$ value matrix:
 
 $$
 \begin{aligned}
@@ -132,7 +132,7 @@ v_2^\top \\
 v_n^\top
 \end{bmatrix} \in \mathbb{R}^{n \times d_v}
 \end{aligned}
-$$It should be straightforward to understand, the $Q$, $K$, $V$ matrices simply stack $q_i$, $k_i$, and $v_i$ in a row-wise manner, respectively. Now, the the full attention matrix $A \in \mathbb{R}^{n \times n}$ is:
+$$It should be straightforward to understand that the $Q$, $K$, $V$ matrices simply stack $q_i$, $k_i$, and $v_i$ in a row-wise manner, respectively. Now, the the full attention matrix $A \in \mathbb{R}^{n \times n}$ is:
 
 $$\begin{aligned}
 A = \begin{bmatrix}
@@ -148,7 +148,7 @@ A = \begin{bmatrix}
                          \end{bmatrix} / \sqrt{d_k} \right)
   \end{bmatrix}
 \end{aligned}
-$${#eq-self_softmax} which often time is written as:
+$${#eq-self_softmax} which often time is shorten as:
 $$\begin{aligned}
 A = \text{softmax}\left(
 \frac{1}{\sqrt{d_k}}
@@ -166,7 +166,6 @@ $$
 Z=A V
 $$
 where $V\in \mathbb{R}^{n \times d_k}$ is the matrix of value vectors stacked row-wise, and $Z \in \mathbb{R}^{n \times d_k}$ is the output, whose $i$th row corresponds to the attention output for the $i$th query (i.e., $z_i$).
-
 
 
 ### Masked Self-attention {#sec-masked-attention}
