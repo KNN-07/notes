@@ -97,14 +97,14 @@ Now, our attention mechanism (attention score) abstractly looks like: $q_i^T k_j
 
 Using the dot-product as our function is an excellent choice because it provides us with a measurement of how similar two vectors are, and it’s fast to compute. 
 
-We can then do this similarity comparison for every key in the sequence. To make the discussion more simplified, let's begin by considering what self-attention does for a specific query $q$ (dropping the subscript to indicate it's a particularl fixed query). We can then calculate the softmax'd attention scores:
+We can then do this similarity comparison for every key in the sequence. Let's begin by considering a specific query $q_i,$ we can calculate the softmax'd attention scores:
 
 $$a_i = \text{softmax}\left(
-  [q^T k_1; q^T k_2; q^T k_3; \dots, q^T k_n] / \sqrt{d_k}
+  [q_i^T k_1; q_i^T k_2; q_i^T k_3; \dots, q_i^T k_n] / \sqrt{d_k}
   \right)^T \in\mathbb{R}^{1\times n}
 $$
 
-All the element in this vector sum up to 1, indicating the persentage of attention that the query $q$ pays to each and every one of the key in the sequence. In this equation, the normalization by $\sqrt{d_k}$ is done to reduce the magnitude of the dot product, which would otherwise grow undesirably large with increasing $d_k,$ making it difficult for (overall) training.
+All the elements in this vector sum up to 1, indicating the persentage of attention that the query $q$ pays to each and every one of the key in the sequence. In this equation, the normalization by $\sqrt{d_k}$ is done to reduce the magnitude of the dot product, which would otherwise grow undesirably large with increasing $d_k,$ making it difficult for (overall) training.
 
 ### Value vectors
 
