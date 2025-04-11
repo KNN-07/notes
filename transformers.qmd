@@ -20,7 +20,7 @@ Like CNNs, transformers factorize signal processing into stages, each involving 
 
 Transformers are powerful neural architectures designed primarily for sequential data, such as text. At their core, transformers are typically auto-regressive, meaning they generate sequences by predicting each token sequentially, conditioned on previously generated tokens. This auto-regressive property ensures that the transformer model inherently captures temporal dependencies, making them especially suited for language modeling tasks like text generation and completion.
 
-Suppose our training data contains this sentence: "To date, the cleverset thinker was Issac." The transformer model will learn to predict the next token in the sequence, given the previous tokens. For example, when predicting the token "cleverset," the model will condition its prediction on the tokens "To," "date," and "the." This process continues until the entire sequence is generated.
+Suppose our training data contains this sentence: "To date, the cleverest thinker was Issac." The transformer model will learn to predict the next token in the sequence, given the previous tokens. For example, when predicting the token "cleverest," the model will condition its prediction on the tokens "To," "date," and "the." This process continues until the entire sequence is generated.
 ![](figures/auto-regressive.gif)
 
 The animation above illustrates the auto-regressive nature of transformers. 
@@ -49,7 +49,7 @@ The field of NLP aims to represent words with vectors of floating-point numbers 
 
 To measure how similar any two word embeddings are (in terms of their numeric values) it is common to use some similarity as the metric, e.g. the dot-product similarity we saw in @sec-autoencoders.
 
-Thus, one can imagine plotting every word embedding in N-dimensional space (where $n$ is the length of the vectors) and observing natural clusters to form, whereby similar words (e.g., synonyms) are located near each other. The problem of determining how to parse (aka tokenize) individual words is known as *tokenization*. This is an entire topic of its own, so we will not dive into the full details here. However, the high-level idea of tokenization is straightforward: the individual inputs of data that are represented and processed by a model are referred to as tokens. And, instead of processing each word as a whole, words are typically split into smaller, meaningful pieces (akin to syllables). For example, the word “evaluation” may be input into a model as 3 individual tokens (eval + ua + tion). Thus, when we refer to tokens, know that we’re referring to these sub-word units.
+Thus, one can imagine plotting every word embedding in $n$-dimensional space (where $n$ is the length of the vectors) and observing natural clusters to form, whereby similar words (e.g., synonyms) are located near each other. The problem of determining how to parse (aka tokenize) individual words is known as *tokenization*. This is an entire topic of its own, so we will not dive into the full details here. However, the high-level idea of tokenization is straightforward: the individual inputs of data that are represented and processed by a model are referred to as tokens. And, instead of processing each word as a whole, words are typically split into smaller, meaningful pieces (akin to syllables). For example, the word “evaluation” may be input into a model as 3 individual tokens (eval + ua + tion). Thus, when we refer to tokens, know that we’re referring to these sub-word units.
 For any given application/model, all of the language data must be predefined by a finite vocabulary of valid tokens (typically on the order of 40,000 distinct tokens). 
 
 :::{.column-margin}
@@ -73,7 +73,7 @@ Remember, our goal is for each input token to learn how much focus (attention) i
 
 To achieve this, we provide each input token with a unique representation, called a **query vector**, that it uses to "query" (inspect, probe, or ask) every other input token—including itself—to determine how much attention it should pay.
 
-To generate this query vector, we multiply each input token's representation vector $x_i$ (a $d$-dimensioanl vector) by a shared, learnable query weight matrix $W_q$ (of size $d \times d_k$), resulting in a query vector $q_i$ (a $d_k$-dimensional vector), where $d_k < d$.
+To generate this query vector, we multiply each input token's representation vector $x_i$ (a $d$ dimensional vector) by a shared, learnable query weight matrix $W_q$ (of size $d \times d_k$), resulting in a query vector $q_i$ (a $d_k$-dimensional vector), where $d_k < d$.
 
 Formally, this is represented as:
 
@@ -110,7 +110,7 @@ All the elements in this vector sum up to 1, indicating the persentage of attent
 
 Now that we have a way of paying attention to our "neighbors", how do we incorporate their contribution, i.e., how do we let their "meaning" influence our output? One idea, similar to how we could use abstract query and key to represent certain "aspect" of our toekns, we might allow each token to have a distinct vector representation – a value vector $v_i$ – that is solely used for contributing towards every attention output. 
 
-Specifically, the value vector will be produced via a learned value weight matrix $W_v$ (of size d*d_k again).
+Specifically, the value vector will be produced via a learned value weight matrix $W_v$ (of size $d\times d_k$ again).
 
 $$
 v_i = W_v ^T v_i 
@@ -264,7 +264,7 @@ $$\begin{aligned}
 p_{(i, 2k)} = \sin\left( \frac{i}{10000^{2k/d}} \right) \\
 p_{(i, 2k+1)} = \cos\left( \frac{i}{10000^{2k/d}} \right)
 \end{aligned}
-$$ where $i$ is the token index, while $k$ is the dimension index. Namely, this sinusoidal positional embedding uses sine for the even dimension and cosine for the odd dimension. Regardless of learnable or fixed positional embeding, it will enter the computation of attention at the input place:
+$$ where $i$ is the token index, while $k$ is the dimension index. Namely, this sinusoidal positional embedding uses sine for the even dimension and cosine for the odd dimension. Regardless of learnable or fixed positional embedding, it will enter the computation of attention at the input place:
 
 $$ x_i^\star = x_i + p_i $​$
 
