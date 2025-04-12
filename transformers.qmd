@@ -104,6 +104,10 @@ $$a_i = \text{softmax}\left(
   \right)^T \in\mathbb{R}^{1\times n}
 $$
 
+:::{.column-margin}
+You might hear people refer to ‘softmaxed attention scores’ as ‘attention weights.’ We intentionally avoid this terminology because these values are not network weights—they’re not directly learned parameters but rather computed from learned quantities.
+:::
+
 All the elements in this vector sum up to 1, indicating the persentage of attention that the query $q$ pays to each and every one of the key in the sequence. In this equation, the normalization by $\sqrt{d_k}$ is done to reduce the magnitude of the dot product, which would otherwise grow undesirably large with increasing $d_k,$ making it difficult for (overall) training.
 
 ### Value vectors
@@ -127,7 +131,7 @@ $$
 $$
 where $a_{ij}$ is the $j$th element in $a_i$.
 
-This is a weighted sum of the value vectors, where the weights are given by the attention scores. The attention output $z_i$ is a vector that captures the information from all tokens in the sequence, weighted by how much attention the $i$th token should pay to each of them.
+This is a weighted sum of the value vectors using the softmax'd attention scores. The attention output $z_i$ is a vector that captures the information from all tokens in the sequence, weighted by how much attention the $i$th token should pay to each of them.
 
 ## Self-attention Layer {#sec-self-attention}
 
