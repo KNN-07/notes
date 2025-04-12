@@ -202,7 +202,7 @@ q_n^\top k_1 & q_n^\top k_2 & \cdots & q_n^\top k_n
 \right)\end{aligned}=\text{softmax}\left(\frac{QK^\top}{\sqrt{d_k}}\right)
 $$
 
-Note that the Softmax operation is applied in a row-wise manner. The $i$th row $A$ of this matrix corresponds to the attention weights computed for query $q_i$ over all keys (i.e., $\alpha_i$). The full output of the self-attention layer can then be written compactly as:
+Note that the Softmax operation is applied in a row-wise manner. The $i$th row $A$ of this matrix corresponds to the softmax'd attention scores computed for query $q_i$ over all keys (i.e., $\alpha_i$). The full output of the self-attention layer can then be written compactly as:
 
 $$
 Z = 
