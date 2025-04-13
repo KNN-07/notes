@@ -82,7 +82,7 @@ These descriptions specify the transition model $T$, and the transition function
   completed by also specifying a discount factor.
 :::
 
-A *policy* is a function $\pi$ that specifies what action to take in each state. The policy is what we will want to learn; it is akin to the strategy that a player employs to win a given game. Below, we take just the initial steps towards this eventual goal. We describe how to evaluate how good a policy is, first in the *finite horizon* case @sec-mdp_finite_horizon when the total number of transition steps is finite. In the finite horizon case, we typically denote the policy as $\pi_h(s)$, where $h\in\mathbb N$ is a non-negative integer denoting the number of steps remaining and $s \in \mathcal S$ is the current state. Then we consider the *infinite horizon* case @sec-mdp_infinite_horizon, when you don't know when the game will be over.
+A *policy* is a function $\pi$ that specifies what action to take in each state. The policy is what we will want to learn; it is akin to the strategy that a player employs to win a given game. Below, we take just the initial steps towards this eventual goal. We describe how to evaluate how good a policy is, first in the *finite horizon* case @sec-mdp_finite_horizon when the total number of transition steps is finite. In the finite horizon case, we typically denote the policy as $\pi_h(s)$, where $h$ is a non-negative integer denoting the number of steps remaining and $s \in \mathcal S$ is the current state. Then we consider the *infinite horizon* case @sec-mdp_infinite_horizon, when you don't know when the game will be over.
 
 ### Finite-horizon value functions   {#sec-mdp_finite_horizon}
 
@@ -97,15 +97,21 @@ V^0_{\pi}(s) = 0\;\;.
 $${#eq-finite_val_0}
 
 Then, the value of a policy in state $s$ at horizon $h + 1$ is equal to the reward it will get in state $s$ plus the next state's expected horizon $h$ value, discounted by a factor $\gamma$. So, starting with horizons 1 and 2, and then moving to the general case, we have: 
+$$
+V^1_{\pi}(s) = R(s, \pi_1(s)) + 0
+$${#eq-finite_val_1}
 
 $$
-\begin{aligned}
-  V^1_{\pi}(s) & = R(s, \pi_1(s)) + 0                                                     \\
-  V^2_{\pi}(s) & = R(s, \pi_2(s)) +  \gamma \sum_{s'}T(s, \pi_2(s), s')  V^1_{\pi}(s')      \\
-  \vdots
-\\
-V^h_{\pi}(s) & = R(s, \pi_h(s)) + \gamma \sum_{s'}T(s, \pi_h(s), s')  V^{h - 1}_{\pi}(s')
-\end{aligned}$${#eq-finite_value}
+V^2_{\pi}(s) = R(s, \pi_2(s)) +  \gamma \sum_{s'}T(s, \pi_2(s), s')  V^1_{\pi}(s')
+$${#eq-finite_val_2}
+
+$$
+\vdots
+$$
+
+$$
+V^h_{\pi}(s) = R(s, \pi_h(s)) + \gamma \sum_{s'}T(s, \pi_h(s), s')  V^{h - 1}_{\pi}(s')
+$${#eq-finite_value}
 
  The sum over $s'$ is an *expectation*: it considers all possible next states $s'$, and computes an average of their $(h-1)$-horizon values, weighted by the probability that the transition function from state $s$ with the action chosen by the policy $\pi_h(s)$ assigns to arriving in state $s'$, and discounted by $\gamma$.
 
@@ -116,7 +122,7 @@ for any given state–action pair $(s, a)$?
 :::
 
 :::{.study-question-callout}
-Convince yourself that the definitions in Eqs.~\ref{eq:finite_val_0} and~\ref{eq:finite_val_1} are special cases of the more general formulation in Eq.~\ref{eq:finite_value}.
+Convince yourself that the definitions in @eq-finite_val_0 and @eq-finite_val_2 are special cases of the more general formulation in @eq-finite_value.
 :::
 
 
@@ -153,7 +159,7 @@ $${#eq-exp_infinite}
 Note that the $t$ indices here are not the number of steps to go, but actually the number of steps forward from the starting state (there is no sensible notion of "steps to go" in the infinite horizon case).
 
 :::{.callout-note}
-@eq-exp_finite @eq-exp_infinite are a conceptual stepping stone. Our main objective is to get to @eq-inf_horiz_value, which can also be viewed as including $\gamma$ in @eq-finite_value, with the appropriate definition of the infinite-horizon value.
+@eq-exp_finite and @eq-exp_infinite are a conceptual stepping stone. Our main objective is to get to @eq-inf_horiz_value, which can also be viewed as including $\gamma$ in @eq-finite_value, with the appropriate definition of the infinite-horizon value.
 :::
 
 There are two good intuitive motivations for discounting. One is related to economic theory and the present value of money: you'd generally rather have some money today than that same amount of money next week (because you could use it now or invest it). The other is to think of the whole process terminating, with probability $1-\gamma$ on each step of the interaction. (At every
@@ -171,7 +177,7 @@ $$
 V_{\pi}(s) = \mathbb{E}[R_0 + \gamma R_1 + \gamma^2 R_2 +
     \dots \mid \pi, S_0 = s] = \mathbb{E}[R_0 + \gamma(R_1 + \gamma(R_2 + \gamma
     \dots))) \mid \pi, S_0 = s] \;\;.
-$$ 
+$${#eq-vpi-expanded} 
 
 Because the expectation of a linear combination of random variables is the linear combination of the expectations, we have 
 
@@ -266,11 +272,34 @@ $$
 
 We can iteratively solve for the $Q^*$ values with the infinite-horizon value iteration algorithm, shown below:
 
-::: codebox
-$s \in \mathcal{S}, a \in \mathcal{A}:$ $Q_{\text{old}}(s, a) = 0$ not converged: $s \in \mathcal{S}, a \in \mathcal{A}:$ $Q_{\text{new}}(s, a) = R(s, a) + \gamma\sum_{s'}T(s, a, s')\max_{a'}Q_{\text{old}}(s', a')$
-
-$\max_{s, a}\lvert Q_{\text{old}}(s, a) - Q_{\text{new}}(s, a)\rvert < \epsilon:$ return $Q_{\text{new}}$ $Q_{\text{old}} = Q_{\text{new}}$
-:::
+```pseudocode
+#| html-indent-size: "1.2em"
+#| html-comment-delimiter: "//"
+#| html-line-number: true
+#| html-line-number-punc: ":"
+#| html-no-end: false
+#| pdf-placement: "htb!"
+#| pdf-line-number: true
+\begin{algorithm}
+\caption{Infinite-Horizon-Value-Iteration}
+\begin{algorithmic}[1]
+\REQUIRE $\mathcal{S}$, $\mathcal{A}$, $T$, $R$, $\gamma$, $\epsilon$
+\STATE \textbf{Initialization:}
+\FOR{each $s \in \mathcal{S}$ and $a \in \mathcal{A}$}
+    \STATE $Q_{\text{old}}(s,a) \gets 0$
+\ENDFOR
+\WHILE{not converged}
+    \FOR{each $s \in \mathcal{S}$ and $a \in \mathcal{A}$}
+        \STATE $Q_{\text{new}}(s,a) \gets R(s,a) + \gamma \displaystyle\sum_{s'} T(s,a,s')\, \max_{a'} Q_{\text{old}}(s',a')$
+    \ENDFOR
+    \IF{$\displaystyle\max_{s,a}\left|Q_{\text{old}}(s,a)-Q_{\text{new}}(s,a)\right| < \epsilon$}
+        \STATE \textbf{return} $Q_{\text{new}}$
+    \ENDIF
+    \STATE $Q_{\text{old}} \gets Q_{\text{new}}$
+\ENDWHILE
+\end{algorithmic}
+\end{algorithm}
+```
 
 ##### Theory {#theory .unnumbered}
 
