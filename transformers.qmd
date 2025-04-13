@@ -241,17 +241,14 @@ To address this, transformers incorporate positional embeddings — additional i
 
 There are two main strategies for positional embeddings: (i) learned positional embeddings, where a trainable vector $p_i\in\mathbb{R}^d$ is assigned to each position (i.e., token index) $i=0, 1, 2, ..., n$. These vectors are learned alongside all other model parameters and allow the model to discover how best to encode position for a given task, (ii) fixed positional embeddings, such as sinusoidal positional embedding proposed in the original Transformer paper:
 
-$$\begin{aligned}
+$$
+\begin{aligned}
 p_{(i, 2k)} = \sin\left( \frac{i}{10000^{2k/d}} \right) \\
 p_{(i, 2k+1)} = \cos\left( \frac{i}{10000^{2k/d}} \right)
 \end{aligned}
-$$ where $i$ is the token index, while $k$ is the dimension index. Namely, this sinusoidal positional embedding uses sine for the even dimension and cosine for the odd dimension. Regardless of learnable or fixed positional embedding, it will enter the computation of attention at the input place:
+$$ 
 
-$$
-x_i^\star = x_i + p_i
-$​$
-
-where $x_i$ is the $i$th original input token, and $p_i$ is its positional embedding. The $x_i^\star$ will now be what we really feed into the attention layer, so that the input to the attention mechanism now carries information about both what the token is and where it appears in the sequence.
+where $i$ is the token index, while $k$ is the dimension index. Namely, this sinusoidal positional embedding uses sine for the even dimension and cosine for the odd dimension. Regardless of learnable or fixed positional embedding, it will enter the computation of attention at the input place: $x_i^*=x_i+p_i~,$​ where $x_i$ is the $i$th original input token, and $p_i$ is its positional embedding. The $x_i^*$ will now be what we really feed into the attention layer, so that the input to the attention mechanism now carries information about both what the token is and where it appears in the sequence.
 
 This simple additive design enables attention layers to leverage both semantic content and ordering structure when deciding where to focus. In practice, this addition occurs at the very first layer of the transformer stack, and all subsequent layers operate on position-aware representations. This is a key design choice that allows transformers to work effectively with sequences of text, audio, or even image patches (as in Vision Transformers).
 
