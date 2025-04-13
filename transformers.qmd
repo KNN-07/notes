@@ -235,7 +235,7 @@ where the concatenation operation concatenates $Z^h$ horizontally, yielding a ma
 
 ### Positional Embeddings 
 
-An extremely observant reader might have been suspicious of a small but very important detail that we have not yet discussed: the attention mechanism, as introduced so far, does not encode the order of the input tokens. For instance, when computing softmax'd attention scores and building token representations, the model is fundamentally permutation-invariant — the same set of tokens, even if scrambled into a different order, would result in identical outputs. But natural language is not a bag of words: meaning is tied closely to word order.
+An extremely observant reader might have been suspicious of a small but very important detail that we have not yet discussed: the attention mechanism, as introduced so far, does not encode the order of the input tokens. For instance, when computing softmax'd attention scores and building token representations, the model is fundamentally equivariant — the same set of tokens, even if scrambled into a different order, would result in identical outputs permuted in the same order. But natural language is not a bag of words: meaning is tied closely to word order.
 
 To address this, transformers incorporate positional embeddings — additional information that encodes the position of each token in the sequence. These embeddings are added to the input token embeddings before any attention layers are applied, effectively injecting ordering information into the model.
 
