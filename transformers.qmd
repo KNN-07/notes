@@ -1,5 +1,5 @@
 :::{.callout-caution}
-We are actively overhauling the Transformers chapter from the legacy [PDF notes](https://introml.mit.edu/_static/spring25/notes.pdf) to enhance clarity and presentation—stay tuned for updates!
+We are actively overhauling the Transformers chapter from the legacy [PDF notes](https://introml.mit.edu/_static/spring25/notes.pdf) to enhance clarity and presentation. Please feel free to raise issues or request more explanation on specific topics. 
 :::
 
 
@@ -59,79 +59,56 @@ How can we define an optimal vocabulary of such tokens? How many distinct tokens
 
 ## Query, Key, Value, and Attention Output {#sec-qkv}
 
-Attention is a strategy for processing global information efficiently, focusing just on the parts of the signal that are most salient to the task at hand. Recall that for an input sentence, each token is input into the model, we aim to predict the token that comes next in the sentence/sequence. As we have increasing amounts of context (previous tokens) with each successive prediction, this should ideally help us. That is, if we can appropriately make use of this context. Naturally, we want our model to learn how to focus on (pay attention to) the tokens that are most useful. For example, let’s say that the model has currently processed the first two tokens of a sentence. e.g.,:
+Attention mechanisms efficiently process global information by selectively focusing on the most relevant parts of the input. Given an input sentence, each token is processed sequentially to predict subsequent tokens. As more context (previous tokens) accumulates, this context ideally becomes increasingly beneficial—provided the model can appropriately utilize it. Transformers employ a mechanism known as **attention**, which enables models to identify and prioritize contextually relevant tokens.
 
-“Anqi forgot ___”
+For example, consider the partial sentence: "Anqi forgot ___". At this point, the model has processed tokens "Anqi" and "forgot," and aims to predict the next token. Numerous valid completions exist, such as articles ("the," "an"), prepositions ("to," "about"), or possessive pronouns ("her," "his," "their"). A well-trained model should assign higher probabilities to contextually relevant tokens, such as "her," based on the feminine-associated name "Anqi." Attention mechanisms guide the model to selectively focus on these relevant contextual cues using query, key, and value vectors.
 
-At this point, the current/latest input token is “forgot”, and the model is trying to produce its corresponding output token (depicted as if it’s filling in the blank). There are of course many possible valid completions to this sentence, including many article words (“the”, “an”, etc) and prepositions (“to”, “about”). There could also be possessive pronouns (“her”, “his”, “their”, etc). If the model is able to appropriately focus on the subject of the sentence, “Anqi”, the model should assign higher probability to the pronoun “her” than any other pronoun because Anqi is most often a name of female-identifying individuals). How can we assist a model to learn how to pay *attention* to the most appropriate context tokens? In transformers, this is realized using (query, key, value) vectors.
+### Query Vectors
 
-Let’s imagine that instead of having just 1 representation for each input token, we had multiple versions/vectors, each of which could be thought of as a “surrogate” representation serving different purposes.
+Our goal is for each input token to learn how much attention it should give to every other token in the sequence. To achieve this, each token is assigned a unique **query vector** used to "probe" or assess other tokens—including itself—to determine relevance.
 
-### Query vectors
-
-Remember, our goal is for each input token to learn how much focus (attention) it should place on every other input token in the sequence.
-
-To achieve this, we provide each input token with a unique representation, called a **query vector**, that it uses to "query" (inspect, probe, or ask) every other input token—including itself—to determine how much attention it should pay.
-
-To generate this query vector, we multiply each input token's representation vector $x_i$ (a $d$ dimensional vector) by a shared, learnable query weight matrix $W_q$ (of size $d \times d_k$), resulting in a query vector $q_i$ (a $d_k$-dimensional vector), where $d_k < d$.
-
-Formally, this is represented as:
+A token's query vector $q_i$ is computed by multiplying its representation vector $x_i$ (a $d$-dimensional vector) by a learnable query weight matrix $W_q$ (of dimension $d \times d_k$, with $d_k < d$):
 
 $$
-q_i = W_q ^T x_i 
+q_i = W_q^T x_i
 $$
 
-For instance, if our sequence has 4 input tokens, we will generate 4 distinct query vectors.
+Thus, for a sequence of $n$ tokens, we generate $n$ distinct query vectors.
 
-### Key vectors 
+### Key Vectors
 
-We wish to use the query vectors to inspect, check, or probe against every other input token. We introduce an additional "surrogate" representation called a **key vector**. The key vectors are responsible for "answering" the query vectors' requests about how much attention should be paid to each token. For example, when processing input token $x_3$, its corresponding query vector $q_3$ will be compared against the key vector $k_1$ to determine the attention on token $x_1$. Similarly, $q_3$ will be compared against $k_2$ for token $x_2$, and finally, against $k_3$ for token $x_3,$ and so on.
-
-By having independent representations for queries and keys, we grant the model significant expressive freedom. Our key vectors, like query vectors, will be of size $1 \times d_k$ and are computed by a learned weight matrix of size $d \times d_k$:
+To complement query vectors, we introduce **key vectors**, which tokens use to "answer" queries about their relevance. Specifically, when evaluating token $x_3$, its query vector $q_3$ is compared to each token's key vector $k_j$ to determine the attention weight. Each key vector $k_i$ is computed similarly using a learnable key weight matrix $W_k$:
 
 $$
 k_i = W_k^T x_i
 $$
 
-Now, our attention mechanism (attention score) abstractly looks like: $q_i^T k_j$ That is, our rich representation relies on the dot-product similarity of query-key pairs for any tokens $i$ and $j$.
-
-Using the dot-product as our function is an excellent choice because it provides us with a measurement of how similar two vectors are, and it’s fast to compute. 
-
-We can then do this similarity comparison for every key in the sequence. Let's begin by considering a specific query $q_i,$ we can calculate the softmax'd attention scores:
-
-$$a_i = \text{softmax}\left(
-  [q_i^T k_1; q_i^T k_2; q_i^T k_3; \dots, q_i^T k_n] / \sqrt{d_k}
-  \right)^T \in\mathbb{R}^{1\times n}
-$$
-
-:::{.column-margin}
-You might hear people refer to ‘softmaxed attention scores’ as ‘attention weights.’ We intentionally avoid this terminology because these values are not network weights—they’re not directly learned parameters but rather computed from learned quantities.
-:::
-
-All the elements in this vector sum up to 1, indicating the persentage of attention that the query $q$ pays to each and every one of the key in the sequence. In this equation, the normalization by $\sqrt{d_k}$ is done to reduce the magnitude of the dot product, which would otherwise grow undesirably large with increasing $d_k,$ making it difficult for (overall) training.
-
-### Value vectors
-
-Now that we have a way of paying attention to our "neighbors", how do we incorporate their contribution, i.e., how do we let their "meaning" influence our output? One idea, similar to how we could use abstract query and key to represent certain "aspect" of our toekns, we might allow each token to have a distinct vector representation – a value vector $v_i$ – that is solely used for contributing towards every attention output. 
-
-Specifically, the value vector will be produced via a learned value weight matrix $W_v$ (of size $d\times d_k$ again).
+The attention mechanism calculates similarity using the dot product, which efficiently measures vector similarity:
 
 $$
-v_i = W_v ^T x_i 
+a_i = \text{softmax}\left(\frac{[q_i^T k_1, q_i^T k_2, \dots, q_i^T k_n]}{\sqrt{d_k}}\right)^T \in \mathbb{R}^{1\times n}
 $$
 
-### Attention output
+The vector $a_i$ (attention scores) quantifies how much attention token $q_i$ should pay to each token in the sequence, normalized so that elements sum to 1. Normalizing by $\sqrt{d_k}$ prevents large dot-product magnitudes, stabilizing training.
 
-Great, now we have rich vector representations for each input token! Just like we saw with other neural networks in our course, we can use these vectors to perform any prediction/output probability that we wish!
+### Value Vectors
 
-Concretely, the idea is to use the softmax'd attention scores to form a weighted sum of all input token embeddings in the sequence. For example, suppose, we can compute the attention output for the $i$th token $z_i$ as such:
+To incorporate meaningful contributions from attended tokens, we use **value vectors** ($v_i$), providing distinct representations for contribution to attention outputs. Each token's value vector is computed with another learnable matrix $W_v$:
 
 $$
-{z}_i = \sum_{j=1}^n  a_{ij} v_{j}\in\mathbb{R}^{d_k }
+v_i = W_v^T x_i
 $$
-where $a_{ij}$ is the $j$th element in $a_i$.
 
-This is a weighted sum of the value vectors using the softmax'd attention scores. The attention output $z_i$ is a vector that captures the information from all tokens in the sequence, weighted by how much attention the $i$th token should pay to each of them.
+### Attention Output
+
+Finally, attention outputs are computed as weighted sums of value vectors, using the previously calculated attention scores:
+
+$$
+z_i = \sum_{j=1}^n a_{ij} v_j \in \mathbb{R}^{d_k}
+$$
+
+This vector $z_i$ represents token $x_i$'s enriched embedding, incorporating context from across the sequence, weighted by learned attention.
+
 
 ## Self-attention Layer {#sec-self-attention}
 
