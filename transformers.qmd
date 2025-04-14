@@ -235,7 +235,7 @@ where the concatenation operation concatenates $Z^h$ horizontally, yielding a ma
 
 ### Positional Embeddings 
 
-An extremely observant reader might have been suspicious of a small but very important detail that we have not yet discussed: the attention mechanism, as introduced so far, does not encode the order of the input tokens. For instance, when computing softmax'd attention scores and building token representations, the model is fundamentally equivariant — the same set of tokens, even if scrambled into a different order, would result in identical outputs permuted in the same order. But natural language is not a bag of words: meaning is tied closely to word order.
+An extremely observant reader might have been suspicious of a small but very important detail that we have not yet discussed: the attention mechanism, as introduced so far, does not encode the order of the input tokens. For instance, when computing softmax'd attention scores and building token representations, the model is fundamentally permutation-equivariant — the same set of tokens, even if scrambled into a different order, would result in identical outputs permuted in the same order --- Formally, when we fix $\{W_q,W_k,W_v\}$ and switch the input $x_i$ with $x_j$, then the output $z_i$ and $z_j$ will be switched. However, natural language is not a bag of words: meaning is tied closely to word order. 
 
 To address this, transformers incorporate positional embeddings — additional information that encodes the position of each token in the sequence. These embeddings are added to the input token embeddings before any attention layers are applied, effectively injecting ordering information into the model.
 
@@ -248,7 +248,7 @@ p_{(i, 2k+1)} = \cos\left( \frac{i}{10000^{2k/d}} \right)
 \end{aligned}
 $$ 
 
-where $i$ is the token index, while $k$ is the dimension index. Namely, this sinusoidal positional embedding uses sine for the even dimension and cosine for the odd dimension. Regardless of learnable or fixed positional embedding, it will enter the computation of attention at the input place: $x_i^*=x_i+p_i~,$​ where $x_i$ is the $i$th original input token, and $p_i$ is its positional embedding. The $x_i^*$ will now be what we really feed into the attention layer, so that the input to the attention mechanism now carries information about both what the token is and where it appears in the sequence.
+where $i=1,2,..,n$ is the token index, while $k=1,2,...,d$ is the dimension index. Namely, this sinusoidal positional embedding uses sine for the even dimension and cosine for the odd dimension. Regardless of learnable or fixed positional embedding, it will enter the computation of attention at the input place: $x_i^*=x_i+p_i~,$​ where $x_i$ is the $i$th original input token, and $p_i$ is its positional embedding. The $x_i^*$ will now be what we really feed into the attention layer, so that the input to the attention mechanism now carries information about both what the token is and where it appears in the sequence.
 
 This simple additive design enables attention layers to leverage both semantic content and ordering structure when deciding where to focus. In practice, this addition occurs at the very first layer of the transformer stack, and all subsequent layers operate on position-aware representations. This is a key design choice that allows transformers to work effectively with sequences of text, audio, or even image patches (as in Vision Transformers).
 
