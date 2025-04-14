@@ -5,15 +5,14 @@ We are actively overhauling the Transformers chapter from the legacy [PDF notes]
 
 # Transformers {#sec-transformers}
 
-Transformers are a very recent family of architectures that have revolutionized fields like natural language processing (NLP), image processing, and multi-modal generative AI.
+Transformers are a very recent family of architectures that were originally introduced in the field of natural language processing (NLP) in 2017, as an approach to process and understand human language. Since then, they have revolutionized not only NLP but also other domains such as image processing and multi-modal generative AI. Their scalability and parallelizability have made them the backbone of large-scale foundation models, such as GPT, BERT, and Vision Transformers (ViT), powering many state-of-the-art applications.
 
-Transformers were originally introduced in the field of NLP in 2017, as an approach to process and understand human language. 
 
 :::{.column-margin}
 Human language is inherently sequential in nature (e.g., characters form words, words form sentences, and sentences form paragraphs and documents). Prior to the advent of the transformers architecture, recurrent neural networks (RNNs) briefly dominated the field for their ability to process sequential information. However, RNNs, like many other architectures, processed sequential information in an iterative/sequential fashion, whereby each item of a sequence was individually processed one after another. Transformers offer many advantages over RNNs, including their ability to process all items in a sequence in a *parallel* fashion (as do CNNs).
 :::
 
-Like CNNs, transformers factorize signal processing into stages, each involving independently and identically processed chunks. Transformers have many intricate components; however, we'll focus on their most crucial innovation: a new type of layer called the **attention layer**. Attention layers enable transformers to effectively mix information across chunks, allowing the entire transformer pipeline to model dependencies among these chunks. To help make Transformers more digestible, in this chapter, we will first succinctly motivate and describe them in an overview @sec-transformers-overview. Then, we will dive into the details following the flow of data -- first describing how to represent inputs @sec-embeddings, and then describe the attention mechanism @sec-qkv, and finally we then assemble all these ideas together to arrive at the full transformer architecture in @sec-transformers-arch-details.
+Like CNNs, transformers factorize signal processing into stages, each involving independently and identically processed chunks. Transformers have many intricate components; however, we'll focus on their most crucial innovation: a new type of layer called the **attention layer**. Attention layers enable transformers to effectively mix information across chunks, allowing the entire transformer pipeline to model long-range dependencies among these chunks. To help make Transformers more digestible, in this chapter, we will first succinctly motivate and describe them in an overview @sec-transformers-overview. Then, we will dive into the details following the flow of data -- first describing how to represent inputs @sec-embeddings, and then describe the attention mechanism @sec-qkv, and finally we then assemble all these ideas together to arrive at the full transformer architecture in @sec-transformers-arch-details.
 
 ## Transformers Overview {#sec-transformers-overview}
 
