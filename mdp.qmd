@@ -101,11 +101,11 @@ $${#eq-finite_val_0}
 
 Then, the value of a policy in state $s$ at horizon $h + 1$ is equal to the reward it will get in state $s$ plus the next state's expected horizon $h$ value, discounted by a factor $\gamma$. So, starting with horizons 1 and 2, and then moving to the general case, we have: 
 $$
-\mathrm{V}^1_{\pi}(s) = R(s, \pi_1(s)) + 0
+\mathrm{V}^1_{\pi}(s) = \mathrm{R}(s, \pi_1(s)) + 0
 $${#eq-finite_val_1}
 
 $$
-\mathrm{V}^2_{\pi}(s) = R(s, \pi_2(s)) +  \gamma \sum_{s'}\mathrm{T}(s, \pi_2(s), s')  \mathrm{V}^1_{\pi}(s')
+\mathrm{V}^2_{\pi}(s) = \mathrm{R}(s, \pi_2(s)) +  \gamma \sum_{s'}\mathrm{T}(s, \pi_2(s), s')  \mathrm{V}^1_{\pi}(s')
 $${#eq-finite_val_2}
 
 $$
@@ -113,7 +113,7 @@ $$
 $$
 
 $$
-\mathrm{V}^h_{\pi}(s) = R(s, \pi_h(s)) + \gamma \sum_{s'}\mathrm{T}(s, \pi_h(s), s')  \mathrm{V}^{h - 1}_{\pi}(s')
+\mathrm{V}^h_{\pi}(s) = \mathrm{R}(s, \pi_h(s)) + \gamma \sum_{s'}\mathrm{T}(s, \pi_h(s), s')  \mathrm{V}^{h - 1}_{\pi}(s')
 $${#eq-finite_value}
 
  The sum over $s'$ is an *expectation*: it considers all possible next states $s'$, and computes an average of their $(h-1)$-horizon values, weighted by the probability that the transition function from state $s$ with the action chosen by the policy $\pi_h(s)$ assigns to arriving in state $s'$, and discounted by $\gamma$.
@@ -141,22 +141,22 @@ One standard approach to deal with this problem is to consider the *discounted* 
 
 In the finite-horizon case, we valued a policy based on an expected finite-horizon value: 
 
-$$\mathbb{E}\left[\sum_{t = 0}^{h-1} \gamma^t R_t \mid \pi, s_0\right]\;\;,
+$$\mathbb{E}\left[\sum_{t = 0}^{h-1} \gamma^t \mathrm{R}_t \mid \pi, s_0\right]\;\;,
 $${#eq-exp_finite} 
-where $R_t$ is the reward received at time $t$.
+where $\mathrm{R}_t$ is the reward received at time $t$.
 
 :::{.callout-note}
 # Note
-What is $\mathbb{E}\left[ \cdot \right ]$? This mathematical notation indicates an *expectation*, i.e., an average taken over all the random possibilities which may occur for the argument. Here, the expectation is taken over the *conditional probability* $Pr(R_t = r \mid \pi, s_0)$, where $R_t$ is the random variable for the reward, subject to the policy being $\pi$ and the state being $s_0$. Since $\pi$ is a function, this notation is shorthand for conditioning on all of the random variables implied by policy $\pi$ and the stochastic transitions of the MDP.
+What is $\mathbb{E}\left[ \cdot \right ]$? This mathematical notation indicates an *expectation*, i.e., an average taken over all the random possibilities which may occur for the argument. Here, the expectation is taken over the *conditional probability* $Pr(\mathrm{R}_t = r \mid \pi, s_0)$, where $\mathrm{R}_t$ is the random variable for the reward, subject to the policy being $\pi$ and the state being $s_0$. Since $\pi$ is a function, this notation is shorthand for conditioning on all of the random variables implied by policy $\pi$ and the stochastic transitions of the MDP.
 
-A very important point is that $R(s,a)$ is always deterministic (in this class) for any given $s$ and $a$. Here $R_t$ represents the set of all possible $R(s_t,a)$ at time step $t$; this $R_t$ is a random variable because the state we're in at step $t$ is itself a random variable, due to prior stochastic state transitions up to but not including at step $t$ and prior (deterministic) actions dictated by policy $\pi.$
+A very important point is that $\mathrm{R}(s,a)$ is always deterministic (in this class) for any given $s$ and $a$. Here $\mathrm{R}_t$ represents the set of all possible $\mathrm{R}(s_t,a)$ at time step $t$; this $\mathrm{R}_t$ is a random variable because the state we're in at step $t$ is itself a random variable, due to prior stochastic state transitions up to but not including at step $t$ and prior (deterministic) actions dictated by policy $\pi.$
 :::
 
 Now, for the infinite-horizon case, we select a discount factor $0 \leq \gamma \leq 1$, and evaluate a policy based on its expected *infinite horizon discounted value*: 
 
 $$
-\mathbb{E}\left[\sum_{t = 0}^{\infty}\gamma^tR_t \mid \pi, s_0\right]
-  = \mathbb{E}\left[R_0  + \gamma R_1 + \gamma^2 R_2 + \ldots \mid \pi,  s_0\right] \;\;.
+\mathbb{E}\left[\sum_{t = 0}^{\infty}\gamma^t\mathrm{R}_t \mid \pi, s_0\right]
+  = \mathbb{E}\left[\mathrm{R}_0  + \gamma \mathrm{R}_1 + \gamma^2 \mathrm{R}_2 + \ldots \mid \pi,  s_0\right] \;\;.
 $${#eq-exp_infinite}
   
 Note that the $t$ indices here are not the number of steps to go, but actually the number of steps forward from the starting state (there is no sensible notion of "steps to go" in the infinite horizon case).
@@ -177,19 +177,19 @@ Verify this fact: if, on every day you wake up, there is a
 
 Let us now evaluate a policy in terms of the expected discounted infinite-horizon value that the agent will get in the MDP if it executes that policy. We define the infinite-horizon value of a state $s$ under policy $\pi$ as 
 $$
-\mathrm{V}_{\pi}(s) = \mathbb{E}[R_0 + \gamma R_1 + \gamma^2 R_2 +
-    \dots \mid \pi, S_0 = s] = \mathbb{E}[R_0 + \gamma(R_1 + \gamma(R_2 + \gamma
+\mathrm{V}_{\pi}(s) = \mathbb{E}[\mathrm{R}_0 + \gamma \mathrm{R}_1 + \gamma^2 \mathrm{R}_2 +
+    \dots \mid \pi, S_0 = s] = \mathbb{E}[\mathrm{R}_0 + \gamma(\mathrm{R}_1 + \gamma(\mathrm{R}_2 + \gamma
     \dots))) \mid \pi, S_0 = s] \;\;.
 $${#eq-vpi-expanded} 
 
 Because the expectation of a linear combination of random variables is the linear combination of the expectations, we have 
 
 $$\begin{aligned}
-  \mathrm{V}_{\pi}(s) & = \mathbb{E}[R_0 \mid \pi, S_0 = s] + \gamma  \mathbb{E}[
-    R_1 + \gamma(R_2 + \gamma \dots))) \mid \pi, S_0 = s]
+  \mathrm{V}_{\pi}(s) & = \mathbb{E}[\mathrm{R}_0 \mid \pi, S_0 = s] + \gamma  \mathbb{E}[
+    \mathrm{R}_1 + \gamma(\mathrm{R}_2 + \gamma \dots))) \mid \pi, S_0 = s]
   \nonumber
   \\
-             & = R(s, \pi(s)) + \gamma\sum_{s'}\mathrm{T}(s, \pi(s), s')\mathrm{V}_{\pi}(s') \; .
+             & = \mathrm{R}(s, \pi(s)) + \gamma\sum_{s'}\mathrm{T}(s, \pi(s), s')\mathrm{V}_{\pi}(s') \; .
 \end{aligned}
 $${#eq-inf_horiz_value}
 
@@ -223,16 +223,16 @@ Similar to our definition of $\mathrm{V}^h$ for evaluating a policy, we define t
 
 $$\begin{aligned}
   \mathrm{Q}^0(s, a) & = 0                                                                 \\
-  \mathrm{Q}^1(s, a) & = R(s, a) + 0                                                       \\
-  \mathrm{Q}^2(s, a) & = R(s, a) + \gamma \sum_{s'}\mathrm{T}(s, a, s') \max_{a'} \mathrm{Q}^1(s', a')       \\
+  \mathrm{Q}^1(s, a) & = \mathrm{R}(s, a) + 0                                                       \\
+  \mathrm{Q}^2(s, a) & = \mathrm{R}(s, a) + \gamma \sum_{s'}\mathrm{T}(s, a, s') \max_{a'} \mathrm{Q}^1(s', a')       \\
   \vdots
   \nonumber                                                                       \\
-  \mathrm{Q}^h(s, a) & = R(s, a) + \gamma \sum_{s'}\mathrm{T}(s, a, s') \max_{a'} \mathrm{Q}^{h - 1}(s', a')
+  \mathrm{Q}^h(s, a) & = \mathrm{R}(s, a) + \gamma \sum_{s'}\mathrm{T}(s, a, s') \max_{a'} \mathrm{Q}^{h - 1}(s', a')
 \end{aligned}
 $$ 
 where $(s',a')$ denotes the next time-step state/action pair. We can solve for the values of $\mathrm{Q}^h$ with a simple recursive algorithm called *finite-horizon value iteration* that just computes $\mathrm{Q}^h$ starting from horizon 0 and working backward to the desired horizon $H$. Given $\mathrm{Q}^h$, an optimal $\pi_h^*$ can be found as follows: $$\pi_h^*(s) = \arg\max_{a}\mathrm{Q}^h(s, a) \;\;.$$ which gives the *immediate* best action(s) to take when there are $h$ steps left; then $\pi_{h-1}^*(s)$ gives the best action(s) when there are $(h-1)$ steps left, and so on. In the case where there are multiple best actions, we typically can break ties randomly.
 
-Additionally, it is worth noting that in order for such an optimal policy to be computed, we assume that the reward function $R(s,a)$ is bounded on the set of all possible (state, action) pairs. Furthermore, we will assume that the set of all possible actions is finite.
+Additionally, it is worth noting that in order for such an optimal policy to be computed, we assume that the reward function $\mathrm{R}(s,a)$ is bounded on the set of all possible (state, action) pairs. Furthermore, we will assume that the set of all possible actions is finite.
 
 :::{.study-question-callout}
 The optimal value function is unique, but the optimal policy is not.  Think of a situation in which there is more than one optimal policy.
@@ -249,7 +249,7 @@ Let's consider what would happen if we tried to compute $\mathrm{Q}^4(s, a)$ for
 
 -   To compute $\mathrm{Q}^2(s_i, a_j)$ for any one $(s_i, a_j)$, we'd need to compute $\mathrm{Q}^1(s, a)$ for all $(s, a)$ pairs.
 
--   Luckily, those are just our $R(s, a)$ values.
+-   Luckily, those are just our $\mathrm{R}(s, a)$ values.
 
 So, if we have $n$ states and $m$ actions, this is $O((mn)^3)$ work --- that seems like way too much, especially as the horizon increases! But observe that we really only have $mnh$ values that need to be computed: $\mathrm{Q}^h(s, a)$ for all $h, s, a$. If we start with $h=1$, compute and store those values, then using and reusing the $\mathrm{Q}^{h-1}(s, a)$ values to compute the $\mathrm{Q}^h(s, a)$ values, we can do all this computation in time $O(mnh)$, which is much better!
 :::
@@ -262,9 +262,9 @@ An important theorem about MDPs is: in the infinite-horizon case, there exists a
 
 There are many methods for finding an optimal policy for an MDP. We have already seen the finite-horizon value iteration case. Here we will study a very popular and useful method for the infinite-horizon case, *infinite-horizon value iteration*. It is also important to us, because it is the basis of many *reinforcement-learning* methods.
 
-We will again assume that the reward function $R(s,a)$ is bounded on the set of all possible (state, action) pairs and additionally that the number of actions in the action space is finite. Define $\mathrm{Q}(s, a)$ to be the expected infinite-horizon discounted value of being in state $s$, executing action $a$, and executing an optimal policy $\pi^*$ thereafter. Using similar reasoning to the recursive definition of $\mathrm{V}_\pi,$ we can express this value recursively as 
+We will again assume that the reward function $\mathrm{R}(s,a)$ is bounded on the set of all possible (state, action) pairs and additionally that the number of actions in the action space is finite. Define $\mathrm{Q}(s, a)$ to be the expected infinite-horizon discounted value of being in state $s$, executing action $a$, and executing an optimal policy $\pi^*$ thereafter. Using similar reasoning to the recursive definition of $\mathrm{V}_\pi,$ we can express this value recursively as 
 
-$$\mathrm{Q}(s, a) = R(s, a) + \gamma\sum_{s'}\mathrm{T}(s, a, s')\max_{a'}\mathrm{Q}(s', a') \;\;.$$
+$$\mathrm{Q}(s, a) = \mathrm{R}(s, a) + \gamma\sum_{s'}\mathrm{T}(s, a, s')\max_{a'}\mathrm{Q}(s', a') \;\;.$$
 
 This is also a set of equations, one for each $(s, a)$ pair. This time, though, they are not linear (due to the $\max$ operation), and so they are not easy to solve. But there is a theorem that says they have a unique solution!
 
