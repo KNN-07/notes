@@ -292,7 +292,7 @@ We can iteratively solve for the $\mathrm{Q}^*$ values with the infinite-horizon
 \ENDFOR
 \WHILE{not converged}
     \FOR{each $s \in \mathcal{S}$ and $a \in \mathcal{A}$}
-        \STATE $\mathrm{Q}_{\text{new}}(s,a) \gets R(s,a) + \gamma \displaystyle\sum_{s'} \mathrm{T}(s,a,s')\, \max_{a'} \mathrm{Q}_{\text{old}}(s',a')$
+        \STATE $\mathrm{Q}_{\text{new}}(s,a) \gets \mathrm{R}(s,a) + \gamma \displaystyle\sum_{s'} \mathrm{T}(s,a,s')\, \max_{a'} \mathrm{Q}_{\text{old}}(s',a')$
     \ENDFOR
     \IF{$\displaystyle\max_{s,a}\left|\mathrm{Q}_{\text{old}}(s,a)-\mathrm{Q}_{\text{new}}(s,a)\right| < \epsilon$}
         \STATE \textbf{return} $\mathrm{Q}_{\text{new}}$
