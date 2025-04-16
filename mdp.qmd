@@ -15,12 +15,12 @@ This setup change necessitates additional mathematical and algorithmic tools for
 
 ## Definition and value functions {#sec_mdps}
 
-Formally, a Markov decision process is $\langle \mathcal S, \mathcal A, T, R,
+Formally, a Markov decision process is $\langle \mathcal S, \mathcal A, T, \mathrm{R},
   \gamma\rangle$ where $\mathcal{S}$ is the state space, $\mathcal{A}$ is the action space, and:
 
 -   $T : \mathcal S \times \mathcal A \times \mathcal S \rightarrow \mathbb{R}$ is a *transition model*, where 
 $$
-T(s, a, s') = Pr(S_t = s'|S_{t - 1} = s,
+\mathrm{T}(s, a, s') = Pr(S_t = s'|S_{t - 1} = s,
               A_{t - 1} = a)\;\;,
 $$ 
 specifying a conditional probability distribution;
@@ -32,7 +32,7 @@ The notation $S_t = s'$ uses a capital letter $S$ to stand for
           $\mathcal S$ as values.
 :::
 
--   $R: \mathcal S \times \mathcal A \rightarrow \mathbb{R}$ is a *reward function*, where $R(s, a)$ specifies an immediate reward for taking action $a$ when in state $s$; and
+-   $\mathrm{R}: \mathcal S \times \mathcal A \rightarrow \mathbb{R}$ is a *reward function*, where $\mathrm{R}(s, a)$ specifies an immediate reward for taking action $a$ when in state $s$; and
 
 -   $\gamma \in [0, 1]$ is a *discount factor*, which we'll discuss in @sec-mdp_infinite_horizon.
 
@@ -105,7 +105,7 @@ $$
 $${#eq-finite_val_1}
 
 $$
-\mathrm{V}^2_{\pi}(s) = R(s, \pi_2(s)) +  \gamma \sum_{s'}T(s, \pi_2(s), s')  \mathrm{V}^1_{\pi}(s')
+\mathrm{V}^2_{\pi}(s) = R(s, \pi_2(s)) +  \gamma \sum_{s'}\mathrm{T}(s, \pi_2(s), s')  \mathrm{V}^1_{\pi}(s')
 $${#eq-finite_val_2}
 
 $$
@@ -113,14 +113,14 @@ $$
 $$
 
 $$
-\mathrm{V}^h_{\pi}(s) = R(s, \pi_h(s)) + \gamma \sum_{s'}T(s, \pi_h(s), s')  \mathrm{V}^{h - 1}_{\pi}(s')
+\mathrm{V}^h_{\pi}(s) = R(s, \pi_h(s)) + \gamma \sum_{s'}\mathrm{T}(s, \pi_h(s), s')  \mathrm{V}^{h - 1}_{\pi}(s')
 $${#eq-finite_value}
 
  The sum over $s'$ is an *expectation*: it considers all possible next states $s'$, and computes an average of their $(h-1)$-horizon values, weighted by the probability that the transition function from state $s$ with the action chosen by the policy $\pi_h(s)$ assigns to arriving in state $s'$, and discounted by $\gamma$.
 
 :::{.study-question-callout}
 What is the value of 
-$$\sum_{s'} T(s, a, s')$$ 
+$$\sum_{s'} \mathrm{T}(s, a, s')$$ 
 for any given state–action pair $(s, a)$?
 :::
 
@@ -189,7 +189,7 @@ $$\begin{aligned}
     R_1 + \gamma(R_2 + \gamma \dots))) \mid \pi, S_0 = s]
   \nonumber
   \\
-             & = R(s, \pi(s)) + \gamma\sum_{s'}T(s, \pi(s), s')\mathrm{V}_{\pi}(s') \; .
+             & = R(s, \pi(s)) + \gamma\sum_{s'}\mathrm{T}(s, \pi(s), s')\mathrm{V}_{\pi}(s') \; .
 \end{aligned}
 $${#eq-inf_horiz_value}
 
@@ -224,10 +224,10 @@ Similar to our definition of $\mathrm{V}^h$ for evaluating a policy, we define t
 $$\begin{aligned}
   \mathrm{Q}^0(s, a) & = 0                                                                 \\
   \mathrm{Q}^1(s, a) & = R(s, a) + 0                                                       \\
-  \mathrm{Q}^2(s, a) & = R(s, a) + \gamma \sum_{s'}T(s, a, s') \max_{a'} \mathrm{Q}^1(s', a')       \\
+  \mathrm{Q}^2(s, a) & = R(s, a) + \gamma \sum_{s'}\mathrm{T}(s, a, s') \max_{a'} \mathrm{Q}^1(s', a')       \\
   \vdots
   \nonumber                                                                       \\
-  \mathrm{Q}^h(s, a) & = R(s, a) + \gamma \sum_{s'}T(s, a, s') \max_{a'} \mathrm{Q}^{h - 1}(s', a')
+  \mathrm{Q}^h(s, a) & = R(s, a) + \gamma \sum_{s'}\mathrm{T}(s, a, s') \max_{a'} \mathrm{Q}^{h - 1}(s', a')
 \end{aligned}
 $$ 
 where $(s',a')$ denotes the next time-step state/action pair. We can solve for the values of $\mathrm{Q}^h$ with a simple recursive algorithm called *finite-horizon value iteration* that just computes $\mathrm{Q}^h$ starting from horizon 0 and working backward to the desired horizon $H$. Given $\mathrm{Q}^h$, an optimal $\pi_h^*$ can be found as follows: $$\pi_h^*(s) = \arg\max_{a}\mathrm{Q}^h(s, a) \;\;.$$ which gives the *immediate* best action(s) to take when there are $h$ steps left; then $\pi_{h-1}^*(s)$ gives the best action(s) when there are $(h-1)$ steps left, and so on. In the case where there are multiple best actions, we typically can break ties randomly.
@@ -264,7 +264,7 @@ There are many methods for finding an optimal policy for an MDP. We have already
 
 We will again assume that the reward function $R(s,a)$ is bounded on the set of all possible (state, action) pairs and additionally that the number of actions in the action space is finite. Define $\mathrm{Q}(s, a)$ to be the expected infinite-horizon discounted value of being in state $s$, executing action $a$, and executing an optimal policy $\pi^*$ thereafter. Using similar reasoning to the recursive definition of $\mathrm{V}_\pi,$ we can express this value recursively as 
 
-$$\mathrm{Q}(s, a) = R(s, a) + \gamma\sum_{s'}T(s, a, s')\max_{a'}\mathrm{Q}(s', a') \;\;.$$
+$$\mathrm{Q}(s, a) = R(s, a) + \gamma\sum_{s'}\mathrm{T}(s, a, s')\max_{a'}\mathrm{Q}(s', a') \;\;.$$
 
 This is also a set of equations, one for each $(s, a)$ pair. This time, though, they are not linear (due to the $\max$ operation), and so they are not easy to solve. But there is a theorem that says they have a unique solution!
 
@@ -292,7 +292,7 @@ We can iteratively solve for the $\mathrm{Q}^*$ values with the infinite-horizon
 \ENDFOR
 \WHILE{not converged}
     \FOR{each $s \in \mathcal{S}$ and $a \in \mathcal{A}$}
-        \STATE $\mathrm{Q}_{\text{new}}(s,a) \gets R(s,a) + \gamma \displaystyle\sum_{s'} T(s,a,s')\, \max_{a'} \mathrm{Q}_{\text{old}}(s',a')$
+        \STATE $\mathrm{Q}_{\text{new}}(s,a) \gets R(s,a) + \gamma \displaystyle\sum_{s'} \mathrm{T}(s,a,s')\, \max_{a'} \mathrm{Q}_{\text{old}}(s',a')$
     \ENDFOR
     \IF{$\displaystyle\max_{s,a}\left|\mathrm{Q}_{\text{old}}(s,a)-\mathrm{Q}_{\text{new}}(s,a)\right| < \epsilon$}
         \STATE \textbf{return} $\mathrm{Q}_{\text{new}}$
