@@ -15,10 +15,10 @@ This setup change necessitates additional mathematical and algorithmic tools for
 
 ## Definition and value functions {#sec_mdps}
 
-Formally, a Markov decision process is $\langle \mathcal S, \mathcal A, T, \mathrm{R},
+Formally, a Markov decision process is $\langle \mathcal S, \mathcal A, \mathrm{T}, \mathrm{R},
   \gamma\rangle$ where $\mathcal{S}$ is the state space, $\mathcal{A}$ is the action space, and:
 
--   $T : \mathcal S \times \mathcal A \times \mathcal S \rightarrow \mathbb{R}$ is a *transition model*, where 
+-   $\mathrm{T} : \mathcal S \times \mathcal A \times \mathcal S \rightarrow \mathbb{R}$ is a *transition model*, where 
 $$
 \mathrm{T}(s, a, s') = Pr(S_t = s'|S_{t - 1} = s,
               A_{t - 1} = a)\;\;,
@@ -61,7 +61,7 @@ For each action, this is what is done to the object:
 
 - If you perform an `eject` operation on any object, the object comes out of the machine and the process is terminated. The object remains `ejected` regardless of any further actions.
 
-These descriptions specify the transition model $T$, and the transition function for each action can be depicted as a state machine diagram. For example, here is the diagram for `wash`:
+These descriptions specify the transition model $\mathrm{T}$, and the transition function for each action can be depicted as a state machine diagram. For example, here is the diagram for `wash`:
 
 :::{.imagify}
 \begin{tikzpicture}[-> background rectangle/.style={fill=white}, show background rectangle]
