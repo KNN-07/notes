@@ -285,7 +285,7 @@ We can iteratively solve for the $\mathrm{Q}^*$ values with the infinite-horizon
 \begin{algorithm}
 \caption{Infinite-Horizon-Value-Iteration}
 \begin{algorithmic}[1]
-\REQUIRE $\mathcal{S}$, $\mathcal{A}$, $T$, $R$, $\gamma$, $\epsilon$
+\REQUIRE $\mathcal{S}$, $\mathcal{A}$, $\mathrm{T}$, $\mathrm{R}$, $\gamma$, $\epsilon$
 \STATE \textbf{Initialization:}
 \FOR{each $s \in \mathcal{S}$ and $a \in \mathcal{A}$}
     \STATE $\mathrm{Q}_{\text{old}}(s,a) \gets 0$
