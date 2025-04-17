@@ -214,6 +214,26 @@ Given an MDP, our goal is typically to find a policy that is optimal in the sens
 How can we go about finding an optimal policy for an MDP? We could imagine enumerating all possible policies and calculating their value functions as in the previous section and picking the best one -- but that's too much work!
 
 The first observation to make is that, in a finite-horizon problem, the best action to take depends on the current state, but also on the horizon: imagine that you are in a situation where you could reach a state with reward 5 in one step or a state with reward 100 in two steps. If you have at least two steps to go, then you'd move toward the reward 100 state, but if you only have one step left to go, you should go in the direction that will allow you to gain 5!
+<!-- 
+One way to find an optimal policy is to compute an *optimal action-value function*, $\mathrm{Q}$. To better understand optimal action values, we first consider the action value functions for  a fixed policy $\pi$, denoted as $\mathrm{Q}^*(s,a).$ 
+
+$\mathrm{Q}^*(s,a)$ represents the expected sum of discounted rewards obtained when taking an action $a$ in state $s$ and following the optimal policy thereafter. Formally, we can define this as:
+  
+$$
+\mathrm{Q}_h^*(s,a) = \mathrm{R}(s,a)+\mathbb{E} \left[ \sum_{t=1}^{h} \gamma^t \mathrm{R}_t \,\Big|~ \pi \right],
+$$
+where $\mathrm{R}_t$ is the stage reward realized at time $t$ and the expectation is with respect to both the uncertainty of state transitions under policy $\pi$ and the initial condition $s_1$ which materializes from taking action $a$ in state $s_0=s$. 
+
+The definition for the infinite horizon case is analogous with the upper limit in the summation replaced with the $\infty$, and we may use $\mathrm{Q}_{\infty}^*(s,a)$ to make the horizon explicit. 
+
+Similar to $\mathrm{V}^*(s),$ $\mathrm{Q}^*(s,a)$ satisfy the Bellman resursion or Bellman equations introduced earlier. In fact, the two value functions are closely related: for a deterministic policy $\pi$:
+$$
+\mathrm{Q}^*(s,\pi(s)) = \mathrm{V}^*(s).
+$$
+
+One natural question arises: so why bother introducing another value function? The answer is: by comparing $\mathrm{Q}^*(s,a)$ for actions other than $\pi(s)$, one can determine whether an alternative action might yield a higher expected return. 
+
+Specifically, if there exists an action $a'$ such that $\mathrm{Q}^*(s,a') > \mathrm{Q}^*(s,\pi(s)),$ it suggests that deviating from the current policy $\pi$ in state $s$ could lead to an improvement. -->
 
 
 For the finite-horizon case, we define $\mathrm{Q}_h^{*}(s, a)$ to be the expected value of
