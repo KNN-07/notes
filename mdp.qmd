@@ -215,7 +215,8 @@ How can we go about finding an optimal policy for an MDP? We could imagine enume
 
 The first observation to make is that, in a finite-horizon problem, the best action to take depends on the current state, but also on the horizon: imagine that you are in a situation where you could reach a state with reward 5 in one step or a state with reward 100 in two steps. If you have at least two steps to go, then you'd move toward the reward 100 state, but if you only have one step left to go, you should go in the direction that will allow you to gain 5!
 
-One way to find an optimal policy is to compute an optimal *action-value function*, $\mathrm{Q}$. For the finite-horizon case, we define $\mathrm{Q}_h^{\pi}(s, a)$ to be the expected value of
+
+For the finite-horizon case, we define $\mathrm{Q}_h^{*}(s, a)$ to be the expected value of
 
 -   starting in state $s$,
 
@@ -223,15 +224,15 @@ One way to find an optimal policy is to compute an optimal *action-value functio
 
 -   continuing for $h - 1$ more steps executing an optimal policy for the appropriate horizon on each step.
 
-Similar to our definition of $\mathrm{V}_h^{\pi}$ for evaluating a policy, we define the $\mathrm{Q}_h^{\pi}$ function recursively according to the horizon. The only difference is that, on each step with horizon $h$, rather than selecting an action specified by a given policy, we select the value of $a$ that will maximize the expected $\mathrm{Q}_h^{\pi}$ value of the next state. 
+Similar to our definition of $\mathrm{V}_h^{*}$ for evaluating a policy, we define the $\mathrm{Q}_h^{*}$ function recursively according to the horizon. The only difference is that, on each step with horizon $h$, rather than selecting an action specified by a given policy, we select the value of $a$ that will maximize the expected $\mathrm{Q}_h^{*}$ value of the next state. 
 
 $$\begin{aligned}
-  \mathrm{Q}_0^{\pi}(s, a) & = 0                                                                 \\
-  \mathrm{Q}_1^{\pi}(s, a) & = \mathrm{R}(s, a) + 0                                                       \\
-  \mathrm{Q}_2^{\pi}(s, a) & = \mathrm{R}(s, a) + \gamma \sum_{s'}\mathrm{T}(s, a, s') \max_{a'} \mathrm{Q}_1^{\pi}(s', a')       \\
+  \mathrm{Q}_0^{*}(s, a) & = 0                                                                 \\
+  \mathrm{Q}_1^{*}(s, a) & = \mathrm{R}(s, a) + 0                                                       \\
+  \mathrm{Q}_2^{*}(s, a) & = \mathrm{R}(s, a) + \gamma \sum_{s'}\mathrm{T}(s, a, s') \max_{a'} \mathrm{Q}_1^{*}(s', a')       \\
   \vdots
   \nonumber                                                                       \\
-  \mathrm{Q}_h^{\pi}(s, a) & = \mathrm{R}(s, a) + \gamma \sum_{s'}\mathrm{T}(s, a, s') \max_{a'} \mathrm{Q}_{h - 1}^{\pi}(s', a')
+  \mathrm{Q}_h^{*}(s, a) & = \mathrm{R}(s, a) + \gamma \sum_{s'}\mathrm{T}(s, a, s') \max_{a'} \mathrm{Q}_{h - 1}^{*}(s', a')
 \end{aligned}
 $$ 
 where $(s',a')$ denotes the next time-step state/action pair. We can solve for the values of $\mathrm{Q}_h^{\pi}$ with a simple recursive algorithm called *finite-horizon value iteration* that just computes $\mathrm{Q}_h^{\pi}$ starting from horizon 0 and working backward to the desired horizon $h$. Given $\mathrm{Q}_h^{\pi}$, an optimal $\pi_h^*$ can be found as follows: $$\pi_h^*(s) = \arg\max_{a}\mathrm{Q}_h^{\pi}(s, a) \;\;.$$ which gives the *immediate* best action(s) to take when there are $h$ steps left; then $\pi_{h-1}^*(s)$ gives the best action(s) when there are $(h-1)$ steps left, and so on. In the case where there are multiple best actions, we typically can break ties randomly.
