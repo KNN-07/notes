@@ -36,7 +36,7 @@ The notation $S_t = s'$ uses a capital letter $S$ to stand for
 
 -   $\gamma \in [0, 1]$ is a *discount factor*, which we'll discuss in @sec-mdp_infinite_horizon.
 
-In this class, we assume the rewards are deterministic functions. Further, in this MDP chapter, we assume the state space and action space are finite (in fact, typically small).
+In this class, we assume the rewards are deterministic functions. Further, in this MDP chapter, we assume the state space and action space are discrete and finite.
 
 :::{.callout-note}
 # Example
