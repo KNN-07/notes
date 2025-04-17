@@ -91,21 +91,21 @@ A *policy* is a function $\pi$ that specifies what action to take in each state.
 
 The goal of a policy is to maximize the expected total reward, averaged over the stochastic transitions that the domain makes. Let's first consider the case where there is a finite *horizon* $H$, indicating the total number of steps of interaction that the agent will have with the MDP.
 
-We seek to measure the goodness of a policy. We do so by defining for a given horizon $h$ and MDP policy $\pi_h$, the "horizon $h$ *value*" of a state, $\mathrm{V}_{\pi}^h(s)$. We do this by induction on the horizon, which is the *number of steps left to go*.
+We seek to measure the goodness of a policy. We do so by defining for a given horizon $h$ and MDP policy $\pi_h$, the "horizon $h$ *value*" of a state, $\mathrm{V}_h^{\pi}(s)$. We do this by induction on the horizon, which is the *number of steps left to go*.
 
 The base case is when there are no steps remaining, in which case, no matter what state we're in, the value is 0, so 
 
 $$
-\mathrm{V}_{\pi}^0(s) = 0\;\;.
+\mathrm{V}_0^{\pi}(s) = 0\;\;.
 $${#eq-finite_val_0}
 
 Then, the value of a policy in state $s$ at horizon $h + 1$ is equal to the reward it will get in state $s$ plus the next state's expected horizon $h$ value, discounted by a factor $\gamma$. So, starting with horizons 1 and 2, and then moving to the general case, we have: 
 $$
-\mathrm{V}_{\pi}^1(s) = \mathrm{R}(s, \pi_1(s)) + 0
+\mathrm{V}_1^{\pi}(s) = \mathrm{R}(s, \pi_1(s)) + 0
 $${#eq-finite_val_1}
 
 $$
-\mathrm{V}_{\pi}^2(s) = \mathrm{R}(s, \pi_2(s)) +  \gamma \sum_{s'}\mathrm{T}(s, \pi_2(s), s')  \mathrm{V}_{\pi}^1(s')
+\mathrm{V}_2^{\pi}(s) = \mathrm{R}(s, \pi_2(s)) +  \gamma \sum_{s'}\mathrm{T}(s, \pi_2(s), s')  \mathrm{V}_1^{\pi}(s')
 $${#eq-finite_val_2}
 
 $$
@@ -113,7 +113,7 @@ $$
 $$
 
 $$
-\mathrm{V}_{\pi}^h(s) = \mathrm{R}(s, \pi_h(s)) + \gamma \sum_{s'}\mathrm{T}(s, \pi_h(s), s')  \mathrm{V}_{\pi}^{h - 1}(s')
+\mathrm{V}_h^{\pi}(s) = \mathrm{R}(s, \pi_h(s)) + \gamma \sum_{s'}\mathrm{T}(s, \pi_h(s), s')  \mathrm{V}_{h - 1}^{\pi}(s')
 $${#eq-finite_value}
 
  The sum over $s'$ is an *expectation*: it considers all possible next states $s'$, and computes an average of their $(h-1)$-horizon values, weighted by the probability that the transition function from state $s$ with the action chosen by the policy $\pi_h(s)$ assigns to arriving in state $s'$, and discounted by $\gamma$.
@@ -129,7 +129,7 @@ Convince yourself that the definitions in @eq-finite_val_0 and @eq-finite_val_2 
 :::
 
 
-Then we can say that a policy $\pi$ is better than policy $\bar{\pi}$ for horizon $h$ if and only if for all $s \in \mathcal S$, $\mathrm{V}^{\pi}(s) \geq \mathrm{V}^{\bar{\pi}}(s)$ and there exists at least one $s \in \mathcal S$ such that $\mathrm{V}^{\pi}(s) > \mathrm{V}^{\bar{\pi}}(s)$.
+Then we can say that a policy $\pi$ is better than policy $\bar{\pi}$ for horizon $h$ if and only if for all $s \in \mathcal S$, $\mathrm{V}_h^{\pi}(s) \geq \mathrm{V}_h^{\bar{\pi}}(s)$ and there exists at least one $s \in \mathcal S$ such that $\mathrm{V}_h^{\pi}(s) > \mathrm{V}_h^{\bar{\pi}}(s)$.
 
 ### Infinite-horizon value functions {#sec-mdp_infinite_horizon}
 
@@ -211,7 +211,7 @@ How can we go about finding an optimal policy for an MDP? We could imagine enume
 
 The first observation to make is that, in a finite-horizon problem, the best action to take depends on the current state, but also on the horizon: imagine that you are in a situation where you could reach a state with reward 5 in one step or a state with reward 100 in two steps. If you have at least two steps to go, then you'd move toward the reward 100 state, but if you only have one step left to go, you should go in the direction that will allow you to gain 5!
 
-One way to find an optimal policy is to compute an optimal *action-value function*, $\mathrm{Q}$. For the finite-horizon case, we define $\mathrm{Q}^h(s, a)$ to be the expected value of
+One way to find an optimal policy is to compute an optimal *action-value function*, $\mathrm{Q}$. For the finite-horizon case, we define $\mathrm{Q}_h^{\pi}(s, a)$ to be the expected value of
 
 -   starting in state $s$,
 
@@ -219,18 +219,18 @@ One way to find an optimal policy is to compute an optimal *action-value functio
 
 -   continuing for $h - 1$ more steps executing an optimal policy for the appropriate horizon on each step.
 
-Similar to our definition of $\mathrm{V}^h$ for evaluating a policy, we define the $\mathrm{Q}^h$ function recursively according to the horizon. The only difference is that, on each step with horizon $h$, rather than selecting an action specified by a given policy, we select the value of $a$ that will maximize the expected $\mathrm{Q}^h$ value of the next state. 
+Similar to our definition of $\mathrm{V}_h^{\pi}$ for evaluating a policy, we define the $\mathrm{Q}_h^{\pi}$ function recursively according to the horizon. The only difference is that, on each step with horizon $h$, rather than selecting an action specified by a given policy, we select the value of $a$ that will maximize the expected $\mathrm{Q}_h^{\pi}$ value of the next state. 
 
 $$\begin{aligned}
-  \mathrm{Q}^0(s, a) & = 0                                                                 \\
-  \mathrm{Q}^1(s, a) & = \mathrm{R}(s, a) + 0                                                       \\
-  \mathrm{Q}^2(s, a) & = \mathrm{R}(s, a) + \gamma \sum_{s'}\mathrm{T}(s, a, s') \max_{a'} \mathrm{Q}^1(s', a')       \\
+  \mathrm{Q}_0^{\pi}(s, a) & = 0                                                                 \\
+  \mathrm{Q}_1^{\pi}(s, a) & = \mathrm{R}(s, a) + 0                                                       \\
+  \mathrm{Q}_2^{\pi}(s, a) & = \mathrm{R}(s, a) + \gamma \sum_{s'}\mathrm{T}(s, a, s') \max_{a'} \mathrm{Q}_1^{\pi}(s', a')       \\
   \vdots
   \nonumber                                                                       \\
-  \mathrm{Q}^h(s, a) & = \mathrm{R}(s, a) + \gamma \sum_{s'}\mathrm{T}(s, a, s') \max_{a'} \mathrm{Q}^{h - 1}(s', a')
+  \mathrm{Q}_h^{\pi}(s, a) & = \mathrm{R}(s, a) + \gamma \sum_{s'}\mathrm{T}(s, a, s') \max_{a'} \mathrm{Q}_{h - 1}^{\pi}(s', a')
 \end{aligned}
 $$ 
-where $(s',a')$ denotes the next time-step state/action pair. We can solve for the values of $\mathrm{Q}^h$ with a simple recursive algorithm called *finite-horizon value iteration* that just computes $\mathrm{Q}^h$ starting from horizon 0 and working backward to the desired horizon $H$. Given $\mathrm{Q}^h$, an optimal $\pi_h^*$ can be found as follows: $$\pi_h^*(s) = \arg\max_{a}\mathrm{Q}^h(s, a) \;\;.$$ which gives the *immediate* best action(s) to take when there are $h$ steps left; then $\pi_{h-1}^*(s)$ gives the best action(s) when there are $(h-1)$ steps left, and so on. In the case where there are multiple best actions, we typically can break ties randomly.
+where $(s',a')$ denotes the next time-step state/action pair. We can solve for the values of $\mathrm{Q}_h^{\pi}$ with a simple recursive algorithm called *finite-horizon value iteration* that just computes $\mathrm{Q}_h^{\pi}$ starting from horizon 0 and working backward to the desired horizon $H$. Given $\mathrm{Q}_h^{\pi}$, an optimal $\pi_h^*$ can be found as follows: $$\pi_h^*(s) = \arg\max_{a}\mathrm{Q}_h^{\pi}(s, a) \;\;.$$ which gives the *immediate* best action(s) to take when there are $h$ steps left; then $\pi_{h-1}^*(s)$ gives the best action(s) when there are $(h-1)$ steps left, and so on. In the case where there are multiple best actions, we typically can break ties randomly.
 
 Additionally, it is worth noting that in order for such an optimal policy to be computed, we assume that the reward function $\mathrm{R}(s,a)$ is bounded on the set of all possible (state, action) pairs. Furthermore, we will assume that the set of all possible actions is finite.
 
@@ -241,24 +241,24 @@ The optimal value function is unique, but the optimal policy is not.  Think of a
 :::{.callout-note}
 **Dynamic programming** (somewhat counter-intuitively, dynamic programming is neither really "dynamic" nor a type of "programming" as we typically understand it) is a technique for designing efficient algorithms. Most methods for solving MDPs or computing value functions rely on dynamic programming to be efficient. The *principle of dynamic programming* is to compute and store the solutions to simple sub-problems that can be re-used later in the computation. It is a very important tool in our algorithmic toolbox.
 
-Let's consider what would happen if we tried to compute $\mathrm{Q}^4(s, a)$ for all $(s, a)$ by directly using the definition:
+Let's consider what would happen if we tried to compute $\mathrm{Q}_4^{\pi}(s, a)$ for all $(s, a)$ by directly using the definition:
 
--   To compute $\mathrm{Q}^4(s_i, a_j)$ for any one $(s_i, a_j)$, we would need to compute $\mathrm{Q}^3(s, a)$ for all $(s, a)$ pairs.
+-   To compute $\mathrm{Q}_4^{\pi}(s_i, a_j)$ for any one $(s_i, a_j)$, we would need to compute $\mathrm{Q}_3^{\pi}(s, a)$ for all $(s, a)$ pairs.
 
--   To compute $\mathrm{Q}^3(s_i, a_j)$ for any one $(s_i, a_j)$, we'd need to compute $\mathrm{Q}^2(s, a)$ for all $(s, a)$ pairs.
+-   To compute $\mathrm{Q}_3^{\pi}(s_i, a_j)$ for any one $(s_i, a_j)$, we'd need to compute $\mathrm{Q}_2^{\pi}(s, a)$ for all $(s, a)$ pairs.
 
--   To compute $\mathrm{Q}^2(s_i, a_j)$ for any one $(s_i, a_j)$, we'd need to compute $\mathrm{Q}^1(s, a)$ for all $(s, a)$ pairs.
+-   To compute $\mathrm{Q}_2^{\pi}(s_i, a_j)$ for any one $(s_i, a_j)$, we'd need to compute $\mathrm{Q}_1^{\pi}(s, a)$ for all $(s, a)$ pairs.
 
 -   Luckily, those are just our $\mathrm{R}(s, a)$ values.
 
-So, if we have $n$ states and $m$ actions, this is $O((mn)^3)$ work --- that seems like way too much, especially as the horizon increases! But observe that we really only have $mnh$ values that need to be computed: $\mathrm{Q}^h(s, a)$ for all $h, s, a$. If we start with $h=1$, compute and store those values, then using and reusing the $\mathrm{Q}^{h-1}(s, a)$ values to compute the $\mathrm{Q}^h(s, a)$ values, we can do all this computation in time $O(mnh)$, which is much better!
+So, if we have $n$ states and $m$ actions, this is $O((mn)^3)$ work --- that seems like way too much, especially as the horizon increases! But observe that we really only have $mnh$ values that need to be computed: $\mathrm{Q}_h^{\pi}(s, a)$ for all $h, s, a$. If we start with $h=1$, compute and store those values, then using and reusing the $\mathrm{Q}_{h-1}^{\pi}(s, a)$ values to compute the $\mathrm{Q}_h^{\pi}(s, a)$ values, we can do all this computation in time $O(mnh)$, which is much better!
 :::
 
 ### Finding optimal infinite-horizon policies {#sec-mdp_infinite_horizon_optimal}
 
 In contrast to the finite-horizon case, the best way of behaving in an infinite-horizon discounted MDP is not time-dependent. That is, the decisions you make at time $t = 0$ looking forward to infinity, will be the same decisions that you make at time $t = T$ for any positive $T$, also looking forward to infinity.
 
-An important theorem about MDPs is: in the infinite-horizon case, there exists a stationary optimal policy $\pi^*$ (there may be more than one) such that for all $s \in \mathcal S$ and all other policies $\pi$, we have $$\mathrm{V}^{\pi^*}(s) \ge \mathrm{V}^{\pi}(s) \;\;.$$
+An important theorem about MDPs is: in the infinite-horizon case, there exists a stationary optimal policy $\pi^*$ (there may be more than one) such that for all $s \in \mathcal S$ and all other policies $\pi$, we have $$\mathrm{V}^{\pi}(s) \le \mathrm{V}^{\pi^*}(s) \;\;.$$
 
 There are many methods for finding an optimal policy for an MDP. We have already seen the finite-horizon value iteration case. Here we will study a very popular and useful method for the infinite-horizon case, *infinite-horizon value iteration*. It is also important to us, because it is the basis of many *reinforcement-learning* methods.
 
@@ -285,7 +285,7 @@ We can iteratively solve for the $\mathrm{Q}^*$ values with the infinite-horizon
 \begin{algorithm}
 \caption{Infinite-Horizon-Value-Iteration}
 \begin{algorithmic}[1]
-\REQUIRE $\mathcal{S}$, $\mathcal{A}$, $\mathrm{T}$, $\mathrm{R}$, $\gamma$, $\epsilon$
+\REQUIRE $\mathcal{S}$, $\mathcal{A}$, $T$, $R$, $\gamma$, $\epsilon$
 \STATE \textbf{Initialization:}
 \FOR{each $s \in \mathcal{S}$ and $a \in \mathcal{A}$}
     \STATE $\mathrm{Q}_{\text{old}}(s,a) \gets 0$
