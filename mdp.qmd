@@ -272,8 +272,9 @@ $$\mathrm{Q}(s, a) = \mathrm{R}(s, a) + \gamma\sum_{s'}\mathrm{T}(s, a, s')\max_
 
 This is also a set of equations, one for each $(s, a)$ pair. This time, though, they are not linear (due to the $\max$ operation), and so they are not easy to solve. But there is a theorem that says they have a unique solution!
 
-Once we know the optimal action-value function, then we can extract an optimal policy $\pi^*$ as 
-$$\pi^*(s) = \arg\max_{a}\mathrm{Q}(s, a) \;\;.
+Once we know the optimal action-value function $\mathrm{Q}^*$, then we can extract an optimal policy $\pi^*$ as 
+$$
+\pi^*(s) = \arg\max_{a}\mathrm{Q}^*(s, a)
 $$
 
 We can iteratively solve for the $\mathrm{Q}^*$ values with the infinite-horizon value iteration algorithm, shown below:
