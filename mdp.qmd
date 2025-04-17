@@ -255,7 +255,7 @@ $$\begin{aligned}
   \mathrm{Q}_h^{*}(s, a) & = \mathrm{R}(s, a) + \gamma \sum_{s'}\mathrm{T}(s, a, s') \max_{a'} \mathrm{Q}_{h - 1}^{*}(s', a')
 \end{aligned}
 $$ 
-where $(s',a')$ denotes the next time-step state/action pair. We can solve for the values of $\mathrm{Q}_h^{\pi}$ with a simple recursive algorithm called *finite-horizon value iteration* that just computes $\mathrm{Q}_h^{\pi}$ starting from horizon 0 and working backward to the desired horizon $h$. Given $\mathrm{Q}_h^{\pi}$, an optimal $\pi_h^*$ can be found as follows: $$\pi_h^*(s) = \arg\max_{a}\mathrm{Q}_h^{\pi}(s, a) \;\;.$$ which gives the *immediate* best action(s) to take when there are $h$ steps left; then $\pi_{h-1}^*(s)$ gives the best action(s) when there are $(h-1)$ steps left, and so on. In the case where there are multiple best actions, we typically can break ties randomly.
+where $(s',a')$ denotes the next time-step state/action pair. We can solve for the values of $\mathrm{Q}_h^{*}$ with a simple recursive algorithm called *finite-horizon value iteration* that just computes $\mathrm{Q}_h^{*}$ starting from horizon 0 and working backward to the desired horizon $h$. Given $\mathrm{Q}_h^{*}$, an optimal $\pi_h^*$ can be found as follows: $$\pi_h^*(s) = \arg\max_{a}\mathrm{Q}_h^{*}(s, a) \;\;.$$ which gives the *immediate* best action(s) to take when there are $h$ steps left; then $\pi_{h-1}^*(s)$ gives the best action(s) when there are $(h-1)$ steps left, and so on. In the case where there are multiple best actions, we typically can break ties randomly.
 
 Additionally, it is worth noting that in order for such an optimal policy to be computed, we assume that the reward function $\mathrm{R}(s,a)$ is bounded on the set of all possible (state, action) pairs. Furthermore, we will assume that the set of all possible actions is finite.
 
@@ -266,17 +266,17 @@ The optimal value function is unique, but the optimal policy is not.  Think of a
 :::{.callout-note}
 **Dynamic programming** (somewhat counter-intuitively, dynamic programming is neither really "dynamic" nor a type of "programming" as we typically understand it) is a technique for designing efficient algorithms. Most methods for solving MDPs or computing value functions rely on dynamic programming to be efficient. The *principle of dynamic programming* is to compute and store the solutions to simple sub-problems that can be re-used later in the computation. It is a very important tool in our algorithmic toolbox.
 
-Let's consider what would happen if we tried to compute $\mathrm{Q}_4^{\pi}(s, a)$ for all $(s, a)$ by directly using the definition:
+Let's consider what would happen if we tried to compute $\mathrm{Q}_4^{*}(s, a)$ for all $(s, a)$ by directly using the definition:
 
--   To compute $\mathrm{Q}_4^{\pi}(s_i, a_j)$ for any one $(s_i, a_j)$, we would need to compute $\mathrm{Q}_3^{\pi}(s, a)$ for all $(s, a)$ pairs.
+-   To compute $\mathrm{Q}_4^{*}(s_i, a_j)$ for any one $(s_i, a_j)$, we would need to compute $\mathrm{Q}_3^{*}(s, a)$ for all $(s, a)$ pairs.
 
--   To compute $\mathrm{Q}_3^{\pi}(s_i, a_j)$ for any one $(s_i, a_j)$, we'd need to compute $\mathrm{Q}_2^{\pi}(s, a)$ for all $(s, a)$ pairs.
+-   To compute $\mathrm{Q}_3^{*}(s_i, a_j)$ for any one $(s_i, a_j)$, we'd need to compute $\mathrm{Q}_2^{*}(s, a)$ for all $(s, a)$ pairs.
 
--   To compute $\mathrm{Q}_2^{\pi}(s_i, a_j)$ for any one $(s_i, a_j)$, we'd need to compute $\mathrm{Q}_1^{\pi}(s, a)$ for all $(s, a)$ pairs.
+-   To compute $\mathrm{Q}_2^{*}(s_i, a_j)$ for any one $(s_i, a_j)$, we'd need to compute $\mathrm{Q}_1^{*}(s, a)$ for all $(s, a)$ pairs.
 
 -   Luckily, those are just our $\mathrm{R}(s, a)$ values.
 
-So, if we have $n$ states and $m$ actions, this is $O((mn)^3)$ work --- that seems like way too much, especially as the horizon increases! But observe that we really only have $mnh$ values that need to be computed: $\mathrm{Q}_h^{\pi}(s, a)$ for all $h, s, a$. If we start with $h=1$, compute and store those values, then using and reusing the $\mathrm{Q}_{h-1}^{\pi}(s, a)$ values to compute the $\mathrm{Q}_h^{\pi}(s, a)$ values, we can do all this computation in time $O(mnh)$, which is much better!
+So, if we have $n$ states and $m$ actions, this is $O((mn)^3)$ work --- that seems like way too much, especially as the horizon increases! But observe that we really only have $mnh$ values that need to be computed: $\mathrm{Q}_h^{*}(s, a)$ for all $h, s, a$. If we start with $h=1$, compute and store those values, then using and reusing the $\mathrm{Q}_{h-1}^{*}(s, a)$ values to compute the $\mathrm{Q}_h^{*}(s, a)$ values, we can do all this computation in time $O(mnh)$, which is much better!
 ::: -->
 
 ### Finding optimal infinite-horizon policies {#sec-mdp_infinite_horizon_optimal}
