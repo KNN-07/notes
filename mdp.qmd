@@ -7,11 +7,16 @@ As we phase out the PDF, this page may receive updates not reflected in the stat
 
 # Markov Decision Processes {#sec-mdps}
 
-So far, most of the learning problems we have looked at have been *supervised*, that is, for each training input $x^{(i)}$, we are told which value $y^{(i)}$ should be the output. From a traditional machine-learning viewpoint, there're two other major groups of learning problems: one is the *unsupervised* learning problems, in which we are given data and no expected outputs, see @sec-autoencoders and @sec-clustering for details.
+Reinforcement learning (RL) is a powerful framework for solving sequential decision making problems, where an agent learns to take actions in an environment to maximize cumulative rewards over time. This approach is particularly useful in scenarios where:
 
-The other major type is the so-called *Reinforcement learning* (RL) problems. Reinforcement learning differs significantly from supervised learning problems, and we will delve into the details later in in @sec-rl. However, it's worth pointing out one major difference at a very high level: in supervised learning, our goal is to learn a one-time static mapping to make predictions, whereas in RL, the setup requires us to sequentially take actions to maximize cumulative rewards.
+- A robot learns to navigate through a maze by trying different paths and receiving rewards for reaching the goal
+- A game-playing AI learns strategies by playing against itself and receiving rewards for winning
+- A recommendation system learns to suggest content by observing user engagement and receiving rewards for positive interactions
+- A self-driving car learns to make driving decisions by receiving rewards for safe and efficient navigation
 
-This setup change necessitates additional mathematical and algorithmic tools for us to understand RL. *Markov decision process* (MDP) is precisely such a classical and fundamental tool.
+The key challenge in these problems is that the agent must make a sequence of decisions, where each decision affects future possibilities and rewards. This sequential and dynamical nature requires mathematical tools beyond the more static supervised or unsupervised learning approaches. 
+
+*Markov decision process* (MDP) is a fundamental mathematical framework that helps us model and solve these sequential decision making problems. It provides a way to formalize the interaction between an agent and its environment, capturing the key elements of states, actions, rewards, and transitions.
 
 ## Definition and value functions {#sec_mdps}
 
