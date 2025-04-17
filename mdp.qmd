@@ -242,7 +242,7 @@ Additionally, it is worth noting that in order for such an optimal policy to be 
 :::{.study-question-callout}
 The optimal value function is unique, but the optimal policy is not.  Think of a situation in which there is more than one optimal policy.
 :::
-
+<!-- 
 :::{.callout-note}
 **Dynamic programming** (somewhat counter-intuitively, dynamic programming is neither really "dynamic" nor a type of "programming" as we typically understand it) is a technique for designing efficient algorithms. Most methods for solving MDPs or computing value functions rely on dynamic programming to be efficient. The *principle of dynamic programming* is to compute and store the solutions to simple sub-problems that can be re-used later in the computation. It is a very important tool in our algorithmic toolbox.
 
@@ -257,7 +257,7 @@ Let's consider what would happen if we tried to compute $\mathrm{Q}_4^{\pi}(s, a
 -   Luckily, those are just our $\mathrm{R}(s, a)$ values.
 
 So, if we have $n$ states and $m$ actions, this is $O((mn)^3)$ work --- that seems like way too much, especially as the horizon increases! But observe that we really only have $mnh$ values that need to be computed: $\mathrm{Q}_h^{\pi}(s, a)$ for all $h, s, a$. If we start with $h=1$, compute and store those values, then using and reusing the $\mathrm{Q}_{h-1}^{\pi}(s, a)$ values to compute the $\mathrm{Q}_h^{\pi}(s, a)$ values, we can do all this computation in time $O(mnh)$, which is much better!
-:::
+::: -->
 
 ### Finding optimal infinite-horizon policies {#sec-mdp_infinite_horizon_optimal}
 
