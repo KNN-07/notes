@@ -177,19 +177,23 @@ Verify this fact: if, on every day you wake up, there is a
 
 Let us now evaluate a policy in terms of the expected discounted infinite-horizon value that the agent will get in the MDP if it executes that policy. We define the infinite-horizon value of a state $s$ under policy $\pi$ as 
 $$
-\mathrm{V}^{\pi}(s) = \mathbb{E}[\mathrm{R}_0 + \gamma \mathrm{R}_1 + \gamma^2 \mathrm{R}_2 +
-    \dots \mid \pi, S_0 = s] = \mathbb{E}[\mathrm{R}_0 + \gamma(\mathrm{R}_1 + \gamma(\mathrm{R}_2 + \gamma
+\begin{align}
+\mathrm{V}_{\infty}^{\pi}(s) &= \mathbb{E}[\mathrm{R}_0 + \gamma \mathrm{R}_1 + \gamma^2 \mathrm{R}_2 +
+    \dots \mid \pi, S_0 = s] \\
+    &= \mathbb{E}[\mathrm{R}_0 + \gamma(\mathrm{R}_1 + \gamma(\mathrm{R}_2 + \gamma
     \dots))) \mid \pi, S_0 = s] \;\;.
+\end{align}
 $${#eq-vpi-expanded} 
+
 
 Because the expectation of a linear combination of random variables is the linear combination of the expectations, we have 
 
 $$\begin{aligned}
-  \mathrm{V}^{\pi}(s) & = \mathbb{E}[\mathrm{R}_0 \mid \pi, S_0 = s] + \gamma  \mathbb{E}[
+  \mathrm{V}_{\infty}^{\pi}(s) & = \mathbb{E}[\mathrm{R}_0 \mid \pi, S_0 = s] + \gamma  \mathbb{E}[
     \mathrm{R}_1 + \gamma(\mathrm{R}_2 + \gamma \dots))) \mid \pi, S_0 = s]
   \nonumber
   \\
-             & = \mathrm{R}(s, \pi(s)) + \gamma\sum_{s'}\mathrm{T}(s, \pi(s), s')\mathrm{V}^{\pi}(s') \; .
+             & = \mathrm{R}(s, \pi(s)) + \gamma\sum_{s'}\mathrm{T}(s, \pi(s), s')\mathrm{V}_{\infty}^{\pi}(s') \; .
 \end{aligned}
 $${#eq-inf_horiz_value}
 
