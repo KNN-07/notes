@@ -7,16 +7,11 @@ As we phase out the PDF, this page may receive updates not reflected in the stat
 
 # Markov Decision Processes {#sec-mdps}
 
-Reinforcement learning (RL) is a powerful framework for solving sequential decision making problems, where an agent learns to take actions in an environment to maximize cumulative rewards over time. This approach is particularly useful in scenarios where:
+Consider a robot learning to navigate through a maze, a game-playing AI developing strategies through self-play, or a self-driving car making driving decisions in real-time. These problems share a common challenge: the agent must make a sequence of decisions where each choice affects future possibilities and rewards. Unlike static prediction tasks where we learn a one-time mapping from inputs to outputs, these problems require reasoning about the consequences of actions over time.
 
-- A robot learns to navigate through a maze by trying different paths and receiving rewards for reaching the goal
-- A game-playing AI learns strategies by playing against itself and receiving rewards for winning
-- A recommendation system learns to suggest content by observing user engagement and receiving rewards for positive interactions
-- A self-driving car learns to make driving decisions by receiving rewards for safe and efficient navigation
+This sequential and dynamical nature demands mathematical tools beyond the more static supervised or unsupervised learning approaches. The most general framework for such problems is *reinforcement learning* (RL), where an agent learns to take actions in an unknown environment to maximize cumulative rewards over time.
 
-The key challenge in these problems is that the agent must make a sequence of decisions, where each decision affects future possibilities and rewards. This sequential and dynamical nature requires mathematical tools beyond the more static supervised or unsupervised learning approaches. 
-
-*Markov decision process* (MDP) is a fundamental mathematical framework that helps us model and solve these sequential decision making problems. It provides a way to formalize the interaction between an agent and its environment, capturing the key elements of states, actions, rewards, and transitions.
+In this chapter, we'll first study *Markov decision processes* (MDPs), which provide the mathematical foundation for understanding and solving sequential decision making problems like RL. MDPs formalize the interaction between an agent and its environment, capturing the key elements of states, actions, rewards, and transitions.
 
 ## Definition and value functions {#sec_mdps}
 
