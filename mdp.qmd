@@ -152,7 +152,7 @@ What is $\mathbb{E}\left[ \cdot \right ]$? This mathematical notation indicates 
 A very important point is that $\mathrm{R}(s,a)$ is always deterministic (in this class) for any given $s$ and $a$. Here $\mathrm{R}_t$ represents the set of all possible $\mathrm{R}(s_t,a)$ at time step $t$; this $\mathrm{R}_t$ is a random variable because the state we're in at step $t$ is itself a random variable, due to prior stochastic state transitions up to but not including at step $t$ and prior (deterministic) actions dictated by policy $\pi.$
 :::
 
-Now, for the infinite-horizon case, we select a discount factor $0 \leq \gamma \leq 1$, and evaluate a policy based on its expected *infinite horizon discounted value*: 
+Now, for the infinite-horizon case, we select a discount factor $0 \leq \gamma \leq 1$, and evaluate a policy based on its expected *infinite horizon value*: 
 
 $$
 \mathbb{E}\left[\sum_{t = 0}^{\infty}\gamma^t\mathrm{R}_t \mid \pi, s_0\right]
@@ -287,7 +287,7 @@ An important theorem about MDPs is: in the infinite-horizon case, there exists a
 
 There are many methods for finding an optimal policy for an MDP. We have already seen the finite-horizon value iteration case. Here we will study a very popular and useful method for the infinite-horizon case, *infinite-horizon value iteration*. It is also important to us, because it is the basis of many *reinforcement-learning* methods.
 
-We will again assume that the reward function $\mathrm{R}(s,a)$ is bounded on the set of all possible (state, action) pairs and additionally that the number of actions in the action space is finite. Define $\mathrm{Q}_{\infty}^{*}(s, a)$ to be the expected infinite-horizon discounted value of being in state $s$, executing action $a$, and executing an optimal policy $\pi^*$ thereafter. Using similar reasoning to the recursive definition of $\mathrm{V}^{\pi},$ we can express this value recursively as 
+We will again assume that the reward function $\mathrm{R}(s,a)$ is bounded on the set of all possible (state, action) pairs and additionally that the number of actions in the action space is finite. Define $\mathrm{Q}_{\infty}^{*}(s, a)$ to be the expected infinite-horizon value of being in state $s$, executing action $a$, and executing an optimal policy $\pi^*$ thereafter. Using similar reasoning to the recursive definition of $\mathrm{V}^{\pi},$ we can express this value recursively as 
 
 $$\mathrm{Q}_{\infty}^{*}(s, a) = \mathrm{R}(s, a) + \gamma\sum_{s'}\mathrm{T}(s, a, s')\max_{a'}\mathrm{Q}_{\infty}^{*}(s, a)\;\;.$$
 
