@@ -89,7 +89,7 @@ A *policy* is a function $\pi$ that specifies what action to take in each state.
 
 ### Finite-horizon value functions   {#sec-mdp_finite_horizon}
 
-The goal of a policy is to maximize the expected total reward, averaged over the stochastic transitions that the domain makes. Let's first consider the case where there is a finite *horizon* $H$, indicating the total number of steps of interaction that the agent will have with the MDP.
+The goal of a policy is to maximize the expected total reward, averaged over the stochastic transitions that the domain makes. Let's first consider the case where there is a finite *horizon* $h$, indicating the total number of steps of interaction that the agent will have with the MDP.
 
 We seek to measure the goodness of a policy. We do so by defining for a given horizon $h$ and MDP policy $\pi_h$, the "horizon $h$ *value*" of a state, $\mathrm{V}_h^{\pi}(s)$. We do this by induction on the horizon, which is the *number of steps left to go*.
 
@@ -234,7 +234,7 @@ $$\begin{aligned}
   \mathrm{Q}_h^{\pi}(s, a) & = \mathrm{R}(s, a) + \gamma \sum_{s'}\mathrm{T}(s, a, s') \max_{a'} \mathrm{Q}_{h - 1}^{\pi}(s', a')
 \end{aligned}
 $$ 
-where $(s',a')$ denotes the next time-step state/action pair. We can solve for the values of $\mathrm{Q}_h^{\pi}$ with a simple recursive algorithm called *finite-horizon value iteration* that just computes $\mathrm{Q}_h^{\pi}$ starting from horizon 0 and working backward to the desired horizon $H$. Given $\mathrm{Q}_h^{\pi}$, an optimal $\pi_h^*$ can be found as follows: $$\pi_h^*(s) = \arg\max_{a}\mathrm{Q}_h^{\pi}(s, a) \;\;.$$ which gives the *immediate* best action(s) to take when there are $h$ steps left; then $\pi_{h-1}^*(s)$ gives the best action(s) when there are $(h-1)$ steps left, and so on. In the case where there are multiple best actions, we typically can break ties randomly.
+where $(s',a')$ denotes the next time-step state/action pair. We can solve for the values of $\mathrm{Q}_h^{\pi}$ with a simple recursive algorithm called *finite-horizon value iteration* that just computes $\mathrm{Q}_h^{\pi}$ starting from horizon 0 and working backward to the desired horizon $h$. Given $\mathrm{Q}_h^{\pi}$, an optimal $\pi_h^*$ can be found as follows: $$\pi_h^*(s) = \arg\max_{a}\mathrm{Q}_h^{\pi}(s, a) \;\;.$$ which gives the *immediate* best action(s) to take when there are $h$ steps left; then $\pi_{h-1}^*(s)$ gives the best action(s) when there are $(h-1)$ steps left, and so on. In the case where there are multiple best actions, we typically can break ties randomly.
 
 Additionally, it is worth noting that in order for such an optimal policy to be computed, we assume that the reward function $\mathrm{R}(s,a)$ is bounded on the set of all possible (state, action) pairs. Furthermore, we will assume that the set of all possible actions is finite.
 
