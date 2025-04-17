@@ -197,10 +197,10 @@ $$\begin{aligned}
 \end{aligned}
 $${#eq-inf_horiz_value}
 
-:::{.column-margin}
+<!-- :::{.column-margin}
 This is *so* cool!  In a discounted model, if you find that you survived this round and landed in some state $s'$, then you have the same expected future lifetime as you did before. So the value
 function that is relevant in that state is exactly the same one as in state $s$.
-:::
+::: -->
 
 
 The equation defined in @eq-inf_horiz_value is known as the Bellman Equation, which breaks down the value function into the immediate reward and the (discounted) future value function. You could write down one of these equations for each of the $n = |\mathcal S|$ states. There are $n$ unknowns $\mathrm{V}^{\pi}(s)$. These are linear equations, and standard software (e.g., using Gaussian elimination or other linear algebraic methods) will, in most cases, enable us to find the value of each state under this policy.
