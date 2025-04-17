@@ -287,15 +287,15 @@ An important theorem about MDPs is: in the infinite-horizon case, there exists a
 
 There are many methods for finding an optimal policy for an MDP. We have already seen the finite-horizon value iteration case. Here we will study a very popular and useful method for the infinite-horizon case, *infinite-horizon value iteration*. It is also important to us, because it is the basis of many *reinforcement-learning* methods.
 
-We will again assume that the reward function $\mathrm{R}(s,a)$ is bounded on the set of all possible (state, action) pairs and additionally that the number of actions in the action space is finite. Define $\mathrm{Q}(s, a)$ to be the expected infinite-horizon discounted value of being in state $s$, executing action $a$, and executing an optimal policy $\pi^*$ thereafter. Using similar reasoning to the recursive definition of $\mathrm{V}^{\pi},$ we can express this value recursively as 
+We will again assume that the reward function $\mathrm{R}(s,a)$ is bounded on the set of all possible (state, action) pairs and additionally that the number of actions in the action space is finite. Define $\mathrm{Q}_{\infty}^{*}(s, a)$ to be the expected infinite-horizon discounted value of being in state $s$, executing action $a$, and executing an optimal policy $\pi^*$ thereafter. Using similar reasoning to the recursive definition of $\mathrm{V}^{\pi},$ we can express this value recursively as 
 
-$$\mathrm{Q}(s, a) = \mathrm{R}(s, a) + \gamma\sum_{s'}\mathrm{T}(s, a, s')\max_{a'}\mathrm{Q}(s', a') \;\;.$$
+$$\mathrm{Q}_{\infty}^{*}(s, a) = \mathrm{R}(s, a) + \gamma\sum_{s'}\mathrm{T}(s, a, s')\max_{a'}\mathrm{Q}_{\infty}^{*}(s, a)\;\;.$$
 
 This is also a set of equations, one for each $(s, a)$ pair. This time, though, they are not linear (due to the $\max$ operation), and so they are not easy to solve. But there is a theorem that says they have a unique solution!
 
-Once we know the optimal action-value function $\mathrm{Q}^*$, then we can extract an optimal policy $\pi^*$ as 
+Once we know the optimal action-value function $\mathrm{Q}_{\infty}^{*}(s, a)$, then we can extract an optimal policy $\pi^*$ as 
 $$
-\pi^*(s) = \arg\max_{a}\mathrm{Q}^*(s, a)
+\pi^*(s) = \arg\max_{a}\mathrm{Q}_{\infty}^{*}(s, a)
 $$
 
 We can iteratively solve for the $\mathrm{Q}^*$ values with the infinite-horizon value iteration algorithm, shown below:
