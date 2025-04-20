@@ -50,7 +50,7 @@ This same algorithm works for regression *and* classification!
 The nearest neighbor prediction function can be described by dividing the space up into regions whose closest point is each individual training point as shown below :
 
 ::: center
-![image](figures/voronoi.png)
+![](figures/voronoi.png)
 :::
 
 In each region, we predict the associated $y$ value.
@@ -87,7 +87,7 @@ We'll concentrate on the CART/ID3 ("classification and regression trees" and "it
 As a concrete example, consider the following images:
 
 ::: center
-![image](figures/dt_points.png) ![image](figures/dt_soln.png)
+![](figures/dt_points.png) ![](figures/dt_soln.png)
 :::
 
 The left image depicts a set of labeled data points in a two-dimensional feature space. The right shows a partition into regions by a decision tree, in this case having no classification errors in the final partitions.
@@ -179,7 +179,7 @@ In the two-class case (with labels 0 and 1), all of the splitting criteria menti
   \hat{P}_{m,0}$; the vertical axis plots $Q_m(T)$ for each of the three criteria.
 
 ::: center
-![image](figures/impurity.png)
+![](figures/impurity.png)
 :::
 
 There used to be endless haggling about which impurity function one should use. It seems to be traditional to use *entropy* to select which node to split while growing the tree, and *misclassification error* in the pruning criterion.
