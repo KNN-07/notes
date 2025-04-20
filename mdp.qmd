@@ -215,7 +215,7 @@ How can we go about finding an optimal policy for an MDP? We could imagine enume
 
 The first observation to make is that, in a finite-horizon problem, the best action to take depends on the current state, but also on the horizon: imagine that you are in a situation where you could reach a state with reward 5 in one step or a state with reward 100 in two steps. If you have at least two steps to go, then you'd move toward the reward 100 state, but if you only have one step left to go, you should go in the direction that will allow you to gain 5!
 <!-- 
-One way to find an optimal policy is to compute an *optimal action-value function*, $\mathrm{Q}$. To better understand optimal action values, we first consider the action value functions for  a fixed policy $\pi$, denoted as $\mathrm{Q}^*(s,a).$ 
+One way to find an optimal policy is to compute an *optimal action-value function*, $\mathrm{Q}$. To better understand optimal action values, we first consider the action value functions for a fixed policy $\pi$, denoted as $\mathrm{Q}^*(s,a).$ 
 
 $\mathrm{Q}^*(s,a)$ represents the expected sum of discounted rewards obtained when taking an action $a$ in state $s$ and following the optimal policy thereafter. Formally, we can define this as:
   
@@ -243,6 +243,16 @@ For the finite-horizon case, we define $\mathrm{Q}_h^{*}(s, a)$ to be the expect
 -   executing action $a$, and
 
 -   continuing for $h - 1$ more steps executing an optimal policy for the appropriate horizon on each step.
+
+:::{.column-margin}
+We actually can also define the action value functions for a fixed policy $\pi$, denoted as $\mathrm{Q}^{\pi}_h(s,a),$ which represents the expected sum of discounted rewards obtained when taking an action $a$ in state $s$ and following the optimal policy thereafter for the remaining $h-1$ horizon. Similar to
+Similar to $\mathrm{V}^{\pi}_{h}(s),$ $\mathrm{Q}^{\pi}_{h}(s,a)$ satisfy the Bellman resursion or Bellman equations introduced earlier. In fact, the two value functions are closely related: for a deterministic policy $\pi$:
+$$
+\mathrm{Q}^{\pi}_{h}(s,\pi(s)) = \mathrm{V}^{\pi}_{h}(s).
+$$
+
+Since we typically care more about action-value functions in order to find the *optimal* policy, we won't be focusing on $\mathrm{Q}^{\pi}(s,a),$ and instead, we will focus more on the optimal action vlaues $\mathrm{Q}^{*}(s,a),$
+:::
 
 Similar to our definition of $\mathrm{V}_h^{*}$ for evaluating a policy, we define the $\mathrm{Q}_h^{*}$ function recursively according to the horizon. The only difference is that, on each step with horizon $h$, rather than selecting an action specified by a given policy, we select the value of $a$ that will maximize the expected $\mathrm{Q}_h^{*}$ value of the next state. 
 
