@@ -14,11 +14,11 @@ Some non-parametric models, such as nearest-neighbor, rely directly on the data 
 
 The non-parametric methods we consider here tend to have the form of a composition of simple models:
 
--   *Nearest neighbor models*: (Section [1.1](#sec-np_nn){reference-type="ref" reference="sec-np_nn"}) where we don't process data at training time, but do all the work when making predictions, by looking for the closest training example(s) to a given new data point.
+-   *Nearest neighbor models*: (@sec-np_nn) where we don't process data at training time, but do all the work when making predictions, by looking for the closest training example(s) to a given new data point.
 
--   *Tree models*: (Section [1.2](#sec-np_trees){reference-type="ref" reference="sec-np_trees"}) where we partition the input space and use different simple predictions on different regions of the space; the hypothesis space can become arbitrarily large allowing finer and finer partitions of the input space.
+-   *Tree models*: (@sec-np_trees) where we partition the input space and use different simple predictions on different regions of the space; the hypothesis space can become arbitrarily large allowing finer and finer partitions of the input space.
 
--   *Ensemble models*: (Section [\[sec-np_bagging\]](#sec-np_bagging){reference-type="ref" reference="sec-np_bagging"}) in which we train several different classifiers on the whole space and average the answers; this decreases the estimation error. In particular, we will look at bootstrap aggregation, or *bagging* of trees.
+-   *Ensemble models*: (@sec-np_bagging) in which we train several different classifiers on the whole space and average the answers; this decreases the estimation error. In particular, we will look at bootstrap aggregation, or *bagging* of trees.
 
 -   *Boosting* is a way to construct a model composed of a sequence of component models (e.g., a model consisting of a sequence of trees, each subsequent tree seeking to correct errors in the previous trees) that decreases both estimation and structural error. We won't consider this in detail in this class.
 
@@ -28,7 +28,7 @@ Why are we studying these methods, in the heyday of complicated models such as n
 
 -   They often work as well as or better than more complicated methods.
 
--   Predictions from some of these models can be easier to explain to a human user: decision trees are fairly directly human-interpretable, and nearest neighbor methods can justify their decision to some extent by showing a few training examples that the prediction was based on.
+-   Predictions from some of these models can be easier to explain to a human user: decision trees are fairly directly human-interpretable, and nearest neighbor methods can justify their decisions to some extent by showing a few training examples that the predictions were based on.
 
 ## Nearest Neighbor {#sec-np_nn}
 
@@ -76,8 +76,6 @@ One advantage of tree models is that they are easily interpretable by humans. Th
 :::: examplebox
 **Example:** Here is a sample tree (reproduced from Breiman, Friedman, Olshen, Stone (1984)):
 
-=\[draw,fill=black!15,rectangle,minimum size=20pt,inner sep=6pt\] =\[draw,fill=green!15,rectangle,minimum size=20pt,inner sep=6pt\] =\[draw,fill=red!15,rectangle,minimum size=20pt,inner sep=6pt\]
-
 ::: center
 :::
 ::::
@@ -103,22 +101,22 @@ The predictor is made up of
 -   a collection of $M$ output values, $O_m$, one for each region.
 
 If we already knew a division of the space into regions, we would set $O_m$, the constant output for region $R_m$, to be the average of the training output values in that region. For a training data set ${\cal D}= \left\{\left(x^{(i)},
-  y^{(i)}\right)\right\}, i = 1, \ldots n$, we let ${\emph I}$ be an indicator set of all of the elements within ${\cal D}$, so that ${\emph I} = \{1, \ldots, n\}$ for our whole data set. We can define ${\emph I}_m$ as the subset of data set samples that are in region $R_m$, so that ${\emph I}_m = \{ i \mid x^{(i)} \in R_m\}$. Then $$O_m = {\rm average}_{i \in {\emph I}_m}~y^{(i)}\;\;.$$ We can define the error in a region as $E_m$. For example, $E_m$ as the sum of squared error would be expressed as $$E_m = \sum_{i \in {\emph I}_m}(y^{(i)} - O_m)^2\;\;.$$ Ideally, we would select the partition to minimize $$\lambda M + \sum_{m=1}^M E_m\;\;,$$ for some regularization constant $\lambda$. It is enough to search over all partitions of the training data (not all partitions of the input space!) to optimize this, but the problem is NP-complete.
+  y^{(i)}\right)\right\}, i = 1, \ldots n$, we let $I$ be an indicator set of all of the elements within ${\cal D}$, so that $I = \{1, \ldots, n\}$ for our whole data set. We can define $I_m$ as the subset of data set samples that are in region $R_m$, so that $I_m = \{ i \mid x^{(i)} \in R_m\}$. Then $$O_m = {\rm average}_{i \in I_m}~y^{(i)}\;\;.$$ We can define the error in a region as $E_m$. For example, $E_m$ as the sum of squared error would be expressed as $$E_m = \sum_{i \in I_m}(y^{(i)} - O_m)^2\;\;.$$ Ideally, we should select the partition to minimize $$\lambda M + \sum_{m=1}^M E_m\;\;,$$ for some regularization constant $\lambda$. It is enough to search over all partitions of the training data (not all partitions of the input space!) to optimize this, but the problem is NP-complete.
 
 #### Building a tree
 
 So, we'll be greedy. We establish a criterion, given a set of data, for finding the best single split of that data, and then apply it recursively to partition the space. For the discussion below, we will select the partition of the data that *minimizes the sum of the sum of squared errors of each partition element.* Then later, we will consider other splitting criteria.
 
 Given a data set ${\cal D}= \left\{\left(x^{(i)},
-  y^{(i)}\right)\right\}, i = 1, \ldots n$, we now consider ${\emph I}$ to be an indicator of the subset of elements within ${\cal D}$ that we wish to build a tree (or subtree) for. That is, ${\emph I}$ may already indicate a subset of data set ${\cal D}$, based on prior splits in constructing our overall tree. We define terms as follows:
+  y^{(i)}\right)\right\}, i = 1, \ldots n$, we now consider $I$ to be an indicator of the subset of elements within ${\cal D}$ that we wish to build a tree (or subtree) for. That is, $I$ may already indicate a subset of data set ${\cal D}$, based on prior splits in constructing our overall tree. We define terms as follows:
 
--   ${\emph I}^+_{j,s}$ indicates the set of examples (subset of ${\emph I}$) whose feature value in dimension $j$ is greater than or equal to split point $s$;
+-   $I^+_{j,s}$ indicates the set of examples (subset of $I$) whose feature value in dimension $j$ is greater than or equal to split point $s$;
 
--   ${\emph I}^-_{j,s}$ indicates the set of examples (subset of ${\emph I}$) whose feature value in dimension $j$ is less than $s$;
+-   $I^-_{j,s}$ indicates the set of examples (subset of $I$) whose feature value in dimension $j$ is less than $s$;
 
--   $\hat{y}^+_{j,s}$ is the average $y$ value of the data points indicated by set ${\emph I}^+_{j,s}$; and
+-   $\hat{y}^+_{j,s}$ is the average $y$ value of the data points indicated by set $I^+_{j,s}$; and
 
--   $\hat{y}^-_{j,s}$ is the average $y$ value of the data points indicated by set ${\emph I}^-_{j,s}$.
+-   $\hat{y}^-_{j,s}$ is the average $y$ value of the data points indicated by set $I^-_{j,s}$.
 
 Here is the pseudocode. In what follows, $k$ is the largest leaf size that we will allow in the tree, and is a hyperparameter of the algorithm.
 
@@ -147,9 +145,9 @@ We can choose an appropriate $\alpha$ using cross validation.
 
 The strategy for building and pruning classification trees is very similar to the strategy for regression trees.
 
-Given a region $R_m$ corresponding to a leaf of the tree, we would pick the output class $y$ to be the value that exists most frequently (the *majority value*) in the data points whose $x$ values are in that region, i.e., data points indicated by ${\emph I}_m$: $$O_m = {\rm majority}_{i \in {\emph I}_m}~y^{(i)}\;\;.$$ Let's now define the error in a region as the number of data points that do not have the value $O_m$: $$E_m = \left|\{i \mid i \in {\emph I}_m \;\text{and}\; y^{(i)} \not
-  = O_m\}\right|\;\;.$$ We define the *empirical probability* of an item from class $k$ occurring in region $m$ as: $$\hat{P}_{m,k} = \hat{P}({\emph I}_m,k) = \frac{\left|\{i \mid i \in {\emph I}_m
-    \;\text{and}\; y^{(i)} = k\}\right|}{N_m}\;\;,$$ where $N_m$ is the number of training points in region $m$; that is, $N_m = |{\emph I}_m|.$ For later use, we'll also define the empirical probabilities of split values, $\hat{P}_{m,j,s}$, as the fraction of points with dimension $j$ in split $s$ occurring in region $m$ (one branch of the tree), and $1 -
+Given a region $R_m$ corresponding to a leaf of the tree, we would pick the output class $y$ to be the value that exists most frequently (the *majority value*) in the data points whose $x$ values are in that region, i.e., data points indicated by $I_m$: $$O_m = {\rm majority}_{i \in I_m}~y^{(i)}\;\;.$$ Let's now define the error in a region as the number of data points that do not have the value $O_m$: $$E_m = \left|\{i \mid i \in I_m \;\text{and}\; y^{(i)} \not
+  = O_m\}\right|\;\;.$$ We define the *empirical probability* of an item from class $k$ occurring in region $m$ as: $$\hat{P}_{m,k} = \hat{P}(I_m,k) = \frac{\left|\{i \mid i \in I_m
+    \;\text{and}\; y^{(i)} = k\}\right|}{N_m}\;\;,$$ where $N_m$ is the number of training points in region $m$; that is, $N_m = |I_m|.$ For later use, we'll also define the empirical probabilities of split values, $\hat{P}_{m,j,s}$, as the fraction of points with dimension $j$ in split $s$ occurring in region $m$ (one branch of the tree), and $1 -
   \hat{P}_{m,j,s}$ as the complement (the fraction of points in the other branch).
 
 ##### Splitting criteria {#splitting-criteria .unnumbered}
@@ -160,17 +158,17 @@ In our greedy algorithm, we need a way to decide which split to make next. There
 
 -   *Gini index*: $$Q_m(T) = \sum_k \hat{P}_{m,k}(1 - \hat{P}_{m,k})$$
 
--   *Entropy*: $$Q_m(T) = H({\emph I}_m) = - \sum_k \hat{P}_{m,k} \log_2 \hat{P}_{m,k}$$ So that the entropy $H$ is well-defined when $\hat{P} = 0$, we will stipulate that $0 \log_2 0 = 0$.
+-   *Entropy*: $$Q_m(T) = H(I_m) = - \sum_k \hat{P}_{m,k} \log_2 \hat{P}_{m,k}$$ So that the entropy $H$ is well-defined when $\hat{P} = 0$, we will stipulate that $0 \log_2 0 = 0$.
 
 These splitting criteria are very similar, and it's not entirely obvious which one is better. We will focus on entropy, just to be concrete.
 
-Analogous to how for regression we choose the dimension $j$ and split $s$ that minimizes the sum of squared error $E_{j,s}$, for classification, we choose the dimension $j$ and split $s$ that minimizes the weighted average entropy over the "child" data points in each of the two corresponding splits, ${\emph I}^+_{j,s}$ and ${\emph I}^-_{j,s}$. We calculate the entropy in each split based on the empirical probabilities of class memberships in the split, and then calculate the weighted average entropy $\hat{H}$ as $$\begin{aligned}
+Analogous to how for regression we choose the dimension $j$ and split $s$ that minimizes the sum of squared error $E_{j,s}$, for classification, we choose the dimension $j$ and split $s$ that minimizes the weighted average entropy over the "child" data points in each of the two corresponding splits, $I^+_{j,s}$ and $I^-_{j,s}$. We calculate the entropy in each split based on the empirical probabilities of class memberships in the split, and then calculate the weighted average entropy $\hat{H}$ as $$\begin{aligned}
   \hat{H} & = \text{(fraction of points in left data set)} \cdot H(I_{j,s}^-) \nonumber                     \\
           & \qquad + \text{(fraction of points in right data set)} \cdot H(I_{j,s}^+) \nonumber             \\
-          & = (1-\hat{P}_{m,j,s}) H({\emph I}_{j,s}^{-}) + \hat{P}_{m,j,s} H({\emph I}_{j,s}^{+}) \nonumber \\
+          & = (1-\hat{P}_{m,j,s}) H(I_{j,s}^-) + \hat{P}_{m,j,s} H(I_{j,s}^+) \nonumber \\
           & = \frac{|I^-_{j,s}|}{N_m} \cdot H(I_{j,s}^-) + \frac{|I^+_{j,s}|}{N_m} \cdot H(I_{j,s}^+)\; .
 \end{aligned}$$ Choosing the split that minimizes the entropy of the children is equivalent to maximizing the *information gain* of the test $x_j = s$, defined by $$\begin{aligned}
-  \proc{infoGain}(x_j = s, {\emph I}_m) & = & H({\emph I}_m) -
+  \proc{infoGain}(x_j = s, I_m) & = & H(I_m) -
   \left(\frac{|I^-_{j,s}|}{N_m} \cdot H(I_{j,s}^-) + \frac{|I^+_{j,s}|}{N_m} \cdot H(I_{j,s}^+)\right)
 \end{aligned}$$
 
@@ -186,9 +184,7 @@ In the two-class case (with labels 0 and 1), all of the splitting criteria menti
 
 There used to be endless haggling about which impurity function one should use. It seems to be traditional to use *entropy* to select which node to split while growing the tree, and *misclassification error* in the pruning criterion.
 
-### Bagging
-
-[]{#sec-np_bagging label="sec-np_bagging"}
+### {#sec-np_bagging}
 
 One important limitation or drawback in conventional trees is that they can have high estimation error: small changes in the data can result in very big changes in the resulting tree.
 
