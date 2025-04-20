@@ -2,4 +2,32 @@
 This chapter's HTML notes are in active development. For a more stable version, you can access the PDF notes [here](https://introml.mit.edu/_static/spring25/notes.pdf).
 :::
 
-# Reinforcement Learning {#sec-rl}
+# Reinforcement Learning
+
+*Reinforcement learning* (RL) is a type of machine learning where an agent learns to make decisions by interacting with an environment. Unlike other learning paradigms, RL has several distinctive characteristics:
+
+- The agent interacts directly with an environment, receiving feedback in the form of rewards or penalties
+- The agent has agency over what information it seeks to gain from the environment
+- The agent updates its decision-making strategy incrementally as it gains more experience
+
+In a reinforcement learning problem, the interaction between the agent and environment follows a specific pattern:
+
+```{mermaid}
+graph LR
+    A[Agent] -->|action| B[Environment]
+    B -->|state| A
+    B -->|reward| A
+```
+
+The interaction cycle proceeds as follows:
+
+1. Agent observes the current *state* $s^{(i)}$
+2. Agent selects and executes an *action* $a^{(i)}$
+3. Agent receives a *reward* $r^{(i)}$ from the environment
+4. Agent observes the new *state* $s^{(i+1)}$
+5. Agent selects and executes a new *action* $a^{(i+1)}$
+6. Agent receives a new *reward* $r^{(i+1)}$
+7. This cycle continues...
+
+Similar to MDP @sec-mdps, in an RL problem, the agent's goal is to learn a *policy* - a mapping from states to actions - that maximizes its expected cumulative reward over time. This policy guides the agent's decision-making process, helping it choose actions that lead to the most favorable outcomes.
+
