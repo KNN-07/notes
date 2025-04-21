@@ -301,7 +301,7 @@ There are many methods for finding an optimal policy for an MDP. We have already
 
 We will again assume that the reward function $\mathrm{R}(s,a)$ is bounded on the set of all possible (state, action) pairs and additionally that the number of actions in the action space is finite. Define $\mathrm{Q}_{\infty}^{*}(s, a)$ to be the expected infinite-horizon value of being in state $s$, executing action $a$, and executing an optimal policy $\pi^*$ thereafter. Using similar reasoning to the recursive definition of $\mathrm{V}^{\pi},$ we can express this value recursively as 
 
-$$\mathrm{Q}_{\infty}^{*}(s, a) = \mathrm{R}(s, a) + \gamma\sum_{s'}\mathrm{T}(s, a, s')\max_{a'}\mathrm{Q}_{\infty}^{*}(s, a)\;\;.$$
+$$\mathrm{Q}_{\infty}^{*}(s, a) = \mathrm{R}(s, a) + \gamma\sum_{s'}\mathrm{T}(s, a, s')\max_{a'}\mathrm{Q}_{\infty}^{*}(s', a')\;\;.$$
 
 This is also a set of equations, one for each $(s, a)$ pair. This time, though, they are not linear (due to the $\max$ operation), and so they are not easy to solve. But there is a theorem that says they have a unique solution!
 
