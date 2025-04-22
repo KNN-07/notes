@@ -39,3 +39,40 @@ The interaction cycle proceeds as follows:
 
 Similar to MDP @sec-mdps, in an RL problem, the agent's goal is to learn a *policy* - a mapping from states to actions - that maximizes its expected cumulative reward over time. This policy guides the agent's decision-making process, helping it choose actions that lead to the most favorable outcomes.
 
+
+
+## Reinforcement learning algorithms overview {#rl}
+
+A *reinforcement learning (RL) algorithm* is a kind of a policy that depends on the whole history of states, actions, and rewards and selects the next action to take. There are several different ways to measure the quality of an RL algorithm, including:
+
+- Ignoring the $r^{(i)}$ values that it gets *while* learning, but considering how many interactions with the environment are required for it to learn a policy $\pi: \mathcal{S} \rightarrow \mathcal{A}$ that is nearly optimal.
+
+- Maximizing the expected sum of discounted rewards while it is learning.
+
+Most of the focus is on the first criterion (which is called “sample efficiency”), because the second one is very difficult. The first criterion is reasonable when the learning can take place somewhere safe (imagine a robot learning, inside the robot factory, where it can’t hurt itself too badly) or in a simulated environment.
+
+Approaches to reinforcement learning differ significantly according to what kind of hypothesis or model is being learned. Roughly speaking, RL methods can be categorized into model-free methods and model-based methods. The main distinction is that model-based methods explicitly learn the transition and reward models to assist the end-goal of learning a policy; model-free methods do not. We will start our discussion with the model-free methods, and introduce two of the arguably most popular types of algorithms, Q-learning @sec-q_learning and policy gradient @sec-rl_policy_search. We then describe model-based methods @sec-rl_model_based. Finally, we briefly consider "bandit" problems @sec-bandit, which differ from our MDP learning context by having probabilistic rewards.
+
+### Model-free methods
+
+Model-free methods are methods that do not explicitly learn transition and reward models. Depending on what is explicitly being learned, model-free methods are sometimes further categorized into value-based methods (where the goal is to learn/estimate a value function) and policy-based methods (where the goal is to directly learn an optimal policy). It’s important to note that such categorization is approximate and the boundaries are blurry. In fact, current RL research tends to combine the learning of value functions, policies, and transition and reward models all into a complex learning algorithm, in an attempt to combine the strengths of each approach.
+
+### Q-learning {#sec-q_learning}
+
+Q-learning is a frequently used class of RL algorithms that concentrates on learning (estimating) the state-action value function, i.e., the $Q$ function. Specifically, recall the MDP value-iteration update:
+
+
+
+$$
+\begin{equation}
+  Q(s,a) = R(s,a) + \gamma \sum_{s'} T(s,a,s')\max_{a'}Q(s',a')
+\end{equation}
+$$
+
+::: {.column-margin}
+The thing that most students seem to get confused about is when we do value iteration and when we do Q-learning. Value iteration assumes you know $T$ and $R$ and just need to _compute_ $Q$. In Q-learning, we don't know or even directly estimate $T$ and $R$: we estimate $Q$ directly from experience!
+:::
+
+The Q-learning algorithm below adapts this value-iteration idea to the RL scenario, where we do not know the transition function $T$ or
+reward function $R$, and instead rely on samples to perform the updates.
+
