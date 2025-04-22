@@ -247,7 +247,7 @@ Q^{(0)}(i = 0, \ldots, 9;\,\text{right})
 $$
 
 ::: {.column-margin}
-We are violating our usual notational conventions here, and writing $\{Q}^{i}$ to mean the Q value function that results after the robot runs all the way to the end of the hallway, when executing the policy that always moves to the right.
+We are violating our usual notational conventions here, and writing ${Q}^{i}$ to mean the Q value function that results after the robot runs all the way to the end of the hallway, when executing the policy that always moves to the right.
 :::
 
 Since the only nonzero reward from moving right is $R(9,\text{right}) = 1000$, after our robot makes it down the hallway once, our new Q vector is
