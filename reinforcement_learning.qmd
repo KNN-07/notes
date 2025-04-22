@@ -12,12 +12,20 @@ This chapter's HTML notes are in active development. For a more stable version, 
 
 In a reinforcement learning problem, the interaction between the agent and environment follows a specific pattern:
 
-```{mermaid}
-graph LR
-    A[Agent] -->|action| B[Environment]
-    B -->|state| A
-    B -->|reward| A
-```
+::: {.imagify}
+  \begin{tikzpicture}[main node/.style={draw,rounded corners,font=\Large},
+      arr/.style={->, thick, shorten <=5pt, shorten >=5pt,}]
+    \node[main node] (rl) at (0,1) {Learner};
+    \node[main node] (env) at (0,-1) {Environment};
+    \draw (env.west) edge[arr, bend left=50, looseness=1.1]
+      node[right] {reward} ($ (rl.west) + (0, -0.1)$);
+    \draw ($ (env.west) + (0,-0.1)$) edge[arr, bend left=70, looseness=1.5]
+      node[left] {state} ($ (rl.west) + (0, 0.1)$);
+    \draw (rl.east) edge[arr, bend left=70, looseness=1.5]
+      node[right] {action} (env.east);
+  \end{tikzpicture}
+:::
+
 
 The interaction cycle proceeds as follows:
 
