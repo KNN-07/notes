@@ -14,11 +14,11 @@ Some non-parametric models, such as nearest-neighbor, rely directly on the data 
 
 The non-parametric methods we consider here tend to have the form of a composition of simple models:
 
--   *Nearest neighbor models*: (@sec-np_nn) where we don't process data at training time, but do all the work when making predictions, by looking for the closest training example(s) to a given new data point.
+-   *Nearest neighbor models*: @sec-np_nn where we don't process data at training time, but do all the work when making predictions, by looking for the closest training example(s) to a given new data point.
 
--   *Tree models*: (@sec-np_trees) where we partition the input space and use different simple predictions on different regions of the space; the hypothesis space can become arbitrarily large allowing finer and finer partitions of the input space.
+-   *Tree models*: @sec-np_trees where we partition the input space and use different simple predictions on different regions of the space; the hypothesis space can become arbitrarily large allowing finer and finer partitions of the input space.
 
--   *Ensemble models*: (@sec-np_bagging) in which we train several different classifiers on the whole space and average the answers; this decreases the estimation error. In particular, we will look at bootstrap aggregation, or *bagging* of trees.
+-   *Ensemble models*: @sec-np_bagging in which we train several different classifiers on the whole space and average the answers; this decreases the estimation error. In particular, we will look at bootstrap aggregation, or *bagging* of trees.
 
 -   *Boosting* is a way to construct a model composed of a sequence of component models (e.g., a model consisting of a sequence of trees, each subsequent tree seeking to correct errors in the previous trees) that decreases both estimation and structural error. We won't consider this in detail in this class.
 
@@ -120,14 +120,42 @@ Given a data set ${\cal D}= \left\{\left(x^{(i)},
 
 Here is the pseudocode. In what follows, $k$ is the largest leaf size that we will allow in the tree, and is a hyperparameter of the algorithm.
 
-::: codebox
-$|{\emph I}| \leq k$ Set $\hat{y} = {\rm average}_{i \in {\emph I}}~y^{(i)}$ $\proc{Leaf}({\rm value} = \hat{y})$ each split dimension $j$ and split value $s$ Set ${\emph I}^+_{j,s} = \{i \in {\emph I} \mid x_j^{(i)} \geq s\}$ Set ${\emph I}^-_{j,s} = \{i \in {\emph I} \mid x_j^{(i)} < s\}$ Set $\hat{y}^+_{j,s} = {\rm average}_{i \in {\emph I}^+_{j,s}} ~ y^{(i)}$ Set $\hat{y}^-_{j,s} = {\rm average}_{i \in {\emph I}^-_{j,s}} ~ y^{(i)}$ Set $E_{j,s} = \sum_{i \in {\emph I}^+_{j,s}} (y^{(i)} - \hat{y}^+_{j,s})^2 +
-    \sum_{i \in {\emph I}^-_{j,s}} (y^{(i)} - \hat{y}^-_{j,s})^2$ Set $(j^*, s^*) = {\rm arg~min}_{j,s} E_{j,s}$ $\proc{Node}(j^*, s^*, \proc{BuildTree}({\emph I}^-_{j^*, s^*}, k), \proc{BuildTree}({\emph I}^+_{j^*, s^*}, k))$
-:::
 
-In practice, we typically start by calling $\proc{BuildTree}$ with the first input equal to our whole data set (that is, with ${\emph I} = \{1,\ldots,n\}$). But then that call of $\proc{BuildTree}$ can recursively lead to many other calls of $\proc{BuildTree}$.
+```pseudocode
+#| html-indent-size: "1.2em"
+#| html-comment-delimiter: "//"
+#| html-line-number: true
+#| html-line-number-punc: ":"
+#| html-no-end: false
+#| pdf-placement: "htb!"
+#| pdf-line-number: true
+#| label: buildtree
+\begin{algorithm}
+\begin{algorithmic}[1]
+\Procedure{BuildTree}{$I, k$}
+  \If{$|I| \leq k$}
+    \State $\hat{y} \gets \frac{1}{|I|}\sum_{i \in I} y^{(i)}$
+    \Return $\text{Leaf}(\text{value} = \hat{y})$
+  \Else
+    \ForAll{split dimension $j$, split value $s$}
+      \State $I^+_{j,s} \gets \{i \in I \mid x_j^{(i)} \geq s\}$
+      \State $I^-_{j,s} \gets \{i \in I \mid x_j^{(i)} < s\}$
+      \State $\hat{y}^+_{j,s} \gets \frac{1}{|I^+_{j,s}|}\sum_{i \in I^+_{j,s}} y^{(i)}$
+      \State $\hat{y}^-_{j,s} \gets \frac{1}{|I^-_{j,s}|}\sum_{i \in I^-_{j,s}} y^{(i)}$
+      \State $E_{j,s} \gets \sum_{i \in I^+_{j,s}} (y^{(i)} - \hat{y}^+_{j,s})^2 \; + \; \sum_{i \in I^-_{j,s}} (y^{(i)} - \hat{y}^-_{j,s})^2$
+    \EndFor
+    \State $(j^*, s^*) \gets \arg\min_{j,s} E_{j,s}$
+    \State \Return $\text{Node}\bigl(j^*, s^*, \text{BuildTree}(I^-_{j^*,s^*}, k), \text{BuildTree}(I^+_{j^*,s^*}, k)\bigr)$
+  \EndIf
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+```
 
-Let's think about how long each call of $\proc{BuildTree}$ takes to run. We have to consider all possible splits. So we consider a split in each of the $d$ dimensions. In each dimension, we only need to consider splits between two data points (any other split will give the same error on the training data). So, in total, we consider $O(d n)$ splits in each call to $\proc{BuildTree}$.
+
+In practice, we typically start by calling `BuildTree` with the first input equal to our whole data set (that is, with $I = \{1,\ldots,n\}$). But then that call of `BuildTree` can recursively lead to many other calls of `BuildTree`.
+
+Let's think about how long each call of `BuildTree` takes to run. We have to consider all possible splits. So we consider a split in each of the $d$ dimensions. In each dimension, we only need to consider splits between two data points (any other split will give the same error on the training data). So, in total, we consider $O(d n)$ splits in each call to `BuildTree`.
 
 #### Pruning
 
