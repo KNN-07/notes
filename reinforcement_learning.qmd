@@ -105,7 +105,7 @@ reward function $R$, and instead rely on samples to perform the updates.
     \State $i \gets i + 1$
     \State $Q_{\text{old}} \gets Q_{\text{new}}$
   \EndWhile
-  \State \Return $Q_{\text{new}}$
+  \Return $Q_{\text{new}}$
 \EndProcedure
 \end{algorithmic}
 \end{algorithm}
