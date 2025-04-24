@@ -9,7 +9,7 @@ As we phase out the PDF, this page may receive updates not reflected in the stat
 *Reinforcement learning* (RL) is a type of machine learning where an agent learns to make decisions by interacting with an environment. Unlike other learning paradigms, RL has several distinctive characteristics:
 
 - The agent interacts directly with an environment, receiving feedback in the form of rewards or penalties
-- The agent has agency over what information it seeks to gain from the environment
+- The agent can choose actions that influences what information it gains from the environment
 - The agent updates its decision-making strategy incrementally as it gains more experience
 
 In a reinforcement learning problem, the interaction between the agent and environment follows a specific pattern:
@@ -45,13 +45,13 @@ Similar to MDP @sec-mdps, in an RL problem, the agent's goal is to learn a *poli
 
 ## Reinforcement learning algorithms overview {#rl}
 
-A *reinforcement learning (RL) algorithm* is a kind of a policy that depends on the whole history of states, actions, and rewards and selects the next action to take. There are several different ways to measure the quality of an RL algorithm, including:
+<!-- A *reinforcement learning (RL)* is a kind of a policy that depends on the whole history of states, actions, and rewards and selects the next action to take. There are several different ways to measure the quality of an RL algorithm, including: -->
 
-- Ignoring the $r^{(i)}$ values that it gets *while* learning, but considering how many interactions with the environment are required for it to learn a policy $\pi: \mathcal{S} \rightarrow \mathcal{A}$ that is nearly optimal.
+<!-- - Ignoring the $r^{(i)}$ values that it gets *while* learning, but considering how many interactions with the environment are required for it to learn a policy $\pi: \mathcal{S} \rightarrow \mathcal{A}$ that is nearly optimal. -->
 
-- Maximizing the expected sum of discounted rewards while it is learning.
+<!-- - Maximizing the expected sum of discounted rewards while it is learning. -->
 
-Most of the focus is on the first criterion (which is called “sample efficiency”), because the second one is very difficult. The first criterion is reasonable when the learning can take place somewhere safe (imagine a robot learning, inside the robot factory, where it can’t hurt itself too badly) or in a simulated environment.
+<!-- Most of the focus is on the first criterion (which is called “sample efficiency”), because the second one is very difficult. The first criterion is reasonable when the learning can take place somewhere safe (imagine a robot learning, inside the robot factory, where it can’t hurt itself too badly) or in a simulated environment. -->
 
 Approaches to reinforcement learning differ significantly according to what kind of hypothesis or model is being learned. Roughly speaking, RL methods can be categorized into model-free methods and model-based methods. The main distinction is that model-based methods explicitly learn the transition and reward models to assist the end-goal of learning a policy; model-free methods do not. We will start our discussion with the model-free methods, and introduce two of the arguably most popular types of algorithms, Q-learning @sec-q_learning and policy gradient @sec-rl_policy_search. We then describe model-based methods @sec-rl_model_based. Finally, we briefly consider "bandit" problems @sec-bandit, which differ from our MDP learning context by having probabilistic rewards.
 
@@ -149,8 +149,7 @@ $${#eq-q-avg}
 the term $(r + \gamma \max_{a'}Q[s',a'])$ is often referred to as the one-step look-ahead *target*. The update can be viewed as a
 combination of two different iterative processes that we have already
 seen: the combination of an old estimate with the target using a
-running average with a learning rate $\alpha$, and the
-dynamic-programming update of a $Q$ value from value iteration.
+running average with a learning rate $\alpha.$
 
 
 @eq-q-avg can also be equivalently rewritten as
@@ -168,7 +167,7 @@ which allows us to interpret Q-learning in yet another way: we make an update (o
 
 The Q-learning algorithm above includes a procedure called `select_action`, that, given the current state $s$ and current $Q$ function, has to decide
 which action to take.  If the $Q$ value is estimated very accurately
-and the agent is behaving in the world, then generally we would want
+and the agent is deployed to "behave" in the world (as opposed to "learn" in the world),  then generally we would want
 to choose the apparently optimal action $\arg\max_{a \in \mathcal{A}} Q(s,a)$.
 
 But, during learning, the $Q$ value estimates won't be very
@@ -184,10 +183,7 @@ A typical action-selection strategy that attempts to address this *exploration v
 where the $\epsilon$ probability of choosing a random action helps the agent to explore and try out actions that might not seem so desirable at the moment.
 
 Q-learning has the surprising property that it is *guaranteed* to
-converge to the actual optimal $Q$ function under fairly weak
-conditions!  Any exploration strategy is okay as long as it tries
-every action infinitely often on an infinite run (so that it doesn't
-converge prematurely to a bad action choice).
+converge to the actual optimal $Q$ function! The conditions specified in the theorem are: visit every state-action pair infinitely often, and the learning rate $\alpha$ satisfies a scheduling condition. This implies that for exploration strategy specifically, any strategy is okay as long as it tries every state-action infinitely often on an infinite run (so that it doesn't converge prematurely to a bad action choice).
 
 Q-learning can be very inefficient. Imagine a robot that has a
 choice between moving to the left and getting a reward of 1, then
@@ -451,13 +447,16 @@ This approach is effective for problems with small state and action spaces, wher
 
 ## Bandit problems {#sec-bandit}
 
-Bandit problems differ from our reinforcement learning setting as described above in two ways: the reward function is probabilistic, and the key decision is usually framed as whether or not to continue exploring (to improve the model) versus exploiting (take actions to maximize expected rewards based on the current model).
-
-A basic bandit problem is given by:
+Bandit problems are a subset of reinforcement learning problems. A basic bandit problem is given by:
 
 - A set of actions $\mathcal{A}$;
 - A set of reward values $\mathcal{R}$; and
 - A probabilistic reward function $R_p: \mathcal{A} \times \mathcal{R} \rightarrow \mathbb{R}$, i.e., $R_p$ is a function that takes an action and a reward and returns the probability of getting that reward conditioned on that action being taken, $R_p(a, r) = Pr(\text{reward} = r \mid \text{action} = a)$. Each time the agent takes an action, a new value is drawn from this distribution.
+
+:::{.column-margin}
+Notice that this probablistic rewards set up in bandits differs from the "rewards are deterministic" assumptions we made so far.
+:::
+
 
 The most typical bandit problem has $\mathcal{R} = \{0, 1\}$ and $|\mathcal{A}| = k$. This is called a *$k$-armed bandit problem*, where the decision is which "arm" (action $a$) to select, and the reward is either getting a payoff ($1$) or not ($0$).
 
